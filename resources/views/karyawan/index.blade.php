@@ -48,74 +48,72 @@
         </div>
     @endif
 
-                       @can('admin')
+    @can('admin')
+        {{-- Bagian Upload Massal --}}
+        <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <h2 class="text-lg font-semibold text-slate-800 mb-0">Upload Data Massal</h2>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('karyawan.template.download') }}"
+                        class="btn btn-outline-success d-flex align-items-center gap-2">
+                        <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                        <span>Download Template</span>
+                    </a>
 
-    {{-- Bagian Upload Massal --}}
-    <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <h2 class="text-lg font-semibold text-slate-800 mb-0">Upload Data Massal</h2>
-            <div class="d-flex gap-2">
-                <a href="{{ route('karyawan.template.download') }}"
-                    class="btn btn-outline-success d-flex align-items-center gap-2">
-                    <i class="bi bi-file-earmark-arrow-down-fill"></i>
-                    <span>Download Template</span>
-                </a>
-
+                </div>
             </div>
-        </div>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <form action="{{ route('karyawan.import.add') }}" method="POST" enctype="multipart/form-data"
-                    class="d-flex gap-3">
-                    @csrf
-                    <input type="file" name="file" class="form-control" required>
-                    <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 text-nowrap"><i
-                            class="bi bi-cloud-arrow-up-fill"></i> Tambah</button>
-                </form>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <form action="{{ route('karyawan.import.add') }}" method="POST" enctype="multipart/form-data"
+                        class="d-flex gap-3">
+                        @csrf
+                        <input type="file" name="file" class="form-control" required>
+                        <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 text-nowrap"><i
+                                class="bi bi-cloud-arrow-up-fill"></i> Tambah</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <form action="{{ route('karyawan.import.replace') }}" method="POST" enctype="multipart/form-data"
+                        class="d-flex gap-3">
+                        @csrf
+                        <input type="file" name="file" class="form-control" required>
+                        <button type="submit" class="btn btn-danger d-flex align-items-center gap-2 text-nowrap"><i
+                                class="bi bi-arrow-repeat"></i> Ganti Semua</button>
+                    </form>
+                </div>
             </div>
-            <div class="col-md-6">
-                <form action="{{ route('karyawan.import.replace') }}" method="POST" enctype="multipart/form-data"
-                    class="d-flex gap-3">
-                    @csrf
-                    <input type="file" name="file" class="form-control" required>
-                    <button type="submit" class="btn btn-danger d-flex align-items-center gap-2 text-nowrap"><i
-                            class="bi bi-arrow-repeat"></i> Ganti Semua</button>
-                </form>
-            </div>
-        </div>
-                            @endcan
+        @endcan
 
 
         {{-- Penjelasan Mode Upload --}}
-                            @can('admin')
-
-        <div class="row g-3 mt-2">
-            <div class="col-md-6">
-                <div class="alert alert-info mb-0 py-2">
-                    <div class="d-flex align-items-start">
-                        <i class="bi bi-info-circle-fill me-2 mt-1 text-info"></i>
-                        <div>
-                            <strong>Mode Tambah:</strong><br>
-                            <small>Data baru akan ditambahkan ke database. Data lama tetap ada dan tidak akan
-                                terhapus.</small>
+        @can('admin')
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <div class="alert alert-info mb-0 py-2">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-info-circle-fill me-2 mt-1 text-info"></i>
+                            <div>
+                                <strong>Mode Tambah:</strong><br>
+                                <small>Data baru akan ditambahkan ke database. Data lama tetap ada dan tidak akan
+                                    terhapus.</small>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="alert alert-warning mb-0 py-2">
-                    <div class="d-flex align-items-start">
-                        <i class="bi bi-exclamation-triangle-fill me-2 mt-1 text-warning"></i>
-                        <div>
-                            <strong>Mode Ganti Semua:</strong><br>
-                            <small>Semua data lama akan dihapus dan diganti dengan data dari file Excel yang baru.</small>
+                <div class="col-md-6">
+                    <div class="alert alert-warning mb-0 py-2">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-exclamation-triangle-fill me-2 mt-1 text-warning"></i>
+                            <div>
+                                <strong>Mode Ganti Semua:</strong><br>
+                                <small>Semua data lama akan dihapus dan diganti dengan data dari file Excel yang baru.</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-                        @endcan
+    @endcan
 
 
     {{-- Tabel Data --}}
@@ -130,18 +128,18 @@
                             <span class="text-nowrap">Tambah Data</span>
                         </a>
                     @endcan
-                     @can('admin')
-                    <a href="{{ route('versions.index') }}" class="btn btn-outline-info d-flex align-items-center gap-2">
-                        <i class="bi bi-archive-fill"></i>
-                        <span class="text-nowrap">History Versi Data</span>
-                    </a>
-                        @endcan
+                    @can('admin')
+                        <a href="{{ route('versions.index') }}" class="btn btn-outline-info d-flex align-items-center gap-2">
+                            <i class="bi bi-archive-fill"></i>
+                            <span class="text-nowrap">History Versi Data</span>
+                        </a>
+                    @endcan
                     <a href="{{ route('karyawan.export') }}" class="btn btn-success d-flex align-items-center gap-2">
-                    <i class="bi bi-download"></i>
-                    <span>Download Data Saat Ini</span>
-                </a>
+                        <i class="bi bi-download"></i>
+                        <span>Download Data Saat Ini</span>
+                    </a>
                 </div>
-               
+
                 {{-- Sisi Kanan: Filter dan Search --}}
                 <div class="d-flex align-items-center gap-3">
                     <div class="d-flex align-items-center gap-2">
@@ -178,25 +176,24 @@
                             <th @click="sortBy('kode_jabatan')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Kode
                                 Jabatan <i :class="sortIcon('kode_jabatan')"></i></th>
-                            <th @click="sortBy('lokasi')"
+                            <th @click="sortBy('lokasi_kerja')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Lokasi <i
-                                    :class="sortIcon('lokasi')"></i></th>
-                            <th @click="sortBy('unit')"
+                                    :class="sortIcon('lokasi_kerja')"></i></th>
+                            <th @click="sortBy('unit_kerja')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Unit <i
-                                    :class="sortIcon('unit')"></i></th>
+                                    :class="sortIcon('unit_kerja')"></i></th>
                             <th @click="sortBy('jabatan')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Jabatan <i
                                     :class="sortIcon('jabatan')"></i></th>
                             <th @click="sortBy('kelompok_kelas_jabatan')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">KKJ <i
                                     :class="sortIcon('kelompok_kelas_jabatan')"></i></th>
-                            <th @click="sortBy('status_kepegawaian')"
+                            <th @click="sortBy('status')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Status <i
-                                    :class="sortIcon('status_kepegawaian')"></i></th>
+                                    :class="sortIcon('status')"></i></th>
                             <th class="text-slate-500 font-semibold text-nowrap">Detail</th>
-                             @can(abilities: 'admin')
-
-                            <th class="text-slate-500 font-semibold text-nowrap">Aksi</th>
+                            @can(abilities: 'admin')
+                                <th class="text-slate-500 font-semibold text-nowrap">Aksi</th>
                             @endcan
                         </tr>
                     </thead>
@@ -208,34 +205,33 @@
                                 <td x-text="employee.nik"></td>
                                 <td x-text="employee.nama"></td>
                                 <td x-text="employee.kode_jabatan"></td>
-                                <td x-text="employee.lokasi"></td>
-                                <td x-text="employee.unit"></td>
+                                <td x-text="employee.lokasi_kerja"></td>
+                                <td x-text="employee.unit_kerja"></td>
                                 <td x-text="employee.jabatan"></td>
                                 <td x-text="employee.kelompok_kelas_jabatan"></td>
                                 <td><span class="badge bg-info-subtle text-info-emphasis rounded-pill"
-                                        x-text="employee.status_kepegawaian"></span></td>
+                                        x-text="employee.status"></span></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-info" title="Lihat Detail"
                                         @click.stop="showEmployeeDetail(employee)">
                                         <i class="bi bi-eye-fill"></i>
                                     </button>
                                 </td>
-                                                    @can('admin')
-
-                                <td>
-                                    <div class="d-flex gap-2" @click.stop>
-                                        <a :href="`/data-karyawan/${employee.id}/edit`"
-                                            class="btn btn-sm btn-outline-warning" title="Edit">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" title="Hapus"
-                                            data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
-                                            @click="deleteUrl = `/data-karyawan/${employee.id}`">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                                                        @endcan
+                                @can('admin')
+                                    <td>
+                                        <div class="d-flex gap-2" @click.stop>
+                                            <a :href="`/data-karyawan/${employee.id}/edit`"
+                                                class="btn btn-sm btn-outline-warning" title="Edit">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Hapus"
+                                                data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
+                                                @click="deleteUrl = `/data-karyawan/${employee.id}`">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                @endcan
 
                             </tr>
                         </template>
@@ -289,90 +285,426 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" x-show="selectedEmployee">
-                        <div class="row g-3" x-show="selectedEmployee">
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">NIK</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.nik || '-'"></p>
+                    <div class="modal-body" x-show="selectedEmployee" style="max-height: 70vh; overflow-y: auto;">
+                        <!-- Nav Tabs -->
+                        <ul class="nav nav-tabs mb-3" id="employeeDetailTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab"
+                                    data-bs-target="#basic" type="button" role="tab">
+                                    <i class="bi bi-person-badge me-1"></i>Info Dasar
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="unit-tab" data-bs-toggle="tab" data-bs-target="#unit"
+                                    type="button" role="tab">
+                                    <i class="bi bi-diagram-3 me-1"></i>Unit & Struktur
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="job-tab" data-bs-toggle="tab" data-bs-target="#job"
+                                    type="button" role="tab">
+                                    <i class="bi bi-briefcase me-1"></i>Info Jabatan
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="personal-tab" data-bs-toggle="tab"
+                                    data-bs-target="#personal" type="button" role="tab">
+                                    <i class="bi bi-person-lines-fill me-1"></i>Data Personal
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="career-tab" data-bs-toggle="tab" data-bs-target="#career"
+                                    type="button" role="tab">
+                                    <i class="bi bi-graph-up-arrow me-1"></i>Karir & Klasifikasi
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="license-tab" data-bs-toggle="tab" data-bs-target="#license"
+                                    type="button" role="tab">
+                                    <i class="bi bi-award me-1"></i>Lisensi
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
+                                    type="button" role="tab">
+                                    <i class="bi bi-telephone me-1"></i>Kontak
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
+                                    type="button" role="tab">
+                                    <i class="bi bi-clock-history me-1"></i>Riwayat
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="employeeDetailTabContent">
+                            <!-- Tab 1: Info Dasar -->
+                            <div class="tab-pane fade show active" id="basic" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">NIK</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.nik || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Nama</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.nama || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Jenis Kelamin</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.jenis_kelamin || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Tanggal Lahir</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.tanggal_lahir || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Usia</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <span class="badge bg-info-subtle text-info-emphasis rounded-pill"
+                                                x-text="selectedEmployee ? calculateAge(selectedEmployee.tanggal_lahir) + ' tahun' : '-'"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Status Kepegawaian</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill"
+                                                x-text="selectedEmployee?.status || '-'"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Asal Instansi</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.asal_instansi || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Instansi</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.instansi || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Pendidikan Diakui</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.pendidikan_diakui || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Pendidikan Dimiliki</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.pendidikan_dimiliki || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">TMT Karyawan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.tmt_karyawan || selectedEmployee?.tmt || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Masa Kerja</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <span class="badge bg-success-subtle text-success-emphasis rounded-pill"
+                                                x-text="selectedEmployee?.masa_kerja || (selectedEmployee ? calculateWorkPeriod(selectedEmployee.tmt) + ' tahun' : '-')"></span>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Nama</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.nama || '-'"></p>
+
+                            <!-- Tab 2: Unit & Struktur -->
+                            <div class="tab-pane fade" id="unit" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Unit Deputy EGM</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.unit_deputy_egm || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Unit Assistant
+                                            Deputy</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.unit_assistant_deputy || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Unit Division Head</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.unit_division_head || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Unit Department Head</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.unit_department_head || '-'"></p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold text-muted small">Unit Kerja</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.unit_kerja || '-'"></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Gender</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.gender || '-'"></p>
+
+                            <!-- Tab 3: Info Jabatan -->
+                            <div class="tab-pane fade" id="job" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Kode Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.kode_jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">TMT Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.tmt_jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Status Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.status_jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold text-muted small">Job Grade</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill"
+                                                x-text="selectedEmployee?.job_grade || selectedEmployee?.grade || '-'"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold text-muted small">Person Grade</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill"
+                                                x-text="selectedEmployee?.person_grade || '-'"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-semibold text-muted small">Kelompok Kelas
+                                            Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.kelompok_kelas_jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Lokasi Kerja</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.lokasi_kerja || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Awal Lokasi Kerja</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.awal_lokasi_kerja || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Sub Status</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.sub_status || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Fungsi Kontrak OS</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.fungsi_kontrak_os || '-'"></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Kode Jabatan</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.kode_jabatan || '-'"></p>
+
+                            <!-- Tab 4: Data Personal -->
+                            <div class="tab-pane fade" id="personal" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Agama</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.agama || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Status Pernikahan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.status_pernikahan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Jurusan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.jurusan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Generasi</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.generasi || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">No KTP</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.no_ktp || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">No Kontrak</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.no_kontrak || '-'"></p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold text-muted small">Alamat KTP</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.alamat_ktp || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Rencana MPP</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.rencana_mpp || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Rencana Pensiun</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.rencana_pensiun || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Kategori</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.kategori || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Nilai NPI 2022</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.nilai_npi_2022 || '-'"></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Lokasi</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.lokasi || '-'"></p>
+
+                            <!-- Tab 5: Karir & Klasifikasi -->
+                            <div class="tab-pane fade" id="career" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Keluarga Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.keluarga_jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Sub Keluarga Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.sub_keluarga_jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Fungsi Jabatan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.fungsi_jabatan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Fungsi Pekerjaan</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.fungsi_pekerjaan || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Jalur Karir</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.jalur_karir || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Jenjang Karir</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.jenjang_karir || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">TMT KJ Tertinggi</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.tmt_kj_tertinggi || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Masa KJ Tertinggi
+                                            (Tahun)</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.masa_kj_tertinggi_tahun || '-'"></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Unit</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.unit || '-'"></p>
+
+                            <!-- Tab 6: Lisensi -->
+                            <div class="tab-pane fade" id="license" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold text-muted small">Lisensi Dimiliki</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.lisence_dimiliki || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Rating</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill"
+                                                x-text="selectedEmployee?.rating || '-'"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">No STKP</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.no_stkp || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Masa Berlaku</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.masa_berlaku || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Lisensi Dibayarkan
+                                            Januari</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.lisence_dibayarkan_januari || '-'"></p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-semibold text-muted small">Cek Lisensi/Serkom</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.cek_lisence_serkom || '-'"></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Jabatan</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.jabatan || '-'"></p>
+
+                            <!-- Tab 7: Kontak -->
+                            <div class="tab-pane fade" id="contact" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Email</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <a :href="selectedEmployee?.email ? 'mailto:' + selectedEmployee.email : '#'"
+                                                x-text="selectedEmployee?.email || '-'"></a>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">No HP</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <a :href="selectedEmployee?.no_hp ? 'tel:' + selectedEmployee.no_hp : '#'"
+                                                x-text="selectedEmployee?.no_hp || '-'"></a>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Kelompok Kelas Jabatan</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.kelompok_kelas_jabatan || '-'"></p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Grade</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
-                                    <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill"
-                                        x-text="selectedEmployee?.grade || '-'"></span>
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Status Kepegawaian</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
-                                    <span class="badge bg-info-subtle text-info-emphasis rounded-pill"
-                                        x-text="selectedEmployee?.status_kepegawaian || '-'"></span>
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Tanggal Lahir</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.tanggal_lahir || '-'"></p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">Pendidikan Terakhir</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.pendidikan_terakhir || '-'"></p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold text-muted small">TMT</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
-                                    x-text="selectedEmployee?.tmt || '-'"></p>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold text-muted small">Usia</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
-                                    <span class="badge bg-info-subtle text-info-emphasis rounded-pill"
-                                        x-text="selectedEmployee ? calculateAge(selectedEmployee.tanggal_lahir) + ' tahun' : '-'"></span>
-                                </p>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold text-muted small">Masa Kerja</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
-                                    <span class="badge bg-success-subtle text-success-emphasis rounded-pill"
-                                        x-text="selectedEmployee ? calculateWorkPeriod(selectedEmployee.tmt) + ' tahun' : '-'"></span>
-                                </p>
+
+                            <!-- Tab 8: Riwayat & Performa -->
+                            <div class="tab-pane fade" id="history" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">No SK Jabatan
+                                            Terakhir</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.no_sk_jabatan_terakhir || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Tgl SK Jabatan
+                                            Terakhir</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.tgl_sk_jabatan_terakhir || '-'"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">KPI 2023</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
+                                            <span class="badge bg-success-subtle text-success-emphasis rounded-pill"
+                                                x-text="selectedEmployee?.kpi_2023 || '-'"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold text-muted small">Kriteria</label>
+                                        <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                            x-text="selectedEmployee?.kriteria || '-'"></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -380,13 +712,13 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="bi bi-x-circle me-1"></i>Tutup
                         </button>
-                     @can(abilities: 'admin')
-                        <a x-show="selectedEmployee"
-                            :href="selectedEmployee ? `/data-karyawan/${selectedEmployee.id}/edit` : '#'"
-                            class="btn btn-warning">
-                            <i class="bi bi-pencil-fill me-1"></i>Edit Data
-                        </a>
-                    @endcan
+                        @can(abilities: 'admin')
+                            <a x-show="selectedEmployee"
+                                :href="selectedEmployee ? `/data-karyawan/${selectedEmployee.id}/edit` : '#'"
+                                class="btn btn-warning">
+                                <i class="bi bi-pencil-fill me-1"></i>Edit Data
+                            </a>
+                        @endcan
                     </div>
                 </div>
             </div>

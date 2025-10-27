@@ -13,20 +13,82 @@ class DataKaryawan extends Model
     protected $table = 'data_karyawan';
 
     protected $fillable = [
+        // Basic Info
         'nik',
         'nama',
-        'gender',
         'kode_jabatan',
-        'lokasi',
-        'unit',
+
+        // Unit Structure
+        'unit_deputy_egm',
+        'unit_assistant_deputy',
+        'unit_division_head',
+        'unit_department_head',
+        'unit_kerja',
+
+        // Job Information
         'jabatan',
-        'kelompok_kelas_jabatan',
-        'grade',
-        'status_kepegawaian',
+        'tmt_jabatan',
+        'job_grade',
+        'person_grade',
+        'lokasi_kerja',
+        'awal_lokasi_kerja',
+        'status', // STATUS di Excel
+        'status_jabatan', // STATUS JABATAN di Excel
+        'sub_status',
         'asal_instansi',
+        'instansi',
+
+        // Personal Information
+        'jenis_kelamin',
         'tanggal_lahir',
-        'pendidikan_terakhir',
-        'tmt',
+        'usia',
+        'rencana_mpp',
+        'rencana_pensiun',
+        'pendidikan_diakui',
+        'pendidikan_dimiliki',
+        'tmt_karyawan',
+        'masa_kerja',
+        'tmt', // TMT di Excel
+        'tmt_kj_tertinggi',
+        'masa_kj_tertinggi_tahun',
+
+        // Job Classification
+        'sub_keluarga_jabatan',
+        'keluarga_jabatan',
+        'fungsi_jabatan',
+        'jalur_karir',
+        'jenjang_karir',
+        'kelompok_kelas_jabatan',
+        'fungsi_pekerjaan',
+        'grade',
+
+        // License Information
+        'lisence_dimiliki',
+        'rating',
+        'no_stkp',
+        'masa_berlaku',
+        'lisence_dibayarkan_januari',
+
+        // Additional Personal Data
+        'jurusan',
+        'agama',
+        'nilai_npi_2022',
+        'kategori',
+        'no_ktp',
+        'alamat_ktp',
+        'no_kontrak',
+        'email',
+        'no_hp',
+        'status_pernikahan',
+        'generasi',
+
+        // Job History & Performance
+        'no_sk_jabatan_terakhir',
+        'tgl_sk_jabatan_terakhir',
+        'cek_lisence_serkom',
+        'kpi_2023',
+        'kriteria',
+        'fungsi_kontrak_os',
     ];
 
     /**

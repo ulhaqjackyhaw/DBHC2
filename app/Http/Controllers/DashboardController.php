@@ -16,9 +16,9 @@ class DashboardController extends Controller
         // === KPI RINGKAS ===
         $total = DataKaryawan::count();
 
-        $totalUnits = DataKaryawan::whereNotNull('unit')
-            ->where('unit', '!=', '')
-            ->distinct('unit')->count('unit');
+        $totalUnits = DataKaryawan::whereNotNull('unit_kerja')
+            ->where('unit_kerja', '!=', '')
+            ->distinct('unit_kerja')->count('unit_kerja');
 
         // Untuk usia, kita hitung dari tanggal_lahir (format dd/mm/yyyy)
         $karyawanData = DataKaryawan::whereNotNull('tanggal_lahir')
@@ -55,11 +55,11 @@ class DashboardController extends Controller
         $avgAge = $validAgeCount > 0 ? round($totalAge / $validAgeCount, 1) : 0;
         $avgMK = $validMKCount > 0 ? round($totalMK / $validMKCount, 1) : 0;
 
-        $female = DataKaryawan::where('gender', 'Perempuan')->count();
+        $female = DataKaryawan::where('jenis_kelamin', 'Perempuan')->count();
         $femalePct = $total ? round($female / $total * 100, 1) : 0;
 
         // === STATUS (PIE) ===
-        $employeeStatus = DataKaryawan::select(DB::raw("COALESCE(status_kepegawaian,'(Kosong)') AS status_label"), DB::raw('COUNT(*) AS total'))
+        $employeeStatus = DataKaryawan::select(DB::raw("COALESCE(status,'(Kosong)') AS status_label"), DB::raw('COUNT(*) AS total'))
             ->groupBy('status_label')
             ->orderByDesc('total')
             ->get();
@@ -68,7 +68,7 @@ class DashboardController extends Controller
         $data = $employeeStatus->pluck('total')->toArray();
 
         // === GENDER (fallback pie) ===
-        $gender = DataKaryawan::select(DB::raw("COALESCE(gender,'(Kosong)') AS gender_label"), DB::raw('COUNT(*) AS total'))
+        $gender = DataKaryawan::select(DB::raw("COALESCE(jenis_kelamin,'(Kosong)') AS gender_label"), DB::raw('COUNT(*) AS total'))
             ->groupBy('gender_label')
             ->orderByDesc('total')
             ->get();
@@ -76,7 +76,7 @@ class DashboardController extends Controller
         $genderData = $gender->pluck('total')->toArray();
 
         // === PENDIDIKAN (fallback) ===
-        $pend = DataKaryawan::select(DB::raw("COALESCE(pendidikan_terakhir,'(Kosong)') AS pend_label"), DB::raw('COUNT(*) AS total'))
+        $pend = DataKaryawan::select(DB::raw("COALESCE(pendidikan_diakui,'(Kosong)') AS pend_label"), DB::raw('COUNT(*) AS total'))
             ->groupBy('pend_label')
             ->orderByDesc('total')
             ->get();
@@ -87,9 +87,9 @@ class DashboardController extends Controller
 
         // ====== PENDIDIKAN Grouped (Organik vs OS) ======
         $pendidikanStatus = DataKaryawan::select(
-            DB::raw("COALESCE(pendidikan_terakhir,'(Kosong)') AS pend_label"),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status_kepegawaian)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status_kepegawaian)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status_kepegawaian)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status_kepegawaian)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
+            DB::raw("COALESCE(pendidikan_diakui,'(Kosong)') AS pend_label"),
+            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
+            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
         )
             ->groupBy('pend_label')
             // ---- MODIFIKASI DIMULAI DI SINI ----
@@ -176,13 +176,13 @@ class DashboardController extends Controller
         }
 
         // === TOP 10 UNIT ===
-        $unitTop = DataKaryawan::select('unit', DB::raw('COUNT(*) AS total'))
-            ->whereNotNull('unit')->where('unit', '!=', '')
-            ->groupBy('unit')
+        $unitTop = DataKaryawan::select('unit_kerja', DB::raw('COUNT(*) AS total'))
+            ->whereNotNull('unit_kerja')->where('unit_kerja', '!=', '')
+            ->groupBy('unit_kerja')
             ->orderByDesc('total')
             ->limit(10)
             ->get();
-        $unitTopLabels = $unitTop->pluck('unit')->toArray();
+        $unitTopLabels = $unitTop->pluck('unit_kerja')->toArray();
         $unitTopData = $unitTop->pluck('total')->toArray();
 
         // --- LOGIKA BARU UNTUK JABATAN LOWONG (PAKAI FIELD KUOTA) ---
@@ -190,11 +190,11 @@ class DashboardController extends Controller
         $formasiData = Formasi::select('kode_jabatan', 'lokasi', 'unit', 'jabatan', 'kelompok_kelas_jabatan', 'kuota')->get();
 
         // Hitung jumlah karyawan per formasi (kode_jabatan, lokasi, unit)
-        $karyawanData = DataKaryawan::select('kode_jabatan', 'lokasi', 'unit', DB::raw('COUNT(*) as karyawan_count'))
-            ->groupBy('kode_jabatan', 'lokasi', 'unit')
+        $karyawanData = DataKaryawan::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', DB::raw('COUNT(*) as karyawan_count'))
+            ->groupBy('kode_jabatan', 'lokasi_kerja', 'unit_kerja')
             ->get()
             ->keyBy(function ($item) {
-                return $item->kode_jabatan . '|' . $item->lokasi . '|' . $item->unit;
+                return $item->kode_jabatan . '|' . $item->lokasi_kerja . '|' . $item->unit_kerja;
             });
 
         // Hitung jabatan lowong per lokasi dan kelompok_kelas_jabatan
@@ -227,23 +227,23 @@ class DashboardController extends Controller
         });
 
         // === TABEL UNIT (SEMUA + JUMLAH) ===
-        $unitTable = DataKaryawan::select('unit', DB::raw('COUNT(*) AS total'))
-            ->whereNotNull('unit')->where('unit', '!=', '')
-            ->groupBy('unit')
-            ->orderBy('unit')
+        $unitTable = DataKaryawan::select('unit_kerja', DB::raw('COUNT(*) AS total'))
+            ->whereNotNull('unit_kerja')->where('unit_kerja', '!=', '')
+            ->groupBy('unit_kerja')
+            ->orderBy('unit_kerja')
             ->get();
 
         // ====== GENDER Grouped (Organik vs OS) ======
         $genderStatus = DataKaryawan::select(
             DB::raw("
                     CASE
-                        WHEN LOWER(TRIM(gender)) IN ('l','lk','laki','laki-laki','pria','male','m') THEN 'Laki-laki'
-                        WHEN LOWER(TRIM(gender)) IN ('p','perempuan','wanita','female','f') THEN 'Perempuan'
+                        WHEN LOWER(TRIM(jenis_kelamin)) IN ('l','lk','laki','laki-laki','pria','male','m') THEN 'Laki-laki'
+                        WHEN LOWER(TRIM(jenis_kelamin)) IN ('p','perempuan','wanita','female','f') THEN 'Perempuan'
                         ELSE '(Kosong)'
                     END AS gender_label
                 "),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status_kepegawaian)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status_kepegawaian)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status_kepegawaian)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status_kepegawaian)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
+            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
+            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
         )
             ->groupBy('gender_label')
             ->get();
@@ -443,11 +443,11 @@ class DashboardController extends Controller
                 ->get();
 
             // Hitung karyawan yang sudah terisi per formasi (kode_jabatan, lokasi, unit)
-            $karyawanCounts = DataKaryawan::select('kode_jabatan', 'lokasi', 'unit', DB::raw('COUNT(*) as karyawan_count'))
-                ->groupBy('kode_jabatan', 'lokasi', 'unit')
+            $karyawanCounts = DataKaryawan::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', DB::raw('COUNT(*) as karyawan_count'))
+                ->groupBy('kode_jabatan', 'lokasi_kerja', 'unit_kerja')
                 ->get()
                 ->keyBy(function ($item) {
-                    return $item->kode_jabatan . '|' . $item->lokasi . '|' . $item->unit;
+                    return $item->kode_jabatan . '|' . $item->lokasi_kerja . '|' . $item->unit_kerja;
                 });
 
             // Gabungkan data dan filter hanya yang lowong
