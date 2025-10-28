@@ -22,20 +22,29 @@ class FormasiTemplateExport implements FromArray, WithHeadings, WithStyles, With
         return [
             [
                 'HLPDCONTOHDIV00AM004J1101',
+                'Corporate Unit',
+                'Corporate Secretary',
+                'Communications Division',
+                'External Communications Department',
                 'KC Bandara Halim Perdanakusuma',
                 'Airport Rescue & Fire Fighting',
                 'Airport Rescue & Fire Fighting Chief',
                 'BOD-4',
                 '11',
-
+                '1',
             ],
             [
                 'CONTOHREGD008AD00DIV58DEP000J1372',
+                'Regional Unit',
+                'Regional Support',
+                'Finance & Accounting Division',
+                'Regional Accounting Department',
                 'Regional 1',
                 'Accounting',
                 'Regional Accounting Division Head',
                 'BOD-2',
                 '16',
+                '1',
             ],
         ];
     }
@@ -47,8 +56,12 @@ class FormasiTemplateExport implements FromArray, WithHeadings, WithStyles, With
     {
         return [
             'KODE JABATAN',
-            'LOKASI',
-            'UNIT',
+            'UNIT DEPUTY EGM',
+            'UNIT ASSISTANT DEPUTY',
+            'UNIT DIVISION HEAD',
+            'UNIT DEPARTMENT HEAD',
+            'LOKASI KERJA',
+            'UNIT KERJA',
             'JABATAN',
             'KELOMPOK KELAS JABATAN',
             'GRADE',
@@ -63,11 +76,11 @@ class FormasiTemplateExport implements FromArray, WithHeadings, WithStyles, With
     public function styles(Worksheet $sheet)
     {
         // Style header row
-        $sheet->getStyle('A1:G1')->applyFromArray([
+        $sheet->getStyle('A1:K1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
-                'color' => ['rgb' => '1F2937'],
+                'color' => ['rgb' => 'FFFFFF'],
             ],
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
@@ -86,7 +99,7 @@ class FormasiTemplateExport implements FromArray, WithHeadings, WithStyles, With
         ]);
 
         // Style example rows
-        $sheet->getStyle('A2:G3')->applyFromArray([
+        $sheet->getStyle('A2:K3')->applyFromArray([
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => 'FEF3C7'],
@@ -108,9 +121,9 @@ class FormasiTemplateExport implements FromArray, WithHeadings, WithStyles, With
 
         // Center align specific columns
         $sheet->getStyle('A2:A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('E2:E3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('F2:F3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('G2:G3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('I2:I3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('J2:J3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('K2:K3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         return [];
     }
@@ -122,12 +135,16 @@ class FormasiTemplateExport implements FromArray, WithHeadings, WithStyles, With
     {
         return [
             'A' => 40,  // KODE JABATAN
-            'B' => 40,  // LOKASI
-            'C' => 35,  // UNIT
-            'D' => 40,  // JABATAN
-            'E' => 30,  // KELOMPOK KELAS JABATAN
-            'F' => 12,  // GRADE
-            'G' => 12,  // KUOTA
+            'B' => 30,  // UNIT DEPUTY EGM
+            'C' => 30,  // UNIT ASSISTANT DEPUTY
+            'D' => 30,  // UNIT DIVISION HEAD
+            'E' => 30,  // UNIT DEPARTMENT HEAD
+            'F' => 40,  // LOKASI KERJA
+            'G' => 35,  // UNIT KERJA
+            'H' => 40,  // JABATAN
+            'I' => 30,  // KELOMPOK KELAS JABATAN
+            'J' => 12,  // GRADE
+            'K' => 12,  // KUOTA
         ];
     }
 }

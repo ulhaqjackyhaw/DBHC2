@@ -23,12 +23,60 @@
 
         .table-responsive {
             border-radius: 0.5rem;
-            overflow: hidden;
+            overflow-x: auto;
         }
 
         .btn-outline-info:hover {
             transform: scale(1.05);
             transition: transform 0.2s ease;
+        }
+
+        /* Compact table styling */
+        .table-compact {
+            font-size: 0.875rem;
+        }
+
+        .table-compact th,
+        .table-compact td {
+            padding: 0.5rem 0.75rem;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        /* Set max width untuk kolom tertentu */
+        .table-compact td:nth-child(3) {
+            /* Nama */
+            max-width: 200px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .table-compact td:nth-child(5) {
+            /* Lokasi */
+            max-width: 120px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .table-compact td:nth-child(6) {
+            /* Unit */
+            max-width: 150px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .table-compact td:nth-child(7) {
+            /* Jabatan */
+            max-width: 200px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Kolom aksi tetap kecil */
+        .table-compact td:last-child,
+        .table-compact td:nth-last-child(2) {
+            width: 1%;
+            white-space: nowrap;
         }
     </style>
 @endpush
@@ -163,7 +211,7 @@
 
             {{-- Tabel --}}
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle table-compact">
                     <thead class="bg-slate-50">
                         <tr>
                             <th class="text-slate-500 font-semibold text-nowrap">No</th>
@@ -171,19 +219,19 @@
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">NIK <i
                                     :class="sortIcon('nik')"></i></th>
                             <th @click="sortBy('nama')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Nama <i
+                                class="text-slate-500 font-semibold cursor-pointer user-select-none">Nama <i
                                     :class="sortIcon('nama')"></i></th>
                             <th @click="sortBy('kode_jabatan')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Kode
                                 Jabatan <i :class="sortIcon('kode_jabatan')"></i></th>
                             <th @click="sortBy('lokasi_kerja')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Lokasi <i
+                                class="text-slate-500 font-semibold cursor-pointer user-select-none">Lokasi <i
                                     :class="sortIcon('lokasi_kerja')"></i></th>
                             <th @click="sortBy('unit_kerja')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Unit <i
+                                class="text-slate-500 font-semibold cursor-pointer user-select-none">Unit <i
                                     :class="sortIcon('unit_kerja')"></i></th>
                             <th @click="sortBy('jabatan')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Jabatan <i
+                                class="text-slate-500 font-semibold cursor-pointer user-select-none">Jabatan <i
                                     :class="sortIcon('jabatan')"></i></th>
                             <th @click="sortBy('kelompok_kelas_jabatan')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">KKJ <i
@@ -844,11 +892,27 @@
                 },
                 get sortedEmployees() {
                     return [...this.filteredEmployees].sort((a, b) => {
-                        const colA = a[this.sortColumn],
-                            colB = b[this.sortColumn];
+                        let colA = a[this.sortColumn];
+                        let colB = b[this.sortColumn];
+
+                        // Handle null/undefined
+                        if (colA == null && colB == null) return 0;
+                        if (colA == null) return this.sortDirection === 'asc' ? -1 : 1;
+                        if (colB == null) return this.sortDirection === 'asc' ? 1 : -1;
+
+                        // Cek apakah keduanya angka
+                        const numA = Number(colA);
+                        const numB = Number(colB);
+
                         let comparison = 0;
-                        if (colA > colB) comparison = 1;
-                        else if (colA < colB) comparison = -1;
+                        if (!isNaN(numA) && !isNaN(numB)) {
+                            // Bandingkan sebagai angka
+                            comparison = numA - numB;
+                        } else {
+                            // Bandingkan sebagai string
+                            comparison = String(colA).localeCompare(String(colB));
+                        }
+
                         return this.sortDirection === 'asc' ? comparison : -comparison;
                     });
                 },

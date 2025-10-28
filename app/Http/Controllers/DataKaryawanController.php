@@ -116,8 +116,8 @@ class DataKaryawanController extends Controller
         if ($request->filled('formasi_select')) {
             $formasi = \App\Models\Formasi::findOrFail($request->formasi_select);
             $data['kode_jabatan'] = $formasi->kode_jabatan;
-            $data['lokasi_kerja'] = $formasi->lokasi;
-            $data['unit_kerja'] = $formasi->unit;
+            $data['lokasi_kerja'] = $formasi->lokasi_kerja;
+            $data['unit_kerja'] = $formasi->unit_kerja;
             $data['jabatan'] = $formasi->jabatan;
             $data['kelompok_kelas_jabatan'] = $formasi->kelompok_kelas_jabatan;
             $data['grade'] = $formasi->grade;
@@ -298,8 +298,8 @@ class DataKaryawanController extends Controller
         if ($request->filled('formasi_select')) {
             $formasi = \App\Models\Formasi::findOrFail($request->formasi_select);
             $data['kode_jabatan'] = $formasi->kode_jabatan;
-            $data['lokasi_kerja'] = $formasi->lokasi;
-            $data['unit_kerja'] = $formasi->unit;
+            $data['lokasi_kerja'] = $formasi->lokasi_kerja;
+            $data['unit_kerja'] = $formasi->unit_kerja;
             $data['jabatan'] = $formasi->jabatan;
             $data['kelompok_kelas_jabatan'] = $formasi->kelompok_kelas_jabatan;
             $data['grade'] = $formasi->grade;

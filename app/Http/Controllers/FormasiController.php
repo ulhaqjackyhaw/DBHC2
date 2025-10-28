@@ -27,22 +27,26 @@ class FormasiController extends Controller
     {
         $validatedData = $request->validate([
             'kode_jabatan' => 'required|string',
-            'lokasi' => 'required|string|max:255',
-            'unit' => 'required|string|max:255',
+            'unit_deputy_egm' => 'nullable|string|max:255',
+            'unit_assistant_deputy' => 'nullable|string|max:255',
+            'unit_division_head' => 'nullable|string|max:255',
+            'unit_department_head' => 'nullable|string|max:255',
+            'lokasi_kerja' => 'required|string|max:255',
+            'unit_kerja' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'kelompok_kelas_jabatan' => 'required|string|max:255',
             'grade' => 'required|string|max:255',
             'kuota' => 'required|integer|min:1',
         ]);
 
-        // Cek unique kombinasi kode_jabatan, lokasi, unit
+        // Cek unique kombinasi kode_jabatan, lokasi_kerja, unit_kerja
         if (
             Formasi::where('kode_jabatan', $validatedData['kode_jabatan'])
-                ->where('lokasi', $validatedData['lokasi'])
-                ->where('unit', $validatedData['unit'])
+                ->where('lokasi_kerja', $validatedData['lokasi_kerja'])
+                ->where('unit_kerja', $validatedData['unit_kerja'])
                 ->exists()
         ) {
-            return redirect()->back()->with('error', 'Formasi dengan kombinasi kode jabatan, lokasi, dan unit sudah ada.');
+            return redirect()->back()->with('error', 'Formasi dengan kombinasi kode jabatan, lokasi kerja, dan unit kerja sudah ada.');
         }
 
         Formasi::create($validatedData);
@@ -63,23 +67,27 @@ class FormasiController extends Controller
     {
         $validatedData = $request->validate([
             'kode_jabatan' => ['required', 'string'],
-            'lokasi' => 'required|string|max:255',
-            'unit' => 'required|string|max:255',
+            'unit_deputy_egm' => 'nullable|string|max:255',
+            'unit_assistant_deputy' => 'nullable|string|max:255',
+            'unit_division_head' => 'nullable|string|max:255',
+            'unit_department_head' => 'nullable|string|max:255',
+            'lokasi_kerja' => 'required|string|max:255',
+            'unit_kerja' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'kelompok_kelas_jabatan' => 'required|string|max:255',
             'grade' => 'required|string|max:255',
             'kuota' => 'required|integer|min:1',
         ]);
 
-        // Cek unique kombinasi kode_jabatan, lokasi, unit (kecuali diri sendiri)
+        // Cek unique kombinasi kode_jabatan, lokasi_kerja, unit_kerja (kecuali diri sendiri)
         if (
             Formasi::where('kode_jabatan', $validatedData['kode_jabatan'])
-                ->where('lokasi', $validatedData['lokasi'])
-                ->where('unit', $validatedData['unit'])
+                ->where('lokasi_kerja', $validatedData['lokasi_kerja'])
+                ->where('unit_kerja', $validatedData['unit_kerja'])
                 ->where('id', '!=', $formasi->id)
                 ->exists()
         ) {
-            return redirect()->back()->with('error', 'Formasi dengan kombinasi kode jabatan, lokasi, dan unit sudah ada.');
+            return redirect()->back()->with('error', 'Formasi dengan kombinasi kode jabatan, lokasi kerja, dan unit kerja sudah ada.');
         }
 
         $formasi->update($validatedData);

@@ -186,10 +186,10 @@ class DashboardController extends Controller
         $unitTopData = $unitTop->pluck('total')->toArray();
 
         // --- LOGIKA BARU UNTUK JABATAN LOWONG (PAKAI FIELD KUOTA) ---
-        // Ambil semua formasi unik (kode_jabatan, lokasi, unit, jabatan, kelompok_kelas_jabatan, kuota)
-        $formasiData = Formasi::select('kode_jabatan', 'lokasi', 'unit', 'jabatan', 'kelompok_kelas_jabatan', 'kuota')->get();
+        // Ambil semua formasi unik (kode_jabatan, lokasi_kerja, unit_kerja, jabatan, kelompok_kelas_jabatan, kuota)
+        $formasiData = Formasi::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', 'jabatan', 'kelompok_kelas_jabatan', 'kuota')->get();
 
-        // Hitung jumlah karyawan per formasi (kode_jabatan, lokasi, unit)
+        // Hitung jumlah karyawan per formasi (kode_jabatan, lokasi_kerja, unit_kerja)
         $karyawanData = DataKaryawan::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', DB::raw('COUNT(*) as karyawan_count'))
             ->groupBy('kode_jabatan', 'lokasi_kerja', 'unit_kerja')
             ->get()
@@ -200,13 +200,13 @@ class DashboardController extends Controller
         // Hitung jabatan lowong per lokasi dan kelompok_kelas_jabatan
         $jabatanLowongData = collect();
         foreach ($formasiData as $formasi) {
-            $key = $formasi->kode_jabatan . '|' . $formasi->lokasi . '|' . $formasi->unit;
+            $key = $formasi->kode_jabatan . '|' . $formasi->lokasi_kerja . '|' . $formasi->unit_kerja;
             $karyawanCount = $karyawanData->get($key)->karyawan_count ?? 0;
             $lowongCount = $formasi->kuota - $karyawanCount;
 
             if ($lowongCount > 0) {
                 $jabatanLowongData->push((object) [
-                    'lokasi' => $formasi->lokasi,
+                    'lokasi' => $formasi->lokasi_kerja,
                     'level' => $formasi->kelompok_kelas_jabatan, // menggunakan kelompok_kelas_jabatan sebagai level
                     'total' => $lowongCount
                 ]);
@@ -432,17 +432,17 @@ class DashboardController extends Controller
             // Ambil semua formasi berdasarkan lokasi dan level (pakai field kuota)
             $formasiDetail = Formasi::select([
                 'kode_jabatan',
-                'lokasi',
-                'unit',
+                'lokasi_kerja',
+                'unit_kerja',
                 'jabatan',
                 'kelompok_kelas_jabatan',
                 'kuota',
             ])
-                ->where('lokasi', $lokasi)
+                ->where('lokasi_kerja', $lokasi)
                 ->where('kelompok_kelas_jabatan', $level)
                 ->get();
 
-            // Hitung karyawan yang sudah terisi per formasi (kode_jabatan, lokasi, unit)
+            // Hitung karyawan yang sudah terisi per formasi (kode_jabatan, lokasi_kerja, unit_kerja)
             $karyawanCounts = DataKaryawan::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', DB::raw('COUNT(*) as karyawan_count'))
                 ->groupBy('kode_jabatan', 'lokasi_kerja', 'unit_kerja')
                 ->get()
@@ -453,15 +453,15 @@ class DashboardController extends Controller
             // Gabungkan data dan filter hanya yang lowong
             $detailLowong = collect();
             foreach ($formasiDetail as $formasi) {
-                $key = $formasi->kode_jabatan . '|' . $formasi->lokasi . '|' . $formasi->unit;
+                $key = $formasi->kode_jabatan . '|' . $formasi->lokasi_kerja . '|' . $formasi->unit_kerja;
                 $karyawanCount = $karyawanCounts->get($key)->karyawan_count ?? 0;
                 $lowongCount = $formasi->kuota - $karyawanCount;
 
                 if ($lowongCount > 0) {
                     $detailLowong->push([
                         'kode_jabatan' => $formasi->kode_jabatan,
-                        'lokasi' => $formasi->lokasi,
-                        'unit' => $formasi->unit,
+                        'lokasi' => $formasi->lokasi_kerja,
+                        'unit' => $formasi->unit_kerja,
                         'jabatan' => $formasi->jabatan,
                         'level' => $formasi->kelompok_kelas_jabatan,
                         'formasi_count' => $formasi->kuota,

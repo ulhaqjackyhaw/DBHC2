@@ -128,17 +128,23 @@
                                     @foreach ($formasiList as $formasi)
                                         <option value="{{ $formasi->id }}"
                                             data-kode_jabatan="{{ $formasi->kode_jabatan }}"
-                                            data-lokasi="{{ $formasi->lokasi }}" data-unit="{{ $formasi->unit }}"
+                                            data-lokasi_kerja="{{ $formasi->lokasi_kerja }}"
+                                            data-unit_kerja="{{ $formasi->unit_kerja }}"
                                             data-jabatan="{{ $formasi->jabatan }}"
                                             data-kkj="{{ $formasi->kelompok_kelas_jabatan }}"
                                             data-grade="{{ $formasi->grade }}"
+                                            data-unit_deputy_egm="{{ $formasi->unit_deputy_egm ?? '' }}"
+                                            data-unit_assistant_deputy="{{ $formasi->unit_assistant_deputy ?? '' }}"
+                                            data-unit_division_head="{{ $formasi->unit_division_head ?? '' }}"
+                                            data-unit_department_head="{{ $formasi->unit_department_head ?? '' }}"
                                             @if (old('formasi_select', $formasi->id) == $formasi->id ||
                                                     (isset($karyawan) &&
                                                         $karyawan->kode_jabatan == $formasi->kode_jabatan &&
-                                                        $karyawan->lokasi == $formasi->lokasi &&
-                                                        $karyawan->unit == $formasi->unit)) selected @endif>
-                                            [{{ $formasi->kode_jabatan }}] {{ $formasi->jabatan }} - {{ $formasi->unit }}
-                                            ({{ $formasi->lokasi }})
+                                                        $karyawan->lokasi_kerja == $formasi->lokasi_kerja &&
+                                                        $karyawan->unit_kerja == $formasi->unit_kerja)) selected @endif>
+                                            [{{ $formasi->kode_jabatan }}] {{ $formasi->jabatan }} -
+                                            {{ $formasi->unit_kerja }}
+                                            ({{ $formasi->lokasi_kerja }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -599,11 +605,22 @@
                                 var select = document.getElementById('formasi_select');
                                 var selected = select.options[select.selectedIndex];
                                 document.getElementById('kode_jabatan').value = selected.getAttribute('data-kode_jabatan') || '';
-                                document.getElementById('lokasi_kerja').value = selected.getAttribute('data-lokasi') || '';
-                                document.getElementById('unit_kerja').value = selected.getAttribute('data-unit') || '';
+                                document.getElementById('lokasi_kerja').value = selected.getAttribute('data-lokasi_kerja') || '';
+                                document.getElementById('unit_kerja').value = selected.getAttribute('data-unit_kerja') || '';
                                 document.getElementById('jabatan').value = selected.getAttribute('data-jabatan') || '';
                                 document.getElementById('kelompok_kelas_jabatan').value = selected.getAttribute('data-kkj') || '';
                                 document.getElementById('grade').value = selected.getAttribute('data-grade') || '';
+
+                                // Update field Unit Hierarchy (jika ada di form)
+                                var unitDeputyEgm = document.getElementById('unit_deputy_egm');
+                                var unitAssistantDeputy = document.getElementById('unit_assistant_deputy');
+                                var unitDivisionHead = document.getElementById('unit_division_head');
+                                var unitDepartmentHead = document.getElementById('unit_department_head');
+
+                                if (unitDeputyEgm) unitDeputyEgm.value = selected.getAttribute('data-unit_deputy_egm') || '';
+                                if (unitAssistantDeputy) unitAssistantDeputy.value = selected.getAttribute('data-unit_assistant_deputy') || '';
+                                if (unitDivisionHead) unitDivisionHead.value = selected.getAttribute('data-unit_division_head') || '';
+                                if (unitDepartmentHead) unitDepartmentHead.value = selected.getAttribute('data-unit_department_head') || '';
                             }
                             document.addEventListener('DOMContentLoaded', function() {
                                 const formasiSelect = document.getElementById('formasi_select');

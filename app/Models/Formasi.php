@@ -14,8 +14,12 @@ class Formasi extends Model
 
     protected $fillable = [
         'kode_jabatan',
-        'lokasi',
-        'unit',
+        'unit_deputy_egm',
+        'unit_assistant_deputy',
+        'unit_division_head',
+        'unit_department_head',
+        'lokasi_kerja',
+        'unit_kerja',
         'jabatan',
         'kelompok_kelas_jabatan',
         'grade',
@@ -39,7 +43,7 @@ class Formasi extends Model
      */
     public function scopeByLokasi($query, $lokasi)
     {
-        return $query->where('lokasi', $lokasi);
+        return $query->where('lokasi_kerja', $lokasi);
     }
 
     /**
@@ -47,7 +51,7 @@ class Formasi extends Model
      */
     public function scopeByUnit($query, $unit)
     {
-        return $query->where('unit', $unit);
+        return $query->where('unit_kerja', $unit);
     }
 
     /**

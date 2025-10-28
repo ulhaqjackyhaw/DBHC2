@@ -24,12 +24,16 @@ class FormasiImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
     {
         return new Formasi([
             'kode_jabatan' => $row['kode_jabatan'] ?? $row['kode jabatan'] ?? $row['KODE JABATAN'] ?? $row['Kode Jabatan'],
-            'lokasi' => $row['lokasi'] ?? $row['LOKASI'] ?? $row['Lokasi'],
-            'unit' => $row['unit'] ?? $row['UNIT'] ?? $row['Unit'],
+            'unit_deputy_egm' => $row['unit_deputy_egm'] ?? $row['unit deputy egm'] ?? $row['UNIT DEPUTY EGM'] ?? $row['Unit Deputy EGM'] ?? null,
+            'unit_assistant_deputy' => $row['unit_assistant_deputy'] ?? $row['unit assistant deputy'] ?? $row['UNIT ASSISTANT DEPUTY'] ?? $row['Unit Assistant Deputy'] ?? null,
+            'unit_division_head' => $row['unit_division_head'] ?? $row['unit division head'] ?? $row['UNIT DIVISION HEAD'] ?? $row['Unit Division Head'] ?? null,
+            'unit_department_head' => $row['unit_department_head'] ?? $row['unit department head'] ?? $row['UNIT DEPARTMENT HEAD'] ?? $row['Unit Department Head'] ?? null,
+            'lokasi_kerja' => $row['lokasi_kerja'] ?? $row['lokasi kerja'] ?? $row['LOKASI KERJA'] ?? $row['Lokasi Kerja'] ?? $row['lokasi'] ?? $row['LOKASI'] ?? $row['Lokasi'],
+            'unit_kerja' => $row['unit_kerja'] ?? $row['unit kerja'] ?? $row['UNIT KERJA'] ?? $row['Unit Kerja'] ?? $row['unit'] ?? $row['UNIT'] ?? $row['Unit'],
             'jabatan' => $row['jabatan'] ?? $row['JABATAN'] ?? $row['Jabatan'],
             'kelompok_kelas_jabatan' => $row['kelompok_kelas_jabatan'] ?? $row['kelompok kelas jabatan'] ?? $row['KELOMPOK KELAS JABATAN'] ?? $row['Kelompok Kelas Jabatan'],
             'grade' => (string) ($row['grade'] ?? $row['GRADE'] ?? $row['Grade']),
-            'kuota' => isset($row['kuota']) ? (int) $row['kuota'] : 1,
+            'kuota' => isset($row['kuota']) ? (int) $row['kuota'] : (isset($row['KUOTA']) ? (int) $row['KUOTA'] : 1),
         ]);
     }
 

@@ -8,20 +8,32 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Kuota</label>
-                    <p class="form-control-plaintext">{{ $formasi->kuota }}</p>
-                </div>
-                <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Kode Jabatan</label>
                     <p class="form-control-plaintext">{{ $formasi->kode_jabatan }}</p>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Lokasi</label>
-                    <p class="form-control-plaintext">{{ $formasi->lokasi }}</p>
+                    <label class="form-label fw-bold">Unit Deputy EGM</label>
+                    <p class="form-control-plaintext">{{ $formasi->unit_deputy_egm ?? '-' }}</p>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Unit</label>
-                    <p class="form-control-plaintext">{{ $formasi->unit }}</p>
+                    <label class="form-label fw-bold">Unit Assistant Deputy</label>
+                    <p class="form-control-plaintext">{{ $formasi->unit_assistant_deputy ?? '-' }}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Unit Division Head</label>
+                    <p class="form-control-plaintext">{{ $formasi->unit_division_head ?? '-' }}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Unit Department Head</label>
+                    <p class="form-control-plaintext">{{ $formasi->unit_department_head ?? '-' }}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Lokasi Kerja</label>
+                    <p class="form-control-plaintext">{{ $formasi->lokasi_kerja }}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Unit Kerja</label>
+                    <p class="form-control-plaintext">{{ $formasi->unit_kerja }}</p>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Jabatan</label>
@@ -34,6 +46,10 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Grade</label>
                     <p class="form-control-plaintext">{{ $formasi->grade }}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Kuota</label>
+                    <p class="form-control-plaintext">{{ $formasi->kuota }}</p>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Dibuat</label>

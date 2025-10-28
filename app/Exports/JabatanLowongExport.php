@@ -29,8 +29,8 @@ class JabatanLowongExport implements FromCollection, WithHeadings, WithMapping, 
         foreach ($formasi as $item) {
             // Hitung jumlah karyawan yang mengisi posisi ini
             $terisi = DataKaryawan::where('kode_jabatan', $item->kode_jabatan)
-                ->where('lokasi', $item->lokasi)
-                ->where('unit', $item->unit)
+                ->where('lokasi_kerja', $item->lokasi_kerja)
+                ->where('unit_kerja', $item->unit_kerja)
                 ->count();
 
             // Hitung sisa formasi (vacancy)
@@ -39,8 +39,8 @@ class JabatanLowongExport implements FromCollection, WithHeadings, WithMapping, 
             // Hanya tampilkan yang ada kekosongan (sisa formasi > 0)
             if ($sisaFormasi > 0) {
                 $result->push([
-                    'lokasi' => $item->lokasi,
-                    'unit' => $item->unit,
+                    'lokasi' => $item->lokasi_kerja,
+                    'unit' => $item->unit_kerja,
                     'kode_jabatan' => $item->kode_jabatan,
                     'jabatan' => $item->jabatan,
                     'kelompok_kelas_jabatan' => $item->kelompok_kelas_jabatan,

@@ -750,11 +750,27 @@
 
                 get sortedData() {
                     return [...this.filteredData].sort((a, b) => {
-                        const colA = a[this.sortColumn],
-                            colB = b[this.sortColumn];
+                        let colA = a[this.sortColumn];
+                        let colB = b[this.sortColumn];
+
+                        // Handle null/undefined
+                        if (colA == null && colB == null) return 0;
+                        if (colA == null) return this.sortDirection === 'asc' ? -1 : 1;
+                        if (colB == null) return this.sortDirection === 'asc' ? 1 : -1;
+
+                        // Cek apakah keduanya angka
+                        const numA = Number(colA);
+                        const numB = Number(colB);
+
                         let comparison = 0;
-                        if (colA > colB) comparison = 1;
-                        else if (colA < colB) comparison = -1;
+                        if (!isNaN(numA) && !isNaN(numB)) {
+                            // Bandingkan sebagai angka
+                            comparison = numA - numB;
+                        } else {
+                            // Bandingkan sebagai string
+                            comparison = String(colA).localeCompare(String(colB));
+                        }
+
                         return this.sortDirection === 'asc' ? comparison : -comparison;
                     });
                 },

@@ -20,8 +20,8 @@ class FormasiExport implements FromCollection, WithHeadings, WithMapping, WithSt
      */
     public function collection()
     {
-        return Formasi::orderBy('lokasi')
-            ->orderBy('unit')
+        return Formasi::orderBy('lokasi_kerja')
+            ->orderBy('unit_kerja')
             ->orderBy('jabatan')
             ->get();
     }
@@ -33,8 +33,12 @@ class FormasiExport implements FromCollection, WithHeadings, WithMapping, WithSt
     {
         return [
             'KODE JABATAN',
-            'LOKASI',
-            'UNIT',
+            'UNIT DEPUTY EGM',
+            'UNIT ASSISTANT DEPUTY',
+            'UNIT DIVISION HEAD',
+            'UNIT DEPARTMENT HEAD',
+            'LOKASI KERJA',
+            'UNIT KERJA',
             'JABATAN',
             'KELOMPOK KELAS JABATAN',
             'GRADE',
@@ -50,8 +54,12 @@ class FormasiExport implements FromCollection, WithHeadings, WithMapping, WithSt
     {
         return [
             $formasi->kode_jabatan,
-            $formasi->lokasi,
-            $formasi->unit,
+            $formasi->unit_deputy_egm,
+            $formasi->unit_assistant_deputy,
+            $formasi->unit_division_head,
+            $formasi->unit_department_head,
+            $formasi->lokasi_kerja,
+            $formasi->unit_kerja,
             $formasi->jabatan,
             $formasi->kelompok_kelas_jabatan,
             $formasi->grade,
@@ -73,7 +81,7 @@ class FormasiExport implements FromCollection, WithHeadings, WithMapping, WithSt
             'font' => [
                 'bold' => true,
                 'size' => 12,
-                'color' => ['rgb' => '1F2937'],
+                'color' => ['rgb' => 'FFFFFF'],
             ],
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
@@ -127,12 +135,16 @@ class FormasiExport implements FromCollection, WithHeadings, WithMapping, WithSt
     {
         return [
             'A' => 40,  // KODE JABATAN
-            'B' => 40,  // LOKASI
-            'C' => 30,  // UNIT
-            'D' => 40,  // JABATAN
-            'E' => 30,  // KELOMPOK KELAS JABATAN
-            'F' => 12,  // GRADE
-            'G' => 12,  // KUOTA
+            'B' => 30,  // UNIT DEPUTY EGM
+            'C' => 30,  // UNIT ASSISTANT DEPUTY
+            'D' => 30,  // UNIT DIVISION HEAD
+            'E' => 30,  // UNIT DEPARTMENT HEAD
+            'F' => 40,  // LOKASI KERJA
+            'G' => 35,  // UNIT KERJA
+            'H' => 40,  // JABATAN
+            'I' => 30,  // KELOMPOK KELAS JABATAN
+            'J' => 12,  // GRADE
+            'K' => 12,  // KUOTA
         ];
     }
 }

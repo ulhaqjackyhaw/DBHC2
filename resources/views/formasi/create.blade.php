@@ -18,18 +18,51 @@
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="lokasi" class="form-label">Lokasi</label>
-                        <input type="text" class="form-control @error('lokasi') is-invalid @enderror" id="lokasi"
-                            name="lokasi" value="{{ old('lokasi') }}" required>
-                        @error('lokasi')
+                        <label for="unit_deputy_egm" class="form-label">Unit Deputy EGM</label>
+                        <input type="text" class="form-control @error('unit_deputy_egm') is-invalid @enderror"
+                            id="unit_deputy_egm" name="unit_deputy_egm" value="{{ old('unit_deputy_egm') }}">
+                        @error('unit_deputy_egm')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="unit" class="form-label">Unit</label>
-                        <input type="text" class="form-control @error('unit') is-invalid @enderror" id="unit"
-                            name="unit" value="{{ old('unit') }}" required>
-                        @error('unit')
+                        <label for="unit_assistant_deputy" class="form-label">Unit Assistant Deputy</label>
+                        <input type="text" class="form-control @error('unit_assistant_deputy') is-invalid @enderror"
+                            id="unit_assistant_deputy" name="unit_assistant_deputy"
+                            value="{{ old('unit_assistant_deputy') }}">
+                        @error('unit_assistant_deputy')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="unit_division_head" class="form-label">Unit Division Head</label>
+                        <input type="text" class="form-control @error('unit_division_head') is-invalid @enderror"
+                            id="unit_division_head" name="unit_division_head" value="{{ old('unit_division_head') }}">
+                        @error('unit_division_head')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="unit_department_head" class="form-label">Unit Department Head</label>
+                        <input type="text" class="form-control @error('unit_department_head') is-invalid @enderror"
+                            id="unit_department_head" name="unit_department_head" value="{{ old('unit_department_head') }}">
+                        @error('unit_department_head')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lokasi_kerja" class="form-label">Lokasi Kerja</label>
+                        <input type="text" class="form-control @error('lokasi_kerja') is-invalid @enderror"
+                            id="lokasi_kerja" name="lokasi_kerja" value="{{ old('lokasi_kerja') }}" required>
+                        @error('lokasi_kerja')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="unit_kerja" class="form-label">Unit Kerja</label>
+                        <input type="text" class="form-control @error('unit_kerja') is-invalid @enderror" id="unit_kerja"
+                            name="unit_kerja" value="{{ old('unit_kerja') }}" required>
+                        @error('unit_kerja')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -51,18 +84,18 @@
                         @enderror
                     </div>
                     <div class="col-md-6 mb-3">
-                        <div class="col-md-6 mb-3">
-                            <label for="kuota" class="form-label">Kuota</label>
-                            <input type="number" min="1" class="form-control @error('kuota') is-invalid @enderror"
-                                id="kuota" name="kuota" value="{{ old('kuota', 1) }}" required>
-                            @error('kuota')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                         <label for="grade" class="form-label">Grade</label>
                         <input type="text" class="form-control @error('grade') is-invalid @enderror" id="grade"
                             name="grade" value="{{ old('grade') }}" required>
                         @error('grade')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="kuota" class="form-label">Kuota</label>
+                        <input type="number" min="1" class="form-control @error('kuota') is-invalid @enderror"
+                            id="kuota" name="kuota" value="{{ old('kuota', 1) }}" required>
+                        @error('kuota')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
