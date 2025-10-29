@@ -189,19 +189,19 @@ class DashboardController extends Controller
         // Ambil semua formasi unik (kode_jabatan, lokasi_kerja, unit_kerja, jabatan, kelompok_kelas_jabatan, kuota)
         $formasiData = Formasi::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', 'jabatan', 'kelompok_kelas_jabatan', 'kuota')->get();
 
-        // Hitung jumlah karyawan per formasi (kode_jabatan, lokasi_kerja, unit_kerja)
-        $karyawanData = DataKaryawan::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', DB::raw('COUNT(*) as karyawan_count'))
-            ->groupBy('kode_jabatan', 'lokasi_kerja', 'unit_kerja')
+        // Hitung jumlah karyawan per kode_jabatan (hanya berdasarkan kode jabatan saja)
+        $karyawanData = DataKaryawan::select('kode_jabatan', DB::raw('COUNT(*) as karyawan_count'))
+            ->whereNotNull('kode_jabatan')
+            ->where('kode_jabatan', '!=', '')
+            ->groupBy('kode_jabatan')
             ->get()
-            ->keyBy(function ($item) {
-                return $item->kode_jabatan . '|' . $item->lokasi_kerja . '|' . $item->unit_kerja;
-            });
+            ->keyBy('kode_jabatan');
 
         // Hitung jabatan lowong per lokasi dan kelompok_kelas_jabatan
         $jabatanLowongData = collect();
         foreach ($formasiData as $formasi) {
-            $key = $formasi->kode_jabatan . '|' . $formasi->lokasi_kerja . '|' . $formasi->unit_kerja;
-            $karyawanCount = $karyawanData->get($key)->karyawan_count ?? 0;
+            // Ambil jumlah karyawan hanya berdasarkan kode_jabatan
+            $karyawanCount = $karyawanData->get($formasi->kode_jabatan)->karyawan_count ?? 0;
             $lowongCount = $formasi->kuota - $karyawanCount;
 
             if ($lowongCount > 0) {
@@ -442,19 +442,19 @@ class DashboardController extends Controller
                 ->where('kelompok_kelas_jabatan', $level)
                 ->get();
 
-            // Hitung karyawan yang sudah terisi per formasi (kode_jabatan, lokasi_kerja, unit_kerja)
-            $karyawanCounts = DataKaryawan::select('kode_jabatan', 'lokasi_kerja', 'unit_kerja', DB::raw('COUNT(*) as karyawan_count'))
-                ->groupBy('kode_jabatan', 'lokasi_kerja', 'unit_kerja')
+            // Hitung karyawan yang sudah terisi per kode_jabatan (hanya berdasarkan kode jabatan)
+            $karyawanCounts = DataKaryawan::select('kode_jabatan', DB::raw('COUNT(*) as karyawan_count'))
+                ->whereNotNull('kode_jabatan')
+                ->where('kode_jabatan', '!=', '')
+                ->groupBy('kode_jabatan')
                 ->get()
-                ->keyBy(function ($item) {
-                    return $item->kode_jabatan . '|' . $item->lokasi_kerja . '|' . $item->unit_kerja;
-                });
+                ->keyBy('kode_jabatan');
 
             // Gabungkan data dan filter hanya yang lowong
             $detailLowong = collect();
             foreach ($formasiDetail as $formasi) {
-                $key = $formasi->kode_jabatan . '|' . $formasi->lokasi_kerja . '|' . $formasi->unit_kerja;
-                $karyawanCount = $karyawanCounts->get($key)->karyawan_count ?? 0;
+                // Ambil jumlah karyawan hanya berdasarkan kode_jabatan
+                $karyawanCount = $karyawanCounts->get($formasi->kode_jabatan)->karyawan_count ?? 0;
                 $lowongCount = $formasi->kuota - $karyawanCount;
 
                 if ($lowongCount > 0) {

@@ -21,17 +21,21 @@ class JabatanLowongExport implements FromCollection, WithHeadings, WithMapping, 
      */
     public function collection()
     {
-        // Ambil semua formasi dengan join untuk menghitung karyawan yang terisi
+        // Ambil semua formasi
         $formasi = Formasi::all();
+
+        // Hitung jumlah karyawan per kode_jabatan (hanya berdasarkan kode jabatan)
+        $karyawanCounts = DataKaryawan::select('kode_jabatan', \DB::raw('COUNT(*) as count'))
+            ->whereNotNull('kode_jabatan')
+            ->where('kode_jabatan', '!=', '')
+            ->groupBy('kode_jabatan')
+            ->pluck('count', 'kode_jabatan');
 
         $result = new Collection();
 
         foreach ($formasi as $item) {
-            // Hitung jumlah karyawan yang mengisi posisi ini
-            $terisi = DataKaryawan::where('kode_jabatan', $item->kode_jabatan)
-                ->where('lokasi_kerja', $item->lokasi_kerja)
-                ->where('unit_kerja', $item->unit_kerja)
-                ->count();
+            // Hitung jumlah karyawan yang mengisi posisi ini (hanya berdasarkan kode_jabatan)
+            $terisi = $karyawanCounts->get($item->kode_jabatan, 0);
 
             // Hitung sisa formasi (vacancy)
             $sisaFormasi = $item->kuota - $terisi;

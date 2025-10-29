@@ -635,15 +635,16 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 15%;">Kode Jabatan</th>
-                                        <th style="width: 35%;">Nama Jabatan</th>
-                                        <th style="width: 25%;">Unit</th>
-                                        <th style="width: 15%;" class="text-center">Formasi</th>
+                                        <th style="width: 30%;">Nama Jabatan</th>
+                                        <th style="width: 20%;">Unit</th>
+                                        <th style="width: 10%;" class="text-center">Formasi</th>
                                         <th style="width: 10%;" class="text-center">Terisi</th>
+                                        <th style="width: 15%;" class="text-center">Lowong</th>
                                     </tr>
                                 </thead>
                                 <tbody id="detailTableBody">
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted p-3">
+                                        <td colspan="6" class="text-center text-muted p-3">
                                             Klik item di dashboard untuk melihat detail
                                         </td>
                                     </tr>
@@ -1066,6 +1067,7 @@
                                 <td>${item.unit}</td>
                                 <td class="text-center"><span class="badge bg-info">${item.formasi_count}</span></td>
                                 <td class="text-center"><span class="badge bg-success">${item.karyawan_count}</span></td>
+                                <td class="text-center"><span class="badge bg-danger">${lowongCount}</span></td>
                             </tr>
                         `;
                         });
@@ -1073,7 +1075,7 @@
                     } else {
                         tableBody.innerHTML = `
                         <tr>
-                            <td colspan="5" class="text-center text-muted p-3">
+                            <td colspan="6" class="text-center text-muted p-3">
                                 <i class="fa-solid fa-exclamation-circle me-2"></i>
                                 Tidak ada data detail untuk lokasi dan level ini
                             </td>
@@ -1088,7 +1090,7 @@
 
                     document.getElementById('detailTableBody').innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center text-danger p-3">
+                        <td colspan="6" class="text-center text-danger p-3">
                             <i class="fa-solid fa-exclamation-triangle me-2"></i>
                             Terjadi kesalahan saat memuat data
                         </td>
