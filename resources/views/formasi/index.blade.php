@@ -400,20 +400,17 @@
                             <template x-for="(item, index) in paginatedFormasi" :key="item.id">
                                 <tr class="text-slate-700">
                                     <td x-text="(currentPage - 1) * itemsPerPage + index + 1" class="text-center"></td>
-                                    <td><span class="badge bg-info-subtle text-info-emphasis rounded-pill small"
-                                            x-text="item.kode_jabatan" style="font-size: 0.55rem;"></span></td>
-                                    <td x-text="item.unit_deputy_egm || '-'"></td>
-                                    <td x-text="item.unit_assistant_deputy || '-'"></td>
-                                    <td x-text="item.unit_division_head || '-'"></td>
-                                    <td x-text="item.unit_department_head || '-'"></td>
-                                    <td x-text="item.lokasi_kerja"></td>
-                                    <td x-text="item.unit_kerja"></td>
-                                    <td x-text="item.jabatan"></td>
-                                    <td x-text="item.kelompok_kelas_jabatan" class="text-center"></td>
-                                    <td x-text="item.grade" class="text-center"></td>
-                                    <td class="text-center"><span
-                                            class="badge bg-success-subtle text-success-emphasis rounded-pill small"
-                                            x-text="item.kuota" style="font-size: 0.55rem;"></span></td>
+                                    <td x-text="item.kode_jabatan" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.unit_deputy_egm || '-'" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.unit_assistant_deputy || '-'" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.unit_division_head || '-'" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.unit_department_head || '-'" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.lokasi_kerja || '-'" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.unit_kerja || '-'" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.jabatan" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.kelompok_kelas_jabatan" class="text-center" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.grade" class="text-center" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.kuota" style="font-size: 1rem;"></span></td>
                                     @can(abilities: 'admin')
                                         <td class="text-center">
                                             <div class="d-flex gap-1 justify-content-center">
