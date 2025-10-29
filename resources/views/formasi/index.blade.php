@@ -296,7 +296,9 @@
                     </div>
                 </div>
             </div>
-        @endcan        {{-- Tabel Data --}}
+        @endcan
+
+        {{-- Tabel Data --}}
         <div class="bg-white rounded-xl shadow-sm p-3" x-data="formasiTable({{ $formasi->toJson() ?? '[]' }})">
             <div class="p-3">
                 {{-- Header Tabel --}}
