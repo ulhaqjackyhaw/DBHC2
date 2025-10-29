@@ -5,14 +5,15 @@
 
 @push('head-styles')
     <style>
-        /* Container Size */
+        /* Container Size - Full width responsive */
         .formasi-container {
-            width: 935px !important;
-            height: 978px !important;
-            max-height: 978px !important;
-            overflow-y: auto;
-            overflow-x: auto;
-            margin: 0 auto;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible;
+            margin: 0;
+            padding: 0 0.5rem;
             box-sizing: border-box;
         }
 
@@ -20,79 +21,230 @@
             max-width: 100%;
         }
 
-        /* Compact table styling */
+        /* Compact table styling - Sangat kecil */
         .table-compact {
-            font-size: 0.875rem;
+            font-size: 0.65rem;
+            /* Diperkecil dari 0.75rem */
+            margin-bottom: 0;
+            table-layout: auto;
+            width: 100%;
         }
 
         .table-compact th,
         .table-compact td {
-            padding: 0.5rem 0.75rem;
+            padding: 0.25rem 0.35rem;
+            /* Diperkecil dari 0.35rem 0.5rem */
             white-space: nowrap;
             vertical-align: middle;
+            line-height: 1.2;
         }
 
-        /* Set max width untuk kolom tertentu */
+        /* Kolom No - sangat kecil */
+        .table-compact th:nth-child(1),
+        .table-compact td:nth-child(1) {
+            width: 35px;
+            max-width: 35px;
+            text-align: center;
+            padding: 0.25rem 0.2rem;
+        }
+
+        /* Kode Jabatan */
+        .table-compact th:nth-child(2),
+        .table-compact td:nth-child(2) {
+            width: 110px;
+            max-width: 110px;
+            white-space: normal;
+            word-wrap: break-word;
+            font-size: 0.6rem;
+        }
+
+        /* Unit Deputy EGM */
+        .table-compact th:nth-child(3),
         .table-compact td:nth-child(3) {
-            /* Unit Deputy EGM */
-            max-width: 150px;
+            width: 90px;
+            max-width: 90px;
             white-space: normal;
             word-wrap: break-word;
         }
 
+        /* Unit Assistant Deputy */
+        .table-compact th:nth-child(4),
         .table-compact td:nth-child(4) {
-            /* Unit Assistant Deputy */
-            max-width: 150px;
+            width: 90px;
+            max-width: 90px;
             white-space: normal;
             word-wrap: break-word;
         }
 
+        /* Unit Division Head */
+        .table-compact th:nth-child(5),
         .table-compact td:nth-child(5) {
-            /* Unit Division Head */
-            max-width: 150px;
+            width: 90px;
+            max-width: 90px;
             white-space: normal;
             word-wrap: break-word;
         }
 
+        /* Unit Department Head */
+        .table-compact th:nth-child(6),
         .table-compact td:nth-child(6) {
-            /* Unit Department Head */
-            max-width: 150px;
+            width: 90px;
+            max-width: 90px;
             white-space: normal;
             word-wrap: break-word;
         }
 
+        /* Lokasi Kerja */
+        .table-compact th:nth-child(7),
         .table-compact td:nth-child(7) {
-            /* Lokasi Kerja */
+            width: 85px;
+            max-width: 85px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Unit Kerja */
+        .table-compact th:nth-child(8),
+        .table-compact td:nth-child(8) {
+            width: 100px;
+            max-width: 100px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Jabatan */
+        .table-compact th:nth-child(9),
+        .table-compact td:nth-child(9) {
+            width: 120px;
             max-width: 120px;
             white-space: normal;
             word-wrap: break-word;
         }
 
-        .table-compact td:nth-child(8) {
-            /* Unit Kerja */
-            max-width: 150px;
-            white-space: normal;
-            word-wrap: break-word;
+        /* KKJ */
+        .table-compact th:nth-child(10),
+        .table-compact td:nth-child(10) {
+            width: 50px;
+            max-width: 50px;
+            text-align: center;
         }
 
-        .table-compact td:nth-child(9) {
-            /* Jabatan */
-            max-width: 200px;
-            white-space: normal;
-            word-wrap: break-word;
+        /* Grade */
+        .table-compact th:nth-child(11),
+        .table-compact td:nth-child(11) {
+            width: 45px;
+            max-width: 45px;
+            text-align: center;
         }
 
-        /* Kolom aksi tetap kecil */
+        /* Kuota */
+        .table-compact th:nth-child(12),
+        .table-compact td:nth-child(12) {
+            width: 50px;
+            max-width: 50px;
+            text-align: center;
+        }
+
+        /* Kolom Aksi */
+        .table-compact th:last-child,
         .table-compact td:last-child {
-            width: 1%;
+            width: 85px;
+            max-width: 85px;
             white-space: nowrap;
+            text-align: center;
+            padding: 0.25rem 0.2rem;
         }
 
+
+        /* Table responsive wrapper */
         .table-responsive {
             transform-origin: top left;
             transition: transform 0.3s ease;
             border-radius: 0.5rem;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+        }
+
+        /* Zoom table untuk fit screen */
+        @media (min-width: 1024px) and (max-width: 1600px) {
+            .table-responsive {
+                zoom: 0.85;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .table-responsive {
+                zoom: 0.75;
+            }
+        }
+
+        /* Scrollbar styling */
+        .table-responsive::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Badge sizing - lebih kecil */
+        .table-compact .badge {
+            font-size: 0.6rem;
+            padding: 0.2rem 0.4rem;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Button sizing in table - lebih kecil */
+        .table-compact .btn-sm {
+            padding: 0.2rem 0.3rem;
+            font-size: 0.65rem;
+        }
+
+        .table-compact .btn-sm i {
+            font-size: 0.65rem;
+        }
+
+        /* Header text size */
+        .table-compact thead th {
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        /* Responsive untuk layar kecil */
+        @media (max-width: 1400px) {
+            .table-compact {
+                font-size: 0.6rem;
+            }
+
+            .table-compact th,
+            .table-compact td {
+                padding: 0.2rem 0.3rem;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .table-compact {
+                font-size: 0.55rem;
+            }
+
+            .table-compact th,
+            .table-compact td {
+                padding: 0.15rem 0.25rem;
+            }
         }
     </style>
 @endpush
@@ -144,9 +296,7 @@
                     </div>
                 </div>
             </div>
-        @endcan
-
-        {{-- Tabel Data --}}
+        @endcan        {{-- Tabel Data --}}
         <div class="bg-white rounded-xl shadow-sm p-3" x-data="formasiTable({{ $formasi->toJson() ?? '[]' }})">
             <div class="p-3">
                 {{-- Header Tabel --}}
@@ -194,66 +344,62 @@
                             <tr>
                                 <th class="text-slate-500 font-semibold text-nowrap small">No</th>
                                 <th @click="sortBy('kode_jabatan')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Kode
-                                    Jabatan <i :class="sortIcon('kode_jabatan')"></i></th>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 110px;">
+                                    Kode Jabatan <i :class="sortIcon('kode_jabatan')"></i></th>
                                 <th @click="sortBy('unit_deputy_egm')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Unit
-                                    Deputy
-                                    EGM <i :class="sortIcon('unit_deputy_egm')"></i></th>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 90px;">
+                                    Deputy EGM <i :class="sortIcon('unit_deputy_egm')"></i></th>
                                 <th @click="sortBy('unit_assistant_deputy')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Unit
-                                    Assistant Deputy <i :class="sortIcon('unit_assistant_deputy')"></i></th>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 90px;">
+                                    Asst Deputy <i :class="sortIcon('unit_assistant_deputy')"></i></th>
                                 <th @click="sortBy('unit_division_head')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Unit
-                                    Division Head <i :class="sortIcon('unit_division_head')"></i></th>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 90px;">
+                                    Div Head <i :class="sortIcon('unit_division_head')"></i></th>
                                 <th @click="sortBy('unit_department_head')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Unit
-                                    Department Head <i :class="sortIcon('unit_department_head')"></i></th>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 90px;">
+                                    Dept Head <i :class="sortIcon('unit_department_head')"></i></th>
                                 <th @click="sortBy('lokasi_kerja')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Lokasi
-                                    Kerja <i :class="sortIcon('lokasi_kerja')"></i></th>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 85px;">
+                                    Lokasi <i :class="sortIcon('lokasi_kerja')"></i></th>
                                 <th @click="sortBy('unit_kerja')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Unit
-                                    Kerja
-                                    <i :class="sortIcon('unit_kerja')"></i>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 100px;">
+                                    Unit Kerja <i :class="sortIcon('unit_kerja')"></i>
                                 </th>
                                 <th @click="sortBy('jabatan')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Jabatan
-                                    <i :class="sortIcon('jabatan')"></i>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none small"
+                                    style="min-width: 120px;">
+                                    Jabatan <i :class="sortIcon('jabatan')"></i>
                                 </th>
                                 <th @click="sortBy('kelompok_kelas_jabatan')"
                                     class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
                                     KKJ <i :class="sortIcon('kelompok_kelas_jabatan')"></i></th>
                                 <th @click="sortBy('grade')"
                                     class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
-                                    Grade
-                                    <i :class="sortIcon('grade')"></i>
-                                </th>
+                                    Grade <i :class="sortIcon('grade')"></i>
                                 </th>
                                 <th @click="sortBy('kuota')"
-                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Kuota
-                                    <i :class="sortIcon('kuota')"></i>
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap small">
+                                    Kuota <i :class="sortIcon('kuota')"></i>
                                 </th>
 
                                 @can(abilities: 'admin')
-                                    <th class="text-slate-500 font-semibold text-nowrap">Aksi</th>
+                                    <th class="text-slate-500 font-semibold text-nowrap small">Aksi</th>
                                 @endcan
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(item, index) in paginatedFormasi" :key="item.id">
                                 <tr class="text-slate-700">
-                                    <td x-text="(currentPage - 1) * itemsPerPage + index + 1"></td>
-                                    <td><span class="badge bg-info-subtle text-info-emphasis rounded-pill"
-                                            x-text="item.kode_jabatan"></span></td>
+                                    <td x-text="(currentPage - 1) * itemsPerPage + index + 1" class="text-center"></td>
+                                    <td><span class="badge bg-info-subtle text-info-emphasis rounded-pill small"
+                                            x-text="item.kode_jabatan" style="font-size: 0.55rem;"></span></td>
                                     <td x-text="item.unit_deputy_egm || '-'"></td>
                                     <td x-text="item.unit_assistant_deputy || '-'"></td>
                                     <td x-text="item.unit_division_head || '-'"></td>
@@ -261,21 +407,23 @@
                                     <td x-text="item.lokasi_kerja"></td>
                                     <td x-text="item.unit_kerja"></td>
                                     <td x-text="item.jabatan"></td>
-                                    <td x-text="item.kelompok_kelas_jabatan"></td>
-                                    <td x-text="item.grade"></td>
-                                    <td><span class="badge bg-success-subtle text-success-emphasis rounded-pill"
-                                            x-text="item.kuota"></span></td>
+                                    <td x-text="item.kelompok_kelas_jabatan" class="text-center"></td>
+                                    <td x-text="item.grade" class="text-center"></td>
+                                    <td class="text-center"><span
+                                            class="badge bg-success-subtle text-success-emphasis rounded-pill small"
+                                            x-text="item.kuota" style="font-size: 0.55rem;"></span></td>
                                     @can(abilities: 'admin')
-                                        <td>
-                                            <div class="d-flex gap-2">
+                                        <td class="text-center">
+                                            <div class="d-flex gap-1 justify-content-center">
                                                 <a :href="`/formasi/${item.id}/edit`" class="btn btn-sm btn-outline-warning"
-                                                    title="Edit">
-                                                    <i class="bi bi-pencil-fill"></i>
+                                                    title="Edit" style="padding: 0.15rem 0.3rem;">
+                                                    <i class="bi bi-pencil-fill" style="font-size: 0.65rem;"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-sm btn-outline-danger" title="Hapus"
                                                     data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
-                                                    @click="deleteUrl = `/formasi/${item.id}`">
-                                                    <i class="bi bi-trash-fill"></i>
+                                                    @click="deleteUrl = `/formasi/${item.id}`"
+                                                    style="padding: 0.15rem 0.3rem;">
+                                                    <i class="bi bi-trash-fill" style="font-size: 0.65rem;"></i>
                                                 </button>
                                             </div>
                                         </td>
