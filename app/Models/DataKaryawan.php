@@ -27,13 +27,10 @@ class DataKaryawan extends Model
 
         // Job Information
         'jabatan',
-        'tmt_jabatan',
-        'job_grade',
         'person_grade',
         'lokasi_kerja',
         'awal_lokasi_kerja',
-        'status', // STATUS di Excel
-        'status_jabatan', // STATUS JABATAN di Excel
+        'status_jabatan',
         'sub_status',
         'asal_instansi',
         'instansi',
@@ -46,9 +43,9 @@ class DataKaryawan extends Model
         'rencana_pensiun',
         'pendidikan_diakui',
         'pendidikan_dimiliki',
+        'jurusan',
         'tmt_karyawan',
         'masa_kerja',
-        'tmt', // TMT di Excel
         'tmt_kj_tertinggi',
         'masa_kj_tertinggi_tahun',
 
@@ -60,7 +57,6 @@ class DataKaryawan extends Model
         'jenjang_karir',
         'kelompok_kelas_jabatan',
         'fungsi_pekerjaan',
-        'grade',
 
         // License Information
         'lisence_dimiliki',
@@ -70,7 +66,6 @@ class DataKaryawan extends Model
         'lisence_dibayarkan_januari',
 
         // Additional Personal Data
-        'jurusan',
         'agama',
         'nilai_npi_2022',
         'kategori',
@@ -89,6 +84,7 @@ class DataKaryawan extends Model
         'kpi_2023',
         'kriteria',
         'fungsi_kontrak_os',
+        'penugasan',
     ];
 
     /**

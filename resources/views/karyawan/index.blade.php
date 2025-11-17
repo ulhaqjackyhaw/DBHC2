@@ -236,9 +236,9 @@
                             <th @click="sortBy('kelompok_kelas_jabatan')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">KKJ <i
                                     :class="sortIcon('kelompok_kelas_jabatan')"></i></th>
-                            <th @click="sortBy('status')"
+                            <th @click="sortBy('sub_status')"
                                 class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">Status <i
-                                    :class="sortIcon('status')"></i></th>
+                                    :class="sortIcon('sub_status')"></i></th>
                             <th class="text-slate-500 font-semibold text-nowrap">Detail</th>
                             @can(abilities: 'admin')
                                 <th class="text-slate-500 font-semibold text-nowrap">Aksi</th>
@@ -249,16 +249,17 @@
                         <template x-for="(employee, index) in paginatedEmployees" :key="employee.id">
                             <tr class="text-slate-700 cursor-pointer" @click="showEmployeeDetail(employee)"
                                 title="Klik untuk melihat detail">
-                                <td x-text="(currentPage - 1) * itemsPerPage + index + 1"></td>
-                                <td x-text="employee.nik"></td>
-                                <td x-text="employee.nama"></td>
-                                <td x-text="employee.kode_jabatan"></td>
-                                <td x-text="employee.lokasi_kerja"></td>
-                                <td x-text="employee.unit_kerja"></td>
-                                <td x-text="employee.jabatan"></td>
-                                <td x-text="employee.kelompok_kelas_jabatan"></td>
+                                <td x-text="(currentPage - 1) * itemsPerPage + index + 1" style="font-size: 0.85rem;">
+                                </td>
+                                <td x-text="employee.nik" style="font-size: 0.85rem;"></td>
+                                <td x-text="employee.nama" style="font-size: 0.85rem;"></td>
+                                <td x-text="employee.kode_jabatan" style="font-size: 0.85rem;"></td>
+                                <td x-text="employee.lokasi_kerja" style="font-size: 0.85rem;"></td>
+                                <td x-text="employee.unit_kerja" style="font-size: 0.85rem;"></td>
+                                <td x-text="employee.jabatan" style="font-size: 0.85rem;"></td>
+                                <td x-text="employee.kelompok_kelas_jabatan" style="font-size: 0.85rem;"></td>
                                 <td><span class="badge bg-info-subtle text-info-emphasis rounded-pill"
-                                        x-text="employee.status"></span></td>
+                                        x-text="employee.sub_status"></span></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-info" title="Lihat Detail"
                                         @click.stop="showEmployeeDetail(employee)">
@@ -422,7 +423,7 @@
                                         <label class="form-label fw-semibold text-muted small">Status Kepegawaian</label>
                                         <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
                                             <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill"
-                                                x-text="selectedEmployee?.status || '-'"></span>
+                                                x-text="selectedEmployee?.sub_status || '-'"></span>
                                         </p>
                                     </div>
                                     <div class="col-md-6">

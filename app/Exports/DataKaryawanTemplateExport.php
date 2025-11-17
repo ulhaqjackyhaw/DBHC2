@@ -70,13 +70,10 @@ class DataKaryawanTemplateExport implements FromArray, WithHeadings, WithStyles,
             'UNIT DEPARTMENT HEAD',
             'UNIT KERJA',
             'JABATAN',
-            'TMT JABATAN',
-            'JOB GRADE',
             'PERSON GRADE',
             'LOKASI KERJA',
             'AWAL LOKASI KERJA',
-            'STATUS',
-            'JABATAN STATUS',
+            'STATUS JABATAN',
             'SUB STATUS',
             'ASAL INSTANSI',
             'INSTANSI',
@@ -87,6 +84,7 @@ class DataKaryawanTemplateExport implements FromArray, WithHeadings, WithStyles,
             'RENCANA PENSIUN',
             'PENDIDIKAN DIAKUI',
             'PENDIDIKAN DIMILIKI',
+            'JURUSAN',
             'TMT KARYAWAN',
             'MASA KERJA',
             'TMT KJ TERTINGGI',
@@ -103,7 +101,6 @@ class DataKaryawanTemplateExport implements FromArray, WithHeadings, WithStyles,
             'NO STKP',
             'MASA BERLAKU',
             'LISENCE DIBAYARKAN JANUARI',
-            'JURUSAN',
             'AGAMA',
             'NILAI NPI 2022',
             'KATEGORI',
@@ -120,13 +117,14 @@ class DataKaryawanTemplateExport implements FromArray, WithHeadings, WithStyles,
             'KPI 2023',
             'KRITERIA',
             'FUNGSI KONTRAK OS',
+            'PENUGASAN',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        // Style header row - update range to include all columns (A to BI = 59 columns)
-        $sheet->getStyle('A1:BG1')->applyFromArray([
+        // Style header row - update range to include all columns (A to BE = 57 columns)
+        $sheet->getStyle('A1:BE1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
@@ -149,7 +147,7 @@ class DataKaryawanTemplateExport implements FromArray, WithHeadings, WithStyles,
         ]);
 
         // Style example rows
-        $sheet->getStyle('A2:BG3')->applyFromArray([
+        $sheet->getStyle('A2:BE3')->applyFromArray([
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => 'FEF3C7'],
@@ -192,56 +190,54 @@ class DataKaryawanTemplateExport implements FromArray, WithHeadings, WithStyles,
             'G' => 25,  // UNIT DEPARTMENT HEAD
             'H' => 35,  // UNIT KERJA
             'I' => 40,  // JABATAN
-            'J' => 15,  // TMT JABATAN
-            'K' => 12,  // JOB GRADE
-            'L' => 12,  // PERSON GRADE
-            'M' => 35,  // LOKASI KERJA
-            'N' => 35,  // AWAL LOKASI KERJA
-            'O' => 20,  // STATUS
-            'P' => 20,  // JABATAN STATUS
-            'Q' => 18,  // SUB STATUS
-            'R' => 30,  // ASAL INSTANSI
-            'S' => 30,  // INSTANSI
-            'T' => 15,  // JENIS KELAMIN
-            'U' => 15,  // TANGGAL LAHIR
-            'V' => 10,  // USIA
-            'W' => 15,  // RENCANA MPP
-            'X' => 15,  // RENCANA PENSIUN
-            'Y' => 20,  // PENDIDIKAN DIAKUI
-            'Z' => 20,  // PENDIDIKAN DIMILIKI
-            'AA' => 15, // TMT KARYAWAN
-            'AB' => 15, // MASA KERJA
-            'AC' => 15, // TMT KJ TERTINGGI
-            'AD' => 18, // MASA KJ TERTINGGI (TAHUN)
-            'AE' => 25, // SUB KELUARGA JABATAN
-            'AF' => 25, // KELUARGA JABATAN
-            'AG' => 25, // FUNGSI JABATAN
-            'AH' => 20, // JALUR KARIR
-            'AI' => 20, // JENJANG KARIR
-            'AJ' => 28, // KELOMPOK KELAS JABATAN
-            'AK' => 25, // FUNGSI PEKERJAAN
-            'AL' => 30, // LISENCE DIMILIKI
-            'AM' => 12, // RATING
-            'AN' => 18, // NO STKP
-            'AO' => 15, // MASA BERLAKU
-            'AP' => 25, // LISENCE DIBAYARKAN JANUARI
-            'AQ' => 20, // JURUSAN
-            'AR' => 12, // AGAMA
-            'AS' => 15, // NILAI NPI 2022
-            'AT' => 15, // KATEGORI
-            'AU' => 18, // NO KTP
-            'AV' => 40, // ALAMAT KTP
-            'AW' => 18, // NO KONTRAK
-            'AX' => 30, // EMAIL
-            'AY' => 15, // NO HP
-            'AZ' => 18, // STATUS PERNIKAHAN
-            'BA' => 15, // GENERASI
-            'BB' => 25, // NO SK JABATAN TERAKHIR
-            'BC' => 18, // TGL SK JABATAN TERAKHIR
-            'BD' => 20, // CEK LISENCE/SERKOM
-            'BE' => 12, // KPI 2023
-            'BF' => 15, // KRITERIA
-            'BG' => 20, // FUNGSI KONTRAK OS
+            'J' => 12,  // PERSON GRADE
+            'K' => 35,  // LOKASI KERJA
+            'L' => 35,  // AWAL LOKASI KERJA
+            'M' => 20,  // STATUS JABATAN
+            'N' => 18,  // SUB STATUS
+            'O' => 30,  // ASAL INSTANSI
+            'P' => 30,  // INSTANSI
+            'Q' => 15,  // JENIS KELAMIN
+            'R' => 15,  // TANGGAL LAHIR
+            'S' => 10,  // USIA
+            'T' => 15,  // RENCANA MPP
+            'U' => 15,  // RENCANA PENSIUN
+            'V' => 20,  // PENDIDIKAN DIAKUI
+            'W' => 20,  // PENDIDIKAN DIMILIKI
+            'X' => 20,  // JURUSAN
+            'Y' => 15,  // TMT KARYAWAN
+            'Z' => 15,  // MASA KERJA
+            'AA' => 15, // TMT KJ TERTINGGI
+            'AB' => 18, // MASA KJ TERTINGGI (TAHUN)
+            'AC' => 25, // SUB KELUARGA JABATAN
+            'AD' => 25, // KELUARGA JABATAN
+            'AE' => 25, // FUNGSI JABATAN
+            'AF' => 20, // JALUR KARIR
+            'AG' => 20, // JENJANG KARIR
+            'AH' => 28, // KELOMPOK KELAS JABATAN
+            'AI' => 25, // FUNGSI PEKERJAAN
+            'AJ' => 30, // LISENCE DIMILIKI
+            'AK' => 12, // RATING
+            'AL' => 18, // NO STKP
+            'AM' => 15, // MASA BERLAKU
+            'AN' => 25, // LISENCE DIBAYARKAN JANUARI
+            'AO' => 12, // AGAMA
+            'AP' => 15, // NILAI NPI 2022
+            'AQ' => 15, // KATEGORI
+            'AR' => 18, // NO KTP
+            'AS' => 40, // ALAMAT KTP
+            'AT' => 18, // NO KONTRAK
+            'AU' => 30, // EMAIL
+            'AV' => 15, // NO HP
+            'AW' => 18, // STATUS PERNIKAHAN
+            'AX' => 15, // GENERASI
+            'AY' => 25, // NO SK JABATAN TERAKHIR
+            'AZ' => 18, // TGL SK JABATAN TERAKHIR
+            'BA' => 20, // CEK LISENCE/SERKOM
+            'BB' => 12, // KPI 2023
+            'BC' => 15, // KRITERIA
+            'BD' => 20, // FUNGSI KONTRAK OS
+            'BE' => 20, // PENUGASAN
         ];
     }
 }

@@ -10,10 +10,16 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Validators\Failure;
 
-class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, SkipsEmptyRows
+class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, SkipsEmptyRows, SkipsOnError, SkipsOnFailure
 {
     use Importable;
+
+    private $errors = [];
+    private $skipped = 0;
 
     /**
      * @param array $row
@@ -44,6 +50,20 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
             return null;
         };
 
+        // Check if NIK already exists
+        $nik = (string) $getValue($row, 'nik');
+        if (empty($nik)) {
+            $this->skipped++;
+            return null; // Skip rows without NIK
+        }
+
+        // Check for duplicate NIK in database
+        if (DataKaryawan::where('nik', $nik)->exists()) {
+            $this->skipped++;
+            \Log::warning("Skipping duplicate NIK: {$nik}");
+            return null; // Skip duplicate
+        }
+
         return new DataKaryawan([
             // Mapping langsung 1:1 dengan header Excel
             'nik' => (string) $getValue($row, 'nik'),
@@ -59,12 +79,9 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
 
             // Job Information
             'jabatan' => $getValue($row, 'jabatan'),
-            'tmt_jabatan' => $convertDate($getValue($row, 'tmt_jabatan')),
-            'job_grade' => $getValue($row, 'job_grade'),
             'person_grade' => $getValue($row, 'person_grade'),
-            'lokasi_kerja' => $getValue($row, 'lokasi_kerja') ?: $getValue($row, 'lokasi_kerja_awal'),  // Fallback ke awal jika kosong
-            'awal_lokasi_kerja' => $getValue($row, 'awal_lokasi_kerja') ?: $getValue($row, 'lokasi_kerja'),
-            'status' => $getValue($row, 'status') ?: $getValue($row, 'sub_status'),  // Fallback ke sub_status jika kolom status tidak ada
+            'lokasi_kerja' => $getValue($row, 'lokasi_kerja'),
+            'awal_lokasi_kerja' => $getValue($row, 'awal_lokasi_kerja'),
             'status_jabatan' => $getValue($row, 'status_jabatan'),
             'sub_status' => $getValue($row, 'sub_status'),
             'asal_instansi' => $getValue($row, 'asal_instansi'),
@@ -78,9 +95,9 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
             'rencana_pensiun' => $getValue($row, 'rencana_pensiun'),
             'pendidikan_diakui' => $getValue($row, 'pendidikan_diakui'),
             'pendidikan_dimiliki' => $getValue($row, 'pendidikan_dimiliki'),
+            'jurusan' => $getValue($row, 'jurusan'),
             'tmt_karyawan' => $convertDate($getValue($row, 'tmt_karyawan')),
             'masa_kerja' => $getValue($row, 'masa_kerja'),
-            'tmt' => $convertDate($getValue($row, 'tmt')),
             'tmt_kj_tertinggi' => $convertDate($getValue($row, 'tmt_kj_tertinggi')),
             'masa_kj_tertinggi_tahun' => $getValue($row, 'masa_kj_tertinggi_tahun'),
 
@@ -92,7 +109,6 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
             'jenjang_karir' => $getValue($row, 'jenjang_karir'),
             'kelompok_kelas_jabatan' => $getValue($row, 'kelompok_kelas_jabatan'),
             'fungsi_pekerjaan' => $getValue($row, 'fungsi_pekerjaan'),
-            'grade' => (string) $getValue($row, 'grade'),
 
             // License Information
             'lisence_dimiliki' => $getValue($row, 'lisence_dimiliki'),
@@ -102,7 +118,6 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
             'lisence_dibayarkan_januari' => $getValue($row, 'lisence_dibayarkan_januari'),
 
             // Additional Personal Data
-            'jurusan' => $getValue($row, 'jurusan'),
             'agama' => $getValue($row, 'agama'),
             'nilai_npi_2022' => $getValue($row, 'nilai_npi_2022'),
             'kategori' => $getValue($row, 'kategori'),
@@ -121,7 +136,44 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
             'kpi_2023' => $getValue($row, 'kpi_2023'),
             'kriteria' => $getValue($row, 'kriteria'),
             'fungsi_kontrak_os' => $getValue($row, 'fungsi_kontrak_os'),
+            'penugasan' => $getValue($row, 'penugasan'),
         ]);
+    }
+
+    /**
+     * Handle errors during import
+     */
+    public function onError(\Throwable $e)
+    {
+        $this->errors[] = $e->getMessage();
+        \Log::error('Import Error: ' . $e->getMessage());
+    }
+
+    /**
+     * Handle validation failures
+     */
+    public function onFailure(Failure ...$failures)
+    {
+        foreach ($failures as $failure) {
+            $this->errors[] = "Row {$failure->row()}: " . implode(', ', $failure->errors());
+            \Log::warning("Import Failure - Row {$failure->row()}: " . implode(', ', $failure->errors()));
+        }
+    }
+
+    /**
+     * Get import statistics
+     */
+    public function getSkippedCount(): int
+    {
+        return $this->skipped;
+    }
+
+    /**
+     * Get import errors
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 
 

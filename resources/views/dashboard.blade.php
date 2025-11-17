@@ -467,6 +467,38 @@
             </div>
         </div>
 
+        {{-- ROW 3.25: Fungsi Jabatan & Instansi --}}
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">Distribusi Fungsi Jabatan</h6>
+                        <small class="text-muted d-block mb-3">
+                            <i class="fa-solid fa-briefcase me-1"></i>
+                            Distribusi karyawan berdasarkan fungsi jabatan
+                        </small>
+                        <div style="position: relative; height: 280px;">
+                            <canvas id="fungsiJabatanChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">Distribusi Instansi</h6>
+                        <small class="text-muted d-block mb-3">
+                            <i class="fa-solid fa-building me-1"></i>
+                            Jumlah karyawan per instansi
+                        </small>
+                        <div style="position: relative; height: 280px;">
+                            <canvas id="instansiChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- ROW 3.5: TAMPILAN BARU JABATAN LOWONG --}}
         <div class="row g-4 mb-4">
             <div class="col-12">
@@ -567,7 +599,7 @@
                                 <tbody id="unitTableBody">
                                     @forelse(($unitTable ?? []) as $row)
                                         <tr>
-                                            <td>{{ $row->unit }}</td>
+                                            <td>{{ $row->unit_kerja }}</td>
                                             <td class="text-end">{{ number_format($row->total) }}</td>
                                         </tr>
                                     @empty
@@ -1021,6 +1053,111 @@
                         const unit = (tr.children[0]?.textContent || '').toLowerCase();
                         tr.style.display = unit.includes(q) ? '' : 'none';
                     });
+                });
+            }
+
+            // Chart Fungsi Jabatan (Horizontal Bar - Top 10)
+            const fungsiJabatanLabels = @json($fungsiJabatanLabels ?? []);
+            const fungsiJabatanData = @json($fungsiJabatanData ?? []);
+            const fungsiJabatanCtx = document.getElementById('fungsiJabatanChart')?.getContext('2d');
+            if (fungsiJabatanCtx && fungsiJabatanLabels.length > 0) {
+                new Chart(fungsiJabatanCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: fungsiJabatanLabels,
+                        datasets: [{
+                            label: 'Jumlah Karyawan',
+                            data: fungsiJabatanData,
+                            backgroundColor: palette.slice(0, fungsiJabatanLabels.length),
+                            borderWidth: 0,
+                            barThickness: 22
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'right',
+                                offset: 4,
+                                color: '#64748b',
+                                font: {
+                                    weight: '700',
+                                    size: 11
+                                },
+                                formatter: (value) => value.toLocaleString()
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                },
+                                grid: {
+                                    color: '#f1f5f9'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart Instansi (Doughnut)
+            const instansiLabels = @json($instansiLabels ?? []);
+            const instansiData = @json($instansiData ?? []);
+            const instansiCtx = document.getElementById('instansiChart')?.getContext('2d');
+            if (instansiCtx && instansiLabels.length > 0) {
+                new Chart(instansiCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: instansiLabels,
+                        datasets: [{
+                            label: 'Jumlah Karyawan',
+                            data: instansiData,
+                            backgroundColor: palette.slice(0, instansiLabels.length),
+                            borderWidth: 0,
+                            hoverBorderColor: '#fff',
+                            hoverBorderWidth: 2,
+                            hoverOffset: 15
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            datalabels: {
+                                anchor: 'center',
+                                align: 'center',
+                                color: '#fff',
+                                formatter: (value, ctx) => {
+                                    const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a +
+                                        b, 0);
+                                    const pct = total ? (value / total * 100).toFixed(1) : 0;
+                                    if (pct < 3) return '';
+                                    return `${value}\n(${pct}%)`;
+                                },
+                                font: {
+                                    weight: '700',
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
                 });
             }
         });

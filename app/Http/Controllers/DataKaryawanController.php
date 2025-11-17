@@ -34,7 +34,7 @@ class DataKaryawanController extends Controller
     {
         $validatedData = $request->validate([
             // Required fields
-            'nik' => 'required|string|unique:data_karyawan,nik',
+            'nik' => 'required|string|max:255|unique:data_karyawan,nik',
             'nama' => 'required|string|max:255',
 
             // Optional basic fields
@@ -126,12 +126,10 @@ class DataKaryawanController extends Controller
         // Konversi semua field tanggal dari Y-m-d ke d/m/Y
         $dateFields = [
             'tanggal_lahir',
-            'tmt',
-            'tmt_jabatan',
             'tmt_karyawan',
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
-            'masa_berlaku'
+            'masa_berlaku',
         ];
 
         foreach ($dateFields as $field) {
@@ -147,14 +145,12 @@ class DataKaryawanController extends Controller
         // Tambahkan field lainnya yang tidak kosong
         $otherFields = [
             'jenis_kelamin',
-            'status',
             'asal_instansi',
             'pendidikan_diakui',
             'unit_deputy_egm',
             'unit_assistant_deputy',
             'unit_division_head',
             'unit_department_head',
-            'job_grade',
             'person_grade',
             'awal_lokasi_kerja',
             'status_jabatan',
@@ -191,7 +187,8 @@ class DataKaryawanController extends Controller
             'lisence_dibayarkan_januari',
             'cek_lisence_serkom',
             'email',
-            'no_hp'
+            'no_hp',
+            'penugasan'
         ];
 
         foreach ($otherFields as $field) {
@@ -216,7 +213,7 @@ class DataKaryawanController extends Controller
     {
         $validatedData = $request->validate([
             // Required fields
-            'nik' => ['required', 'string', Rule::unique('data_karyawan')->ignore($dataKaryawan->id)],
+            'nik' => ['required', 'string', 'max:255', Rule::unique('data_karyawan', 'nik')->ignore($dataKaryawan->id)],
             'nama' => 'required|string|max:255',
 
             // Optional basic fields
@@ -308,8 +305,6 @@ class DataKaryawanController extends Controller
         // Konversi semua field tanggal dari Y-m-d ke d/m/Y
         $dateFields = [
             'tanggal_lahir',
-            'tmt',
-            'tmt_jabatan',
             'tmt_karyawan',
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
@@ -329,14 +324,12 @@ class DataKaryawanController extends Controller
         // Tambahkan field lainnya yang tidak kosong
         $otherFields = [
             'jenis_kelamin',
-            'status',
             'asal_instansi',
             'pendidikan_diakui',
             'unit_deputy_egm',
             'unit_assistant_deputy',
             'unit_division_head',
             'unit_department_head',
-            'job_grade',
             'person_grade',
             'awal_lokasi_kerja',
             'status_jabatan',
@@ -346,7 +339,6 @@ class DataKaryawanController extends Controller
             'agama',
             'status_pernikahan',
             'jurusan',
-            'pendidikan_dimiliki',
             'pendidikan_dimiliki',
             'no_ktp',
             'alamat_ktp',
@@ -374,7 +366,8 @@ class DataKaryawanController extends Controller
             'lisence_dibayarkan_januari',
             'cek_lisence_serkom',
             'email',
-            'no_hp'
+            'no_hp',
+            'penugasan'
         ];
 
         foreach ($otherFields as $field) {
@@ -403,8 +396,16 @@ class DataKaryawanController extends Controller
             ini_set('memory_limit', '1024M');
             ini_set('max_execution_time', 300); // 5 menit
 
-            Excel::import(new DataKaryawanImport, $request->file('file'));
-            return redirect()->route('karyawan.index')->with('success', 'Data berhasil ditambahkan.');
+            $import = new DataKaryawanImport;
+            Excel::import($import, $request->file('file'));
+
+            $skipped = $import->getSkippedCount();
+            $message = 'Data berhasil ditambahkan.';
+            if ($skipped > 0) {
+                $message .= " ({$skipped} baris dilewati karena NIK duplikat atau kosong)";
+            }
+
+            return redirect()->route('karyawan.index')->with('success', $message);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -420,8 +421,17 @@ class DataKaryawanController extends Controller
             ini_set('max_execution_time', 300); // 5 menit
 
             DataKaryawan::query()->delete();
-            Excel::import(new DataKaryawanImport, $request->file('file'));
-            return redirect()->route('karyawan.index')->with('success', 'Semua data berhasil diganti.');
+
+            $import = new DataKaryawanImport;
+            Excel::import($import, $request->file('file'));
+
+            $skipped = $import->getSkippedCount();
+            $message = 'Semua data berhasil diganti.';
+            if ($skipped > 0) {
+                $message .= " ({$skipped} baris dilewati karena NIK duplikat atau kosong)";
+            }
+
+            return redirect()->route('karyawan.index')->with('success', $message);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }

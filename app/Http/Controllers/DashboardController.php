@@ -23,9 +23,9 @@ class DashboardController extends Controller
         // Untuk usia, kita hitung dari tanggal_lahir (format dd/mm/yyyy)
         $karyawanData = DataKaryawan::whereNotNull('tanggal_lahir')
             ->where('tanggal_lahir', '!=', '')
-            ->whereNotNull('tmt')
-            ->where('tmt', '!=', '')
-            ->get(['tanggal_lahir', 'tmt']);
+            ->whereNotNull('tmt_karyawan')
+            ->where('tmt_karyawan', '!=', '')
+            ->get(['tanggal_lahir', 'tmt_karyawan']);
 
         $totalAge = 0;
         $validAgeCount = 0;
@@ -43,9 +43,9 @@ class DashboardController extends Controller
             }
 
             // Hitung masa kerja
-            if ($karyawan->tmt) {
-                $mk = $this->calculateWorkPeriod($karyawan->tmt);
-                if ($mk >= 0) {
+            if ($karyawan->tmt_karyawan) {
+                $mk = $this->calculateWorkPeriod($karyawan->tmt_karyawan);
+                if ($mk > 0) {
                     $totalMK += $mk;
                     $validMKCount++;
                 }
@@ -59,7 +59,7 @@ class DashboardController extends Controller
         $femalePct = $total ? round($female / $total * 100, 1) : 0;
 
         // === STATUS (PIE) ===
-        $employeeStatus = DataKaryawan::select(DB::raw("COALESCE(status,'(Kosong)') AS status_label"), DB::raw('COUNT(*) AS total'))
+        $employeeStatus = DataKaryawan::select(DB::raw("COALESCE(sub_status,'(Kosong)') AS status_label"), DB::raw('COUNT(*) AS total'))
             ->groupBy('status_label')
             ->orderByDesc('total')
             ->get();
@@ -88,8 +88,8 @@ class DashboardController extends Controller
         // ====== PENDIDIKAN Grouped (Organik vs OS) ======
         $pendidikanStatus = DataKaryawan::select(
             DB::raw("COALESCE(pendidikan_diakui,'(Kosong)') AS pend_label"),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
+            DB::raw("SUM(CASE WHEN UPPER(TRIM(sub_status)) IN ('ALIH DAYA','OUTSOURCING','OS','OUTSOURCE') OR LOWER(TRIM(sub_status)) LIKE '%alih%' OR LOWER(TRIM(sub_status)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
+            DB::raw("SUM(CASE WHEN UPPER(TRIM(sub_status)) IN ('ALIH DAYA','OUTSOURCING','OS','OUTSOURCE') OR LOWER(TRIM(sub_status)) LIKE '%alih%' OR LOWER(TRIM(sub_status)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
         )
             ->groupBy('pend_label')
             // ---- MODIFIKASI DIMULAI DI SINI ----
@@ -156,14 +156,14 @@ class DashboardController extends Controller
         $mkData = [];
 
         // Hitung sebaran masa kerja dengan parsing manual
-        $allKaryawanMK = DataKaryawan::whereNotNull('tmt')
-            ->where('tmt', '!=', '')
-            ->get(['tmt']);
+        $allKaryawanMK = DataKaryawan::whereNotNull('tmt_karyawan')
+            ->where('tmt_karyawan', '!=', '')
+            ->get(['tmt_karyawan']);
 
         foreach ($mkBins as $label => [$min, $max]) {
             $count = 0;
             foreach ($allKaryawanMK as $k) {
-                $mk = $this->calculateWorkPeriod($k->tmt);
+                $mk = $this->calculateWorkPeriod($k->tmt_karyawan);
                 if ($label === '>10') {
                     if ($mk > 10)
                         $count++;
@@ -233,6 +233,23 @@ class DashboardController extends Controller
             ->orderBy('unit_kerja')
             ->get();
 
+        // === FUNGSI JABATAN ===
+        $fungsiJabatan = DataKaryawan::select(DB::raw("COALESCE(fungsi_jabatan,'(Kosong)') AS fungsi_label"), DB::raw('COUNT(*) AS total'))
+            ->groupBy('fungsi_label')
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get();
+        $fungsiJabatanLabels = $fungsiJabatan->pluck('fungsi_label')->toArray();
+        $fungsiJabatanData = $fungsiJabatan->pluck('total')->toArray();
+
+        // === INSTANSI ===
+        $instansi = DataKaryawan::select(DB::raw("COALESCE(instansi,'(Kosong)') AS instansi_label"), DB::raw('COUNT(*) AS total'))
+            ->groupBy('instansi_label')
+            ->orderByDesc('total')
+            ->get();
+        $instansiLabels = $instansi->pluck('instansi_label')->toArray();
+        $instansiData = $instansi->pluck('total')->toArray();
+
         // ====== GENDER Grouped (Organik vs OS) ======
         $genderStatus = DataKaryawan::select(
             DB::raw("
@@ -242,8 +259,8 @@ class DashboardController extends Controller
                         ELSE '(Kosong)'
                     END AS gender_label
                 "),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
-            DB::raw("SUM(CASE WHEN LOWER(TRIM(status)) IN ('outsourcing','os','outsource') OR LOWER(TRIM(status)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
+            DB::raw("SUM(CASE WHEN UPPER(TRIM(sub_status)) IN ('ALIH DAYA','OUTSOURCING','OS','OUTSOURCE') OR LOWER(TRIM(sub_status)) LIKE '%alih%' OR LOWER(TRIM(sub_status)) LIKE '%outsour%' THEN 1 ELSE 0 END) AS os"),
+            DB::raw("SUM(CASE WHEN UPPER(TRIM(sub_status)) IN ('ALIH DAYA','OUTSOURCING','OS','OUTSOURCE') OR LOWER(TRIM(sub_status)) LIKE '%alih%' OR LOWER(TRIM(sub_status)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
         )
             ->groupBy('gender_label')
             ->get();
@@ -326,6 +343,10 @@ class DashboardController extends Controller
             'mkData',
             'unitTopLabels',
             'unitTopData',
+            'fungsiJabatanLabels',
+            'fungsiJabatanData',
+            'instansiLabels',
+            'instansiData',
             // tabel unit
             'unitTable',
             // gender grouped bar
