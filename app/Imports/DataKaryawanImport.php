@@ -20,6 +20,14 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
 
     private $errors = [];
     private $skipped = 0;
+    private $sessionId;
+    private $processedRows = 0;
+    private $totalRows = 0;
+
+    public function __construct($sessionId = null)
+    {
+        $this->sessionId = $sessionId;
+    }
 
     /**
      * @param array $row
@@ -28,6 +36,18 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
      */
     public function model(array $row)
     {
+        $this->processedRows++;
+
+        // Update progress if sessionId is set
+        if ($this->sessionId && $this->processedRows % 50 === 0) {
+            $progress = 20 + (($this->processedRows / max($this->totalRows, 1)) * 75);
+            \Cache::put("import_progress_{$this->sessionId}", [
+                'progress' => min(95, round($progress)),
+                'status' => 'processing',
+                'message' => "Memproses data: {$this->processedRows} baris..."
+            ], 3600);
+        }
+
         // Helper function to convert Excel dates
         $convertDate = function ($dateValue) {
             if (is_numeric($dateValue)) {
@@ -181,5 +201,13 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
     public function chunkSize(): int
     {
         return 1000; // Optimized chunk reading for performance
+    }
+
+    /**
+     * Set total rows for progress calculation
+     */
+    public function setTotalRows(int $total)
+    {
+        $this->totalRows = $total;
     }
 }

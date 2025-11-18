@@ -392,24 +392,24 @@ class DataKaryawanController extends Controller
         $request->validate(['file' => 'required|mimes:xlsx,csv']);
 
         try {
-            // Disable output buffering untuk mencegah freeze
-            if (ob_get_level()) {
-                ob_end_clean();
+            // Generate unique session ID
+            $sessionId = uniqid('import_', true);
+
+            // Store file temporarily
+            $file = $request->file('file');
+            $filePath = storage_path('app/temp/' . $sessionId . '_' . $file->getClientOriginalName());
+
+            if (!file_exists(dirname($filePath))) {
+                mkdir(dirname($filePath), 0755, true);
             }
 
-            // Flush output untuk mencegah browser timeout
-            flush();
+            $file->move(dirname($filePath), basename($filePath));
 
-            $import = new DataKaryawanImport;
-            Excel::import($import, $request->file('file'));
+            // Dispatch job
+            \App\Jobs\ImportDataKaryawanJob::dispatch($filePath, $sessionId, 'add');
 
-            $skipped = $import->getSkippedCount();
-            $message = 'Data berhasil ditambahkan.';
-            if ($skipped > 0) {
-                $message .= " ({$skipped} baris dilewati karena NIK duplikat atau kosong)";
-            }
-
-            return redirect()->route('karyawan.index')->with('success', $message);
+            // Return view with session ID for progress tracking
+            return view('karyawan.import-progress', compact('sessionId'));
         } catch (\Exception $e) {
             \Log::error('Import Add Error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat import. Silakan coba lagi.');
@@ -421,28 +421,24 @@ class DataKaryawanController extends Controller
         $request->validate(['file' => 'required|mimes:xlsx,csv']);
 
         try {
-            // Disable output buffering untuk mencegah freeze
-            if (ob_get_level()) {
-                ob_end_clean();
+            // Generate unique session ID
+            $sessionId = uniqid('import_', true);
+
+            // Store file temporarily
+            $file = $request->file('file');
+            $filePath = storage_path('app/temp/' . $sessionId . '_' . $file->getClientOriginalName());
+
+            if (!file_exists(dirname($filePath))) {
+                mkdir(dirname($filePath), 0755, true);
             }
 
-            // Flush output untuk mencegah browser timeout
-            flush();
+            $file->move(dirname($filePath), basename($filePath));
 
-            // Hapus data lama
-            DataKaryawan::query()->delete();
+            // Dispatch job
+            \App\Jobs\ImportDataKaryawanJob::dispatch($filePath, $sessionId, 'replace');
 
-            // Import data baru
-            $import = new DataKaryawanImport;
-            Excel::import($import, $request->file('file'));
-
-            $skipped = $import->getSkippedCount();
-            $message = 'Semua data berhasil diganti.';
-            if ($skipped > 0) {
-                $message .= " ({$skipped} baris dilewati karena NIK duplikat atau kosong)";
-            }
-
-            return redirect()->route('karyawan.index')->with('success', $message);
+            // Return view with session ID for progress tracking
+            return view('karyawan.import-progress', compact('sessionId'));
         } catch (\Exception $e) {
             \Log::error('Import Replace Error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat import. Silakan coba lagi.');
@@ -457,6 +453,17 @@ class DataKaryawanController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new DataKaryawanTemplateExport, 'template_data_karyawan.xlsx');
+    }
+
+    public function checkImportProgress($sessionId)
+    {
+        $progress = \Cache::get("import_progress_{$sessionId}", [
+            'progress' => 0,
+            'status' => 'not_found',
+            'message' => 'Session tidak ditemukan'
+        ]);
+
+        return response()->json($progress);
     }
 }
 

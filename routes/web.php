@@ -64,6 +64,7 @@ Route::middleware('auth', )->group(function () {
         Route::get('/', [DataKaryawanController::class, 'index'])->name('index');
         Route::get('/template/download', [DataKaryawanController::class, 'downloadTemplate'])->name('template.download');
         Route::get('/export', [DataKaryawanController::class, 'export'])->name('export');
+        Route::get('/import-progress/{sessionId}', [DataKaryawanController::class, 'checkImportProgress'])->name('import.progress');
     });
 
     // Formasi - Basic access routes (view only) - accessible by all authenticated users
