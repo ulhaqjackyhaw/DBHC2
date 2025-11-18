@@ -28,10 +28,6 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
      */
     public function model(array $row)
     {
-        // Debug: Log header columns untuk troubleshooting (comment setelah selesai debug)
-        \Log::info('Excel Row Keys: ' . json_encode(array_keys($row)));
-        \Log::info('Excel Row Data: ' . json_encode($row));
-
         // Helper function to convert Excel dates
         $convertDate = function ($dateValue) {
             if (is_numeric($dateValue)) {
@@ -50,18 +46,11 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
             return null;
         };
 
-        // Check if NIK already exists
+        // Check if NIK exists
         $nik = (string) $getValue($row, 'nik');
         if (empty($nik)) {
             $this->skipped++;
             return null; // Skip rows without NIK
-        }
-
-        // Check for duplicate NIK in database
-        if (DataKaryawan::where('nik', $nik)->exists()) {
-            $this->skipped++;
-            \Log::warning("Skipping duplicate NIK: {$nik}");
-            return null; // Skip duplicate
         }
 
         return new DataKaryawan([
@@ -183,7 +172,7 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
      */
     public function batchSize(): int
     {
-        return 50; // Reduced for 59 columns to avoid too many placeholders
+        return 500; // Optimized for large imports (6000+ rows)
     }
 
     /**
@@ -191,6 +180,6 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
      */
     public function chunkSize(): int
     {
-        return 100; // Reduced for better memory management with extended columns
+        return 1000; // Optimized chunk reading for performance
     }
 }

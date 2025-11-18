@@ -392,9 +392,13 @@ class DataKaryawanController extends Controller
         $request->validate(['file' => 'required|mimes:xlsx,csv']);
 
         try {
-            // Tingkatkan memory limit dan waktu eksekusi untuk file besar
-            ini_set('memory_limit', '1024M');
-            ini_set('max_execution_time', 300); // 5 menit
+            // Disable output buffering untuk mencegah freeze
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            // Flush output untuk mencegah browser timeout
+            flush();
 
             $import = new DataKaryawanImport;
             Excel::import($import, $request->file('file'));
@@ -407,7 +411,8 @@ class DataKaryawanController extends Controller
 
             return redirect()->route('karyawan.index')->with('success', $message);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            \Log::error('Import Add Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat import. Silakan coba lagi.');
         }
     }
 
@@ -416,12 +421,18 @@ class DataKaryawanController extends Controller
         $request->validate(['file' => 'required|mimes:xlsx,csv']);
 
         try {
-            // Tingkatkan memory limit dan waktu eksekusi untuk file besar
-            ini_set('memory_limit', '1024M');
-            ini_set('max_execution_time', 300); // 5 menit
+            // Disable output buffering untuk mencegah freeze
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
 
+            // Flush output untuk mencegah browser timeout
+            flush();
+
+            // Hapus data lama
             DataKaryawan::query()->delete();
 
+            // Import data baru
             $import = new DataKaryawanImport;
             Excel::import($import, $request->file('file'));
 
@@ -433,7 +444,8 @@ class DataKaryawanController extends Controller
 
             return redirect()->route('karyawan.index')->with('success', $message);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            \Log::error('Import Replace Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat import. Silakan coba lagi.');
         }
     }
 

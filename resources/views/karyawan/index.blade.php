@@ -48,12 +48,57 @@
             /* Nama */
             max-width: 200px;
             white-space: normal;
-            word-wrap: break-word;
         }
 
-        .table-compact td:nth-child(5) {
-            /* Lokasi */
-            max-width: 120px;
+        /* Loading Overlay */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loadingOverlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .table-compact td:nth-child(3) {
+            /* Nama */
+            max-width: 200px;
             white-space: normal;
             word-wrap: break-word;
         }
@@ -112,8 +157,8 @@
             </div>
             <div class="row g-3">
                 <div class="col-md-6">
-                    <form action="{{ route('karyawan.import.add') }}" method="POST" enctype="multipart/form-data"
-                        class="d-flex gap-3">
+                    <form id="importAddForm" action="{{ route('karyawan.import.add') }}" method="POST"
+                        enctype="multipart/form-data" class="d-flex gap-3">
                         @csrf
                         <input type="file" name="file" class="form-control" required>
                         <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 text-nowrap"><i
@@ -121,8 +166,8 @@
                     </form>
                 </div>
                 <div class="col-md-6">
-                    <form action="{{ route('karyawan.import.replace') }}" method="POST" enctype="multipart/form-data"
-                        class="d-flex gap-3">
+                    <form id="importReplaceForm" action="{{ route('karyawan.import.replace') }}" method="POST"
+                        enctype="multipart/form-data" class="d-flex gap-3">
                         @csrf
                         <input type="file" name="file" class="form-control" required>
                         <button type="submit" class="btn btn-danger d-flex align-items-center gap-2 text-nowrap"><i
@@ -1048,6 +1093,58 @@
                     this.$watch('itemsPerPage', () => this.currentPage = 1);
                 }
             }));
+        });
+
+        // Handle Import Forms dengan Loading Overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const importAddForm = document.getElementById('importAddForm');
+            const importReplaceForm = document.getElementById('importReplaceForm');
+
+            // Function to show loading
+            function showLoading(event) {
+                const fileInput = event.target.querySelector('input[type="file"]');
+
+                // Validasi file dipilih
+                if (!fileInput || !fileInput.files.length) {
+                    alert('Silakan pilih file Excel terlebih dahulu');
+                    event.preventDefault();
+                    return false;
+                }
+
+                // Validasi ekstensi file
+                const fileName = fileInput.files[0].name;
+                const validExtensions = ['.xlsx', '.csv', '.xls'];
+                const isValid = validExtensions.some(ext => fileName.toLowerCase().endsWith(ext));
+
+                if (!isValid) {
+                    alert('File harus berformat Excel (.xlsx, .xls, atau .csv)');
+                    event.preventDefault();
+                    return false;
+                }
+
+                // Tampilkan loading overlay
+                loadingOverlay.classList.add('show');
+
+                // Disable tombol submit untuk mencegah double-click
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+                }
+
+                return true;
+            }
+
+            // Attach event listeners
+            if (importAddForm) {
+                importAddForm.addEventListener('submit', showLoading);
+            }
+
+            if (importReplaceForm) {
+                importReplaceForm.addEventListener('submit', showLoading);
+            }
         });
     </script>
 @endpush
