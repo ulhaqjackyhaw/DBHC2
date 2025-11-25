@@ -92,15 +92,18 @@
         }
 
         .kpi .value {
-            font-size: 2rem;
+            font-size: clamp(1.25rem, 4vw, 2rem);
+            /* Responsive font size */
             font-weight: 700;
-            line-height: 1;
+            line-height: 1.2;
             color: var(--text-color-dark);
         }
 
         .kpi .label {
-            font-size: .875rem;
+            font-size: clamp(0.7rem, 2vw, 0.875rem);
+            /* Responsive font size */
             color: var(--text-color-light);
+            line-height: 1.3;
         }
 
         .kpi .icon-total {
@@ -317,6 +320,87 @@
         .interactive-chart:hover {
             transform: scale(1.02);
         }
+
+        /* ===== RESPONSIVE ADJUSTMENTS ===== */
+        /* Mobile phones (portrait) */
+        @media (max-width: 576px) {
+            .kpi {
+                padding: 0.85rem;
+                gap: 0.75rem;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .kpi .icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .kpi .value {
+                font-size: 1.5rem !important;
+            }
+
+            .kpi .label {
+                font-size: 0.75rem !important;
+            }
+
+            .card-title {
+                font-size: 0.9rem;
+            }
+
+            .total-lowongan-card .value {
+                font-size: 1.75rem;
+            }
+
+            .lowongan-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tablets (portrait) */
+        @media (min-width: 577px) and (max-width: 768px) {
+            .kpi {
+                padding: 1rem;
+                gap: 0.85rem;
+            }
+
+            .kpi .icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+            }
+
+            .kpi .value {
+                font-size: 1.75rem !important;
+            }
+
+            .kpi .label {
+                font-size: 0.8rem !important;
+            }
+
+            .lowongan-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        /* Tablets (landscape) */
+        @media (min-width: 769px) and (max-width: 992px) {
+            .kpi .value {
+                font-size: 1.85rem !important;
+            }
+
+            .kpi .label {
+                font-size: 0.825rem !important;
+            }
+        }
+
+        /* Small laptops */
+        @media (min-width: 993px) and (max-width: 1200px) {
+            .kpi .value {
+                font-size: 1.9rem !important;
+            }
+        }
     </style>
 @endpush
 
@@ -375,6 +459,66 @@
             </div>
         </div>
 
+        {{-- ROW 0.5: Grafik Pertumbuhan Karyawan (BARU) --}}
+        @if (isset($versionGrowth) && $versionGrowth['hasData'])
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h6 class="card-title mb-1">Tren Pertumbuhan Karyawan</h6>
+                                    <small class="text-muted">
+                                        <i class="fa-solid fa-chart-line me-1"></i>
+                                        Berdasarkan snapshot history database
+                                    </small>
+                                </div>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Filter periode">
+                                        <input type="radio" class="btn-check" name="periodFilter" id="filterAll"
+                                            value="all" autocomplete="off" checked>
+                                        <label class="btn btn-outline-primary" for="filterAll">
+                                            <i class="fa-solid fa-infinity me-1"></i>Semua
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="periodFilter" id="filterYear"
+                                            value="year" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="filterYear">
+                                            <i class="fa-solid fa-calendar-alt me-1"></i>Per Tahun
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="periodFilter" id="filterMonth"
+                                            value="month" autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="filterMonth">
+                                            <i class="fa-solid fa-calendar-days me-1"></i>Per Bulan
+                                        </label>
+                                    </div>
+
+                                    <a href="{{ route('versions.index') }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fa-solid fa-archive me-1"></i>
+                                        History
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="alert alert-success alert-dismissible fade show py-2 px-3 mb-3" role="alert"
+                                style="font-size: 0.85rem;">
+                                <i class="fa-solid fa-lightbulb me-2"></i>
+                                <strong>Info:</strong> Grafik ini menampilkan perubahan jumlah karyawan dari waktu ke waktu
+                                berdasarkan
+                                <strong>snapshot version</strong> yang Anda simpan. Semakin sering menyimpan snapshot,
+                                semakin detail tren yang terlihat.
+                                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"
+                                    aria-label="Close" style="font-size: 0.7rem;"></button>
+                            </div>
+                            <div style="position: relative; height: 320px;">
+                                <canvas id="growthChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         {{-- ROW 1 (BARU): Status & Gender --}}
         <div class="row g-4 mb-4">
             <div class="col-12 col-lg-6">
@@ -396,8 +540,8 @@
                             mendalam
                             karyawan tetap,<br> atau klik <strong>Outsourcing</strong> untuk data karyawan
                             kontrak/outsourcing.
-                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"
-                                style="font-size: 0.7rem;"></button>
+                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"
+                                aria-label="Close" style="font-size: 0.7rem;"></button>
                         </div>
                         <div style="position: relative; height: 220px;">
                             <canvas id="statusChart"></canvas>
@@ -1043,6 +1187,244 @@
             makeChart('unitTopChart', 'bar', unitTopLabels, unitTopData, {
                 horizontal: true
             });
+
+            // ====== GRAFIK PERTUMBUHAN KARYAWAN (LINE CHART) ======
+            @if (isset($versionGrowth) && $versionGrowth['hasData'])
+                // Data original dari backend
+                const growthLabelsOriginal = @json($versionGrowth['labels'] ?? []);
+                const growthTotalOriginal = @json($versionGrowth['total'] ?? []);
+                const growthOrganicOriginal = @json($versionGrowth['organic'] ?? []);
+                const growthOutsourcingOriginal = @json($versionGrowth['outsourcing'] ?? []);
+
+                // Data yang akan ditampilkan (bisa difilter)
+                let growthLabels = [...growthLabelsOriginal];
+                let growthTotal = [...growthTotalOriginal];
+                let growthOrganic = [...growthOrganicOriginal];
+                let growthOutsourcing = [...growthOutsourcingOriginal];
+
+                const growthCanvas = document.getElementById('growthChart');
+                let growthChart = null;
+
+                if (growthCanvas && growthLabels.length > 0) {
+                    // Fungsi untuk membuat/update chart
+                    function createGrowthChart(labels, total, organic, outsourcing) {
+                        if (growthChart) {
+                            growthChart.destroy();
+                        }
+
+                        growthChart = new Chart(growthCanvas.getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                        label: 'Total Karyawan',
+                                        data: total,
+                                        borderColor: '#4f46e5',
+                                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                                        borderWidth: 3,
+                                        fill: true,
+                                        tension: 0.4,
+                                        pointRadius: 5,
+                                        pointHoverRadius: 7,
+                                        pointBackgroundColor: '#4f46e5',
+                                        pointBorderColor: '#fff',
+                                        pointBorderWidth: 2
+                                    },
+                                    {
+                                        label: 'Organik',
+                                        data: organic,
+                                        borderColor: '#16a34a',
+                                        backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                                        borderWidth: 2,
+                                        fill: true,
+                                        tension: 0.4,
+                                        pointRadius: 4,
+                                        pointHoverRadius: 6,
+                                        pointBackgroundColor: '#16a34a',
+                                        pointBorderColor: '#fff',
+                                        pointBorderWidth: 2
+                                    },
+                                    {
+                                        label: 'Outsourcing',
+                                        data: outsourcing,
+                                        borderColor: '#f97316',
+                                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                                        borderWidth: 2,
+                                        fill: true,
+                                        tension: 0.4,
+                                        pointRadius: 4,
+                                        pointHoverRadius: 6,
+                                        pointBackgroundColor: '#f97316',
+                                        pointBorderColor: '#fff',
+                                        pointBorderWidth: 2
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                interaction: {
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            usePointStyle: true,
+                                            padding: 15,
+                                            font: {
+                                                size: 12,
+                                                weight: '600'
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        backgroundColor: '#1e293b',
+                                        titleFont: {
+                                            weight: 'bold',
+                                            size: 13
+                                        },
+                                        bodyFont: {
+                                            size: 12
+                                        },
+                                        padding: 12,
+                                        cornerRadius: 8,
+                                        displayColors: true,
+                                        callbacks: {
+                                            label: function(context) {
+                                                const label = context.dataset.label || '';
+                                                const value = context.parsed.y;
+                                                const totalAtIndex = total[context.dataIndex];
+                                                const percentage = totalAtIndex > 0 ? ((value /
+                                                        totalAtIndex) * 100)
+                                                    .toFixed(1) : 0;
+                                                return `${label}: ${value.toLocaleString()} (${percentage}%)`;
+                                            }
+                                        }
+                                    },
+                                    datalabels: {
+                                        display: false // Nonaktifkan datalabels untuk line chart
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            precision: 0,
+                                            callback: function(value) {
+                                                return value.toLocaleString();
+                                            }
+                                        },
+                                        grid: {
+                                            color: '#e2e8f0',
+                                            drawBorder: false
+                                        }
+                                    },
+                                    x: {
+                                        grid: {
+                                            display: false
+                                        },
+                                        ticks: {
+                                            maxRotation: 45,
+                                            minRotation: 45,
+                                            font: {
+                                                size: 10
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    // Fungsi untuk filter data berdasarkan periode
+                    function filterDataByPeriod(period) {
+                        if (period === 'all') {
+                            // Tampilkan semua data
+                            return {
+                                labels: [...growthLabelsOriginal],
+                                total: [...growthTotalOriginal],
+                                organic: [...growthOrganicOriginal],
+                                outsourcing: [...growthOutsourcingOriginal]
+                            };
+                        }
+
+                        // Parse label untuk grouping
+                        const grouped = {};
+
+                        growthLabelsOriginal.forEach((label, index) => {
+                            // Format label: "DD MMM YYYY" atau "Current Data"
+                            if (label === 'Current Data') {
+                                grouped[label] = {
+                                    label: label,
+                                    total: growthTotalOriginal[index],
+                                    organic: growthOrganicOriginal[index],
+                                    outsourcing: growthOutsourcingOriginal[index]
+                                };
+                                return;
+                            }
+
+                            // Parse tanggal dari label
+                            const parts = label.split(' ');
+                            if (parts.length >= 3) {
+                                const day = parts[0];
+                                const month = parts[1];
+                                const year = parts[2];
+
+                                let key;
+                                if (period === 'year') {
+                                    key = year; // Group by tahun
+                                } else if (period === 'month') {
+                                    key = `${month} ${year}`; // Group by bulan & tahun
+                                }
+
+                                if (!grouped[key]) {
+                                    grouped[key] = {
+                                        label: key,
+                                        total: 0,
+                                        organic: 0,
+                                        outsourcing: 0,
+                                        count: 0
+                                    };
+                                }
+
+                                // Ambil data terakhir untuk periode tersebut (snapshot terbaru)
+                                grouped[key].total = growthTotalOriginal[index];
+                                grouped[key].organic = growthOrganicOriginal[index];
+                                grouped[key].outsourcing = growthOutsourcingOriginal[index];
+                                grouped[key].count++;
+                            }
+                        });
+
+                        // Convert ke array
+                        const result = Object.values(grouped);
+
+                        return {
+                            labels: result.map(r => r.label),
+                            total: result.map(r => r.total),
+                            organic: result.map(r => r.organic),
+                            outsourcing: result.map(r => r.outsourcing)
+                        };
+                    }
+
+                    // Inisialisasi chart dengan data lengkap
+                    createGrowthChart(growthLabels, growthTotal, growthOrganic, growthOutsourcing);
+
+                    // Event listener untuk filter
+                    document.querySelectorAll('input[name="periodFilter"]').forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            const filtered = filterDataByPeriod(this.value);
+                            createGrowthChart(
+                                filtered.labels,
+                                filtered.total,
+                                filtered.organic,
+                                filtered.outsourcing
+                            );
+                        });
+                    });
+                }
+            @endif
 
             const searchUnit = document.getElementById('searchUnit');
             const tbody = document.getElementById('unitTableBody');

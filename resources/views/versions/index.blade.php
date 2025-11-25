@@ -94,16 +94,24 @@
                                             <i class="bi bi-download"></i> Excel
                                         </a>
                                     @endif
-                                    <button type="button" class="btn btn-sm btn-outline-success" title="Pulihkan"
-                                        data-bs-toggle="modal" data-bs-target="#confirmationModal"
-                                        @click="setupRestore({{ $version->id }}, '{{ e($version->description) }}')">
-                                        <i class="bi bi-arrow-counterclockwise"></i> Pulihkan
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Hapus"
-                                        data-bs-toggle="modal" data-bs-target="#confirmationModal"
-                                        @click="setupDelete({{ $version->id }}, '{{ e($version->description) }}')">
-                                        <i class="bi bi-trash-fill"></i> Hapus
-                                    </button>
+
+                                    @can('admin')
+                                        <button type="button" class="btn btn-sm btn-outline-success" title="Pulihkan"
+                                            data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                                            @click="setupRestore({{ $version->id }}, '{{ e($version->description) }}')">
+                                            <i class="bi bi-arrow-counterclockwise"></i> Pulihkan
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" title="Hapus"
+                                            data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                                            @click="setupDelete({{ $version->id }}, '{{ e($version->description) }}')">
+                                            <i class="bi bi-trash-fill"></i> Hapus
+                                        </button>
+                                    @else
+                                        <span class="badge bg-secondary"
+                                            title="Hanya Admin yang dapat memulihkan dan menghapus versi">
+                                            <i class="bi bi-lock-fill"></i> Akses Terbatas
+                                        </span>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

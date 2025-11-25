@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\DataKaryawan;
 use App\Models\Formasi;
+use App\Models\Version;
+use App\Models\EmployeeHistory;
 use App\Exports\JabatanLowongExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -321,6 +323,9 @@ class DashboardController extends Controller
             $pendGroupOrganic[] = $mapPend[$p]['organic'] ?? 0;
         }
 
+        // ====== GRAFIK PERTUMBUHAN KARYAWAN DARI VERSION HISTORY ======
+        $versionGrowth = $this->getVersionGrowthData();
+
         // ====== BAGIAN COMPACT() YANG DIPERBAIKI ======
         return view('dashboard', compact(
             // chart lama
@@ -360,8 +365,85 @@ class DashboardController extends Controller
             // tabel BOD
             'bodGroups',
             'jabatanLowongGrouped', // Data terkelompok
-            'totalJabatanLowong'   // Variabel TOTAL KESELURUHAN yang baru
+            'totalJabatanLowong',   // Variabel TOTAL KESELURUHAN yang baru
+            // Version Growth Data
+            'versionGrowth'
         ));
+    }
+
+    /**
+     * Get version history growth data
+     */
+    private function getVersionGrowthData()
+    {
+        // Ambil semua versi yang tersimpan, urutkan dari yang terlama
+        $versions = Version::orderBy('created_at', 'asc')->get();
+
+        $growthLabels = [];
+        $growthTotal = [];
+        $growthOrganic = [];
+        $growthOutsourcing = [];
+
+        foreach ($versions as $version) {
+            // Format tanggal untuk label
+            $growthLabels[] = $version->created_at->format('d M Y H:i');
+
+            // Hitung total karyawan di versi ini
+            $totalCount = EmployeeHistory::where('version_id', $version->id)->count();
+            $growthTotal[] = $totalCount;
+
+            // Hitung organik (sub_status != ALIH DAYA/OUTSOURCING)
+            $organicCount = EmployeeHistory::where('version_id', $version->id)
+                ->where(function ($q) {
+                    $q->where('sub_status', 'NOT LIKE', '%ALIH DAYA%')
+                        ->where('sub_status', 'NOT LIKE', '%OUTSOURCING%')
+                        ->where('sub_status', 'NOT LIKE', '%OUTSOURCE%')
+                        ->where('sub_status', 'NOT LIKE', '%OS%')
+                        ->orWhereNull('sub_status');
+                })
+                ->count();
+            $growthOrganic[] = $organicCount;
+
+            // Hitung outsourcing
+            $outsourcingCount = EmployeeHistory::where('version_id', $version->id)
+                ->where(function ($q) {
+                    $q->where('sub_status', 'LIKE', '%ALIH DAYA%')
+                        ->orWhere('sub_status', 'LIKE', '%OUTSOURCING%')
+                        ->orWhere('sub_status', 'LIKE', '%OUTSOURCE%')
+                        ->orWhere('sub_status', 'LIKE', '%OS%');
+                })
+                ->count();
+            $growthOutsourcing[] = $outsourcingCount;
+        }
+
+        // Tambahkan data current (data saat ini yang belum di-snapshot)
+        $currentTotal = DataKaryawan::count();
+        $currentOrganic = DataKaryawan::where(function ($q) {
+            $q->where('sub_status', 'NOT LIKE', '%ALIH DAYA%')
+                ->where('sub_status', 'NOT LIKE', '%OUTSOURCING%')
+                ->where('sub_status', 'NOT LIKE', '%OUTSOURCE%')
+                ->where('sub_status', 'NOT LIKE', '%OS%')
+                ->orWhereNull('sub_status');
+        })->count();
+        $currentOutsourcing = DataKaryawan::where(function ($q) {
+            $q->where('sub_status', 'LIKE', '%ALIH DAYA%')
+                ->orWhere('sub_status', 'LIKE', '%OUTSOURCING%')
+                ->orWhere('sub_status', 'LIKE', '%OUTSOURCE%')
+                ->orWhere('sub_status', 'LIKE', '%OS%');
+        })->count();
+
+        $growthLabels[] = 'Saat Ini';
+        $growthTotal[] = $currentTotal;
+        $growthOrganic[] = $currentOrganic;
+        $growthOutsourcing[] = $currentOutsourcing;
+
+        return [
+            'labels' => $growthLabels,
+            'total' => $growthTotal,
+            'organic' => $growthOrganic,
+            'outsourcing' => $growthOutsourcing,
+            'hasData' => count($versions) > 0
+        ];
     }
 
     /**

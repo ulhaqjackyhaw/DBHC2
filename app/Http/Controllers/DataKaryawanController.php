@@ -395,6 +395,13 @@ class DataKaryawanController extends Controller
             // Generate unique session ID
             $sessionId = uniqid('import_', true);
 
+            // Initialize progress immediately in cache
+            \Cache::put("import_progress_{$sessionId}", [
+                'progress' => 0,
+                'status' => 'initializing',
+                'message' => 'Menginisialisasi proses import...'
+            ], 3600);
+
             // Store file temporarily
             $file = $request->file('file');
             $filePath = storage_path('app/temp/' . $sessionId . '_' . $file->getClientOriginalName());
@@ -405,8 +412,9 @@ class DataKaryawanController extends Controller
 
             $file->move(dirname($filePath), basename($filePath));
 
-            // Dispatch job
-            \App\Jobs\ImportDataKaryawanJob::dispatch($filePath, $sessionId, 'add');
+            // Dispatch job on sync queue for immediate processing
+            \App\Jobs\ImportDataKaryawanJob::dispatch($filePath, $sessionId, 'add')
+                ->onQueue('sync');
 
             // Return view with session ID for progress tracking
             return view('karyawan.import-progress', compact('sessionId'));
@@ -424,6 +432,13 @@ class DataKaryawanController extends Controller
             // Generate unique session ID
             $sessionId = uniqid('import_', true);
 
+            // Initialize progress immediately in cache
+            \Cache::put("import_progress_{$sessionId}", [
+                'progress' => 0,
+                'status' => 'initializing',
+                'message' => 'Menginisialisasi proses import...'
+            ], 3600);
+
             // Store file temporarily
             $file = $request->file('file');
             $filePath = storage_path('app/temp/' . $sessionId . '_' . $file->getClientOriginalName());
@@ -434,8 +449,9 @@ class DataKaryawanController extends Controller
 
             $file->move(dirname($filePath), basename($filePath));
 
-            // Dispatch job
-            \App\Jobs\ImportDataKaryawanJob::dispatch($filePath, $sessionId, 'replace');
+            // Dispatch job on sync queue for immediate processing
+            \App\Jobs\ImportDataKaryawanJob::dispatch($filePath, $sessionId, 'replace')
+                ->onQueue('sync');
 
             // Return view with session ID for progress tracking
             return view('karyawan.import-progress', compact('sessionId'));
@@ -457,13 +473,35 @@ class DataKaryawanController extends Controller
 
     public function checkImportProgress($sessionId)
     {
-        $progress = \Cache::get("import_progress_{$sessionId}", [
-            'progress' => 0,
-            'status' => 'not_found',
-            'message' => 'Session tidak ditemukan'
-        ]);
+        try {
+            $progress = \Cache::get("import_progress_{$sessionId}");
 
-        return response()->json($progress);
+            if (!$progress) {
+                // Check if session just started (less than 5 seconds ago)
+                if (strtotime('now') - hexdec(substr($sessionId, 7, 8)) < 5) {
+                    return response()->json([
+                        'progress' => 0,
+                        'status' => 'initializing',
+                        'message' => 'Menginisialisasi...'
+                    ]);
+                }
+
+                return response()->json([
+                    'progress' => 0,
+                    'status' => 'not_found',
+                    'message' => 'Session tidak ditemukan atau sudah expired'
+                ]);
+            }
+
+            return response()->json($progress);
+        } catch (\Exception $e) {
+            \Log::error('Check Progress Error: ' . $e->getMessage());
+            return response()->json([
+                'progress' => 0,
+                'status' => 'error',
+                'message' => 'Error: ' . $e->getMessage()
+            ]);
+        }
     }
 }
 

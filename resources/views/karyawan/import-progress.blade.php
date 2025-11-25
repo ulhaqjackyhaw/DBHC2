@@ -108,6 +108,43 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Versioning -->
+    <div class="modal fade" id="versioningModal" tabindex="-1" aria-labelledby="versioningModalLabel" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="versioningModalLabel">
+                        <i class="bi bi-archive-fill me-2"></i>Simpan Versi Data Karyawan?
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('versions.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <p>Import data berhasil! Simpan kondisi data saat ini sebagai "save point" yang bisa dipulihkan
+                            nanti?</p>
+                        <div class="mb-3">
+                            <label for="versionDescription" class="form-label">Deskripsi / Catatan Perubahan
+                                (Opsional)</label>
+                            <input type="text" class="form-control" id="versionDescription" name="description"
+                                placeholder="Contoh: Import data bulanan Januari 2024">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="window.location.href='{{ route('karyawan.index') }}'">
+                            <i class="bi bi-x-circle me-1"></i>Lewati
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>Ya, Simpan Versi Ini
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('body-scripts')
@@ -132,8 +169,26 @@
                     // Update message
                     document.getElementById('statusMessage').textContent = message;
 
+                    // Handle not found
+                    if (status === 'not_found') {
+                        clearInterval(checkInterval);
+
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-warning');
+
+                        document.getElementById('statusIcon').innerHTML =
+                            '<i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+                        document.getElementById('statusTitle').textContent = 'Session Tidak Ditemukan';
+
+                        const messageBox = document.getElementById('messageBox');
+                        messageBox.classList.add('error-box');
+                        messageBox.style.borderLeftColor = '#ffc107';
+                        messageBox.style.background = '#fff3cd';
+
+                        document.getElementById('actionButtons').style.display = 'block';
+                    }
                     // Handle completion
-                    if (status === 'completed') {
+                    else if (status === 'completed') {
                         clearInterval(checkInterval);
 
                         progressBar.classList.remove('progress-bar-animated', 'progress-bar-striped');
@@ -148,10 +203,19 @@
 
                         document.getElementById('actionButtons').style.display = 'block';
 
-                        // Auto redirect after 3 seconds
+                        // Show versioning modal after import completes
                         setTimeout(() => {
-                            window.location.href = "{{ route('karyawan.index') }}";
-                        }, 3000);
+                            const versioningModalElement = document.getElementById('versioningModal');
+                            if (versioningModalElement) {
+                                const versioningModal = new bootstrap.Modal(versioningModalElement);
+                                versioningModal.show();
+
+                                // Focus on description input when modal is shown
+                                versioningModalElement.addEventListener('shown.bs.modal', () => {
+                                    document.getElementById('versionDescription').focus();
+                                });
+                            }
+                        }, 1500);
                     }
                     // Handle error
                     else if (status === 'error') {
@@ -172,6 +236,17 @@
                 })
                 .catch(error => {
                     console.error('Error checking progress:', error);
+                    clearInterval(checkInterval);
+
+                    document.getElementById('statusIcon').innerHTML =
+                        '<i class="bi bi-exclamation-circle-fill text-danger"></i>';
+                    document.getElementById('statusTitle').textContent = 'Koneksi Error';
+                    document.getElementById('statusMessage').textContent = 'Tidak dapat terhubung ke server: ' + error
+                        .message;
+
+                    const messageBox = document.getElementById('messageBox');
+                    messageBox.classList.add('error-box');
+                    document.getElementById('actionButtons').style.display = 'block';
                 });
         }
 

@@ -22,12 +22,38 @@ class DataPgsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
      */
     public function model(array $row)
     {
+        // Debug: log first row to see actual header format
+        static $logged = false;
+        if (!$logged) {
+            \Log::info('DataPgsImport row keys: ' . json_encode(array_keys($row)));
+            \Log::info('DataPgsImport sample row: ' . json_encode($row));
+            $logged = true;
+        }
+
+        // Helper function to get value with case-insensitive key matching
+        $getValue = function ($keys) use ($row) {
+            foreach ($keys as $key) {
+                if (isset($row[$key])) {
+                    return $row[$key];
+                }
+            }
+            return null;
+        };
+
         // Handle date conversion for Excel serial dates
-        $tanggalPgs = $row['tanggal_pgs'] ?? $row['tanggal pgs'] ?? $row['TANGGAL PGS'] ?? $row['tanggal mulai pgs'] ?? $row['TANGGAL MULAI PGS'];
-        if (is_numeric($tanggalPgs)) {
+        $tanggalPgs = $getValue([
+            'tanggal_pgs',
+            'tanggal pgs',
+            'TANGGAL PGS',
+            'tanggal_mulai_pgs',
+            'tanggal mulai pgs',
+            'TANGGAL MULAI PGS'
+        ]);
+
+        if ($tanggalPgs && is_numeric($tanggalPgs)) {
             // Convert Excel serial date to date string
             $tanggalPgs = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tanggalPgs)->format('d/m/Y');
-        } elseif (is_string($tanggalPgs)) {
+        } elseif ($tanggalPgs && is_string($tanggalPgs)) {
             // Try to parse various date formats
             try {
                 if (strpos($tanggalPgs, '/') !== false) {
@@ -46,7 +72,12 @@ class DataPgsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
         }
 
         // Handle tanggal selesai PGS
-        $tanggalSelesaiPgs = $row['tanggal_selesai_pgs'] ?? $row['tanggal selesai pgs'] ?? $row['TANGGAL SELESAI PGS'] ?? null;
+        $tanggalSelesaiPgs = $getValue([
+            'tanggal_selesai_pgs',
+            'tanggal selesai pgs',
+            'TANGGAL SELESAI PGS'
+        ]);
+
         if ($tanggalSelesaiPgs && is_numeric($tanggalSelesaiPgs)) {
             $tanggalSelesaiPgs = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tanggalSelesaiPgs)->format('d/m/Y');
         } elseif ($tanggalSelesaiPgs && is_string($tanggalSelesaiPgs)) {
@@ -64,12 +95,34 @@ class DataPgsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithCh
             }
         }
 
+        $lokasiUnitKerja = $getValue([
+            'lokasi_unit_kerja',
+            'lokasiunit_kerja',  // Excel slug converts "/" to nothing
+            'lokasi/unit_kerja',
+            'lokasi/unit kerja',
+            'lokasi unit kerja',
+            'LOKASI/UNIT KERJA',
+            'lokasiunit kerja',  // Possible conversion
+            'LOKASIUNIT KERJA',
+            'LOKASI UNIT KERJA',
+            'unit_kerja',
+            'unit kerja',
+            'UNIT KERJA',
+            'lokasi',
+            'LOKASI'
+        ]);
+
+        // Set default value if lokasi_unit_kerja is still null
+        if (empty($lokasiUnitKerja)) {
+            $lokasiUnitKerja = '-';
+        }
+
         return new DataPgs([
-            'nik' => (string) ($row['nik'] ?? $row['NIK']),
-            'nama' => $row['nama'] ?? $row['NAMA'],
-            'jabatan_definitif' => $row['jabatan_definitif'] ?? $row['jabatan definitif'] ?? $row['JABATAN DEFINITIF'],
-            'jabatan_pgs' => $row['jabatan_pgs'] ?? $row['jabatan pgs'] ?? $row['JABATAN PGS'],
-            'lokasi_unit_kerja' => $row['lokasi_unit_kerja'] ?? $row['lokasi/unit_kerja'] ?? $row['lokasi unit kerja'] ?? $row['LOKASI/UNIT KERJA'],
+            'nik' => (string) $getValue(['nik', 'NIK']),
+            'nama' => $getValue(['nama', 'NAMA']),
+            'jabatan_definitif' => $getValue(['jabatan_definitif', 'jabatan definitif', 'JABATAN DEFINITIF']),
+            'jabatan_pgs' => $getValue(['jabatan_pgs', 'jabatan pgs', 'JABATAN PGS']),
+            'lokasi_unit_kerja' => $lokasiUnitKerja,
             'tanggal_pgs' => $tanggalPgs,
             'tanggal_selesai_pgs' => $tanggalSelesaiPgs,
         ]);
