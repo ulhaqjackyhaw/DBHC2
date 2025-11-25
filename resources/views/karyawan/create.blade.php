@@ -134,18 +134,23 @@
                             </div>
                             <input type="hidden" id="kode_jabatan" name="kode_jabatan"
                                 value="{{ old('kode_jabatan') }}">
-                            <input type="hidden" id="lokasi_kerja" name="lokasi_kerja"
-                                value="{{ old('lokasi_kerja') }}">
                             <input type="hidden" id="unit_kerja" name="unit_kerja" value="{{ old('unit_kerja') }}">
                             <input type="hidden" id="jabatan" name="jabatan" value="{{ old('jabatan') }}">
-                            <input type="hidden" id="kelompok_kelas_jabatan" name="kelompok_kelas_jabatan"
-                                value="{{ old('kelompok_kelas_jabatan') }}">
-                            <input type="hidden" id="grade" name="grade" value="{{ old('grade') }}">
                             <div class="col-md-6 mb-3">
-                                <label for="status" class="form-label">Status Kepegawaian</label>
-                                <input type="text" class="form-control @error('status') is-invalid @enderror"
-                                    id="status" name="status" value="{{ old('status') }}">
-                                @error('status')
+                                <label for="lokasi_kerja" class="form-label">Lokasi Kerja</label>
+                                <input type="text" class="form-control" id="lokasi_kerja" name="lokasi_kerja"
+                                    value="{{ old('lokasi_kerja') }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="sub_status" class="form-label">Sub Status</label>
+                                <select class="form-select @error('sub_status') is-invalid @enderror" id="sub_status"
+                                    name="sub_status">
+                                    <option value="" disabled selected>Pilih Sub Status</option>
+                                    <option value="KP" {{ old('sub_status') == 'KP' ? 'selected' : '' }}>KP</option>
+                                    <option value="ALIH DAYA" {{ old('sub_status') == 'ALIH DAYA' ? 'selected' : '' }}>
+                                        ALIH DAYA</option>
+                                </select>
+                                @error('sub_status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -168,10 +173,11 @@
                                 @enderror
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="tmt" class="form-label">TMT (Terhitung Mulai Tanggal)</label>
-                                <input type="date" class="form-control @error('tmt') is-invalid @enderror"
-                                    id="tmt" name="tmt" value="{{ old('tmt') }}">
-                                @error('tmt')
+                                <label for="tmt_karyawan" class="form-label">TMT Karyawan</label>
+                                <input type="text" class="form-control @error('tmt_karyawan') is-invalid @enderror"
+                                    id="tmt_karyawan" name="tmt_karyawan" value="{{ old('tmt_karyawan') }}"
+                                    placeholder="dd/mm/yyyy">
+                                @error('tmt_karyawan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -208,44 +214,45 @@
                     <div class="tab-pane fade" id="job" role="tabpanel">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="tmt_jabatan" class="form-label">TMT Jabatan</label>
-                                <input type="date" class="form-control" id="tmt_jabatan" name="tmt_jabatan"
-                                    value="{{ old('tmt_jabatan') }}">
+                                <label for="status_jabatan" class="form-label">Status Jabatan</label>
+                                <select class="form-select" id="status_jabatan" name="status_jabatan">
+                                    <option value="" disabled selected>Pilih Status Jabatan</option>
+                                    <option value="KARYAWAN" {{ old('status_jabatan') == 'KARYAWAN' ? 'selected' : '' }}>
+                                        KARYAWAN</option>
+                                    <option value="PEJABAT" {{ old('status_jabatan') == 'PEJABAT' ? 'selected' : '' }}>
+                                        PEJABAT</option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="status_jabatan" class="form-label">Status Jabatan</label>
-                                <input type="text" class="form-control" id="status_jabatan" name="status_jabatan"
-                                    value="{{ old('status_jabatan') }}">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="job_grade" class="form-label">Job Grade</label>
-                                <input type="text" class="form-control" id="job_grade" name="job_grade"
-                                    value="{{ old('job_grade') }}">
-                            </div>
-                            <div class="col-md-4 mb-3">
                                 <label for="person_grade" class="form-label">Person Grade</label>
                                 <input type="text" class="form-control" id="person_grade" name="person_grade"
                                     value="{{ old('person_grade') }}">
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="lokasi_kerja_awal" class="form-label">Lokasi Kerja Awal</label>
-                                <input type="text" class="form-control" id="lokasi_kerja_awal"
-                                    name="lokasi_kerja_awal" value="{{ old('lokasi_kerja_awal') }}">
+                            <div class="col-md-6 mb-3">
+                                <label for="kelompok_kelas_jabatan" class="form-label">Kelompok Kelas Jabatan
+                                    (KKJ)</label>
+                                <input type="text" class="form-control" id="kelompok_kelas_jabatan"
+                                    name="kelompok_kelas_jabatan" value="{{ old('kelompok_kelas_jabatan') }}">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="sub_status" class="form-label">Sub Status</label>
-                                <input type="text" class="form-control" id="sub_status" name="sub_status"
-                                    value="{{ old('sub_status') }}">
+                                <label for="awal_lokasi_kerja" class="form-label">Awal Lokasi Kerja</label>
+                                <input type="text" class="form-control" id="awal_lokasi_kerja"
+                                    name="awal_lokasi_kerja" value="{{ old('awal_lokasi_kerja') }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="instansi" class="form-label">Instansi</label>
                                 <input type="text" class="form-control" id="instansi" name="instansi"
                                     value="{{ old('instansi') }}">
                             </div>
-                            <div class="col-md-12 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="fungsi_kontrak_os" class="form-label">Fungsi Kontrak OS</label>
                                 <input type="text" class="form-control" id="fungsi_kontrak_os"
                                     name="fungsi_kontrak_os" value="{{ old('fungsi_kontrak_os') }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="penugasan" class="form-label">Penugasan</label>
+                                <input type="text" class="form-control" id="penugasan" name="penugasan"
+                                    value="{{ old('penugasan') }}">
                             </div>
                         </div>
                     </div>
@@ -288,11 +295,6 @@
                                     value="{{ old('jurusan') }}">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="pendidikan_diakui" class="form-label">Pendidikan Diakui</label>
-                                <input type="text" class="form-control" id="pendidikan_diakui"
-                                    name="pendidikan_diakui" value="{{ old('pendidikan_diakui') }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
                                 <label for="pendidikan_dimiliki" class="form-label">Pendidikan Dimiliki</label>
                                 <input type="text" class="form-control" id="pendidikan_dimiliki"
                                     name="pendidikan_dimiliki" value="{{ old('pendidikan_dimiliki') }}">
@@ -325,11 +327,6 @@
                                 <label for="rencana_pensiun" class="form-label">Rencana Pensiun</label>
                                 <input type="text" class="form-control" id="rencana_pensiun" name="rencana_pensiun"
                                     value="{{ old('rencana_pensiun') }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="tmt_karyawan" class="form-label">TMT Karyawan</label>
-                                <input type="date" class="form-control" id="tmt_karyawan" name="tmt_karyawan"
-                                    value="{{ old('tmt_karyawan') }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="masa_kerja" class="form-label">Masa Kerja</label>
@@ -483,7 +480,6 @@
                                 document.getElementById('unit_kerja').value = selected.getAttribute('data-unit_kerja') || '';
                                 document.getElementById('jabatan').value = selected.getAttribute('data-jabatan') || '';
                                 document.getElementById('kelompok_kelas_jabatan').value = selected.getAttribute('data-kkj') || '';
-                                document.getElementById('grade').value = selected.getAttribute('data-grade') || '';
 
                                 // Update field Unit Hierarchy (jika ada di form)
                                 var unitDeputyEgm = document.getElementById('unit_deputy_egm');

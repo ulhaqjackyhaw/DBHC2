@@ -40,11 +40,9 @@ class DataKaryawanController extends Controller
             // Optional basic fields
             'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
             'formasi_select' => 'nullable|exists:formasi,id',
-            'status' => 'nullable|string',
             'asal_instansi' => 'nullable|string',
             'tanggal_lahir' => 'nullable|date',
             'pendidikan_diakui' => 'nullable|string',
-            'tmt' => 'nullable|date',
 
             // Unit & Struktur
             'unit_deputy_egm' => 'nullable|string',
@@ -53,14 +51,14 @@ class DataKaryawanController extends Controller
             'unit_department_head' => 'nullable|string',
 
             // Info Jabatan
-            'tmt_jabatan' => 'nullable|date',
-            'job_grade' => 'nullable|string',
             'person_grade' => 'nullable|string',
+            'kelompok_kelas_jabatan' => 'nullable|string',
             'awal_lokasi_kerja' => 'nullable|string',
-            'status_jabatan' => 'nullable|string',
-            'sub_status' => 'nullable|string',
+            'status_jabatan' => 'nullable|string|in:KARYAWAN,PEJABAT',
+            'sub_status' => 'nullable|string|in:KP,ALIH DAYA',
             'instansi' => 'nullable|string',
             'fungsi_kontrak_os' => 'nullable|string',
+            'penugasan' => 'nullable|string',
 
             // Data Personal
             'agama' => 'nullable|string',
@@ -73,7 +71,7 @@ class DataKaryawanController extends Controller
             'generasi' => 'nullable|string',
             'rencana_mpp' => 'nullable|string',
             'rencana_pensiun' => 'nullable|string',
-            'tmt_karyawan' => 'nullable|date',
+            'tmt_karyawan' => 'nullable|string',
             'masa_kerja' => 'nullable|string',
             'kategori' => 'nullable|string',
             'nilai_npi_2022' => 'nullable|numeric',
@@ -126,7 +124,6 @@ class DataKaryawanController extends Controller
         // Konversi semua field tanggal dari Y-m-d ke d/m/Y
         $dateFields = [
             'tanggal_lahir',
-            'tmt_karyawan',
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
             'masa_berlaku',
@@ -147,12 +144,14 @@ class DataKaryawanController extends Controller
             'jenis_kelamin',
             'asal_instansi',
             'pendidikan_diakui',
+            'tmt_karyawan',
+            'awal_lokasi_kerja',
             'unit_deputy_egm',
             'unit_assistant_deputy',
             'unit_division_head',
             'unit_department_head',
             'person_grade',
-            'awal_lokasi_kerja',
+            'kelompok_kelas_jabatan',
             'status_jabatan',
             'sub_status',
             'instansi',
@@ -219,11 +218,10 @@ class DataKaryawanController extends Controller
             // Optional basic fields
             'jenis_kelamin' => 'nullable|string|in:Laki-laki,Perempuan',
             'formasi_select' => 'nullable|exists:formasi,id',
-            'status' => 'nullable|string',
             'asal_instansi' => 'nullable|string',
             'tanggal_lahir' => 'nullable|date',
             'pendidikan_diakui' => 'nullable|string',
-            'tmt' => 'nullable|date',
+            'tmt_karyawan' => 'nullable|string',
 
             // Unit & Struktur
             'unit_deputy_egm' => 'nullable|string',
@@ -232,14 +230,14 @@ class DataKaryawanController extends Controller
             'unit_department_head' => 'nullable|string',
 
             // Info Jabatan
-            'tmt_jabatan' => 'nullable|date',
-            'job_grade' => 'nullable|string',
             'person_grade' => 'nullable|string',
+            'kelompok_kelas_jabatan' => 'nullable|string',
             'awal_lokasi_kerja' => 'nullable|string',
-            'status_jabatan' => 'nullable|string',
-            'sub_status' => 'nullable|string',
+            'status_jabatan' => 'nullable|string|in:KARYAWAN,PEJABAT',
+            'sub_status' => 'nullable|string|in:KP,ALIH DAYA',
             'instansi' => 'nullable|string',
             'fungsi_kontrak_os' => 'nullable|string',
+            'penugasan' => 'nullable|string',
 
             // Data Personal
             'agama' => 'nullable|string',
@@ -252,7 +250,6 @@ class DataKaryawanController extends Controller
             'generasi' => 'nullable|string',
             'rencana_mpp' => 'nullable|string',
             'rencana_pensiun' => 'nullable|string',
-            'tmt_karyawan' => 'nullable|date',
             'masa_kerja' => 'nullable|string',
             'kategori' => 'nullable|string',
             'nilai_npi_2022' => 'nullable|numeric',
@@ -305,7 +302,6 @@ class DataKaryawanController extends Controller
         // Konversi semua field tanggal dari Y-m-d ke d/m/Y
         $dateFields = [
             'tanggal_lahir',
-            'tmt_karyawan',
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
             'masa_berlaku'
@@ -326,12 +322,14 @@ class DataKaryawanController extends Controller
             'jenis_kelamin',
             'asal_instansi',
             'pendidikan_diakui',
+            'tmt_karyawan',
+            'awal_lokasi_kerja',
             'unit_deputy_egm',
             'unit_assistant_deputy',
             'unit_division_head',
             'unit_department_head',
             'person_grade',
-            'awal_lokasi_kerja',
+            'kelompok_kelas_jabatan',
             'status_jabatan',
             'sub_status',
             'instansi',
