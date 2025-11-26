@@ -573,7 +573,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h6 class="card-title mb-0">Distribusi Pendidikan Terakhir</h6>
+                            <h6 class="card-title mb-0">Distribusi Pendidikan yang Diakui Perusahaan</h6>
                             <small class="text-muted">
                                 <i class="fa-solid fa-graduation-cap me-1"></i>
                                 Komposisi tingkat pendidikan karyawan

@@ -120,8 +120,23 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="instansi" class="form-label">Instansi</label>
+                                <input type="text" class="form-control" id="instansi" name="instansi"
+                                    value="{{ old('instansi', $karyawan->instansi) }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="pendidikan_diakui" class="form-label">Pendidikan Diakui</label>
+                                <input type="text"
+                                    class="form-control @error('pendidikan_diakui') is-invalid @enderror"
+                                    id="pendidikan_diakui" name="pendidikan_diakui"
+                                    value="{{ old('pendidikan_diakui', $karyawan->pendidikan_diakui) }}">
+                                @error('pendidikan_diakui')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-md-12 mb-3">
-                                <label for="formasi_select" class="form-label">Pilih Formasi</label>
+                                <label for="formasi_select" class="form-label">Pilih Formasi (Kode Jabatan)</label>
                                 <select class="form-select @error('kode_jabatan') is-invalid @enderror"
                                     id="formasi_select" name="formasi_select" onchange="updateFormasiFields()">
                                     <option value="" disabled>Pilih Formasi</option>
@@ -154,14 +169,33 @@
                             </div>
                             <input type="hidden" id="kode_jabatan" name="kode_jabatan"
                                 value="{{ old('kode_jabatan', $karyawan->kode_jabatan) }}">
-                            <input type="hidden" id="unit_kerja" name="unit_kerja"
-                                value="{{ old('unit_kerja', $karyawan->unit_kerja) }}">
                             <input type="hidden" id="jabatan" name="jabatan"
                                 value="{{ old('jabatan', $karyawan->jabatan) }}">
+                            <div class="col-md-6 mb-3">
+                                <label for="unit_kerja" class="form-label">Unit Kerja</label>
+                                <input type="text" class="form-control" id="unit_kerja" name="unit_kerja"
+                                    value="{{ old('unit_kerja', $karyawan->unit_kerja) }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="kelompok_kelas_jabatan" class="form-label">Kelompok Kelas Jabatan
+                                    (KKJ)</label>
+                                <input type="text" class="form-control" id="kelompok_kelas_jabatan"
+                                    name="kelompok_kelas_jabatan"
+                                    value="{{ old('kelompok_kelas_jabatan', $karyawan->kelompok_kelas_jabatan) }}">
+                            </div>
                             <div class="col-md-6 mb-3">
                                 <label for="lokasi_kerja" class="form-label">Lokasi Kerja</label>
                                 <input type="text" class="form-control" id="lokasi_kerja" name="lokasi_kerja"
                                     value="{{ old('lokasi_kerja', $karyawan->lokasi_kerja) }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tmt_karyawan" class="form-label">TMT Karyawan</label>
+                                <input type="text" class="form-control @error('tmt_karyawan') is-invalid @enderror"
+                                    id="tmt_karyawan" name="tmt_karyawan"
+                                    value="{{ old('tmt_karyawan', $karyawan->tmt_karyawan) }}" placeholder="dd/mm/yyyy">
+                                @error('tmt_karyawan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="sub_status" class="form-label">Sub Status</label>
@@ -178,34 +212,6 @@
                                         ALIH DAYA</option>
                                 </select>
                                 @error('sub_status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="asal_instansi" class="form-label">Asal Instansi</label>
-                                <input type="text" class="form-control @error('asal_instansi') is-invalid @enderror"
-                                    id="asal_instansi" name="asal_instansi"
-                                    value="{{ old('asal_instansi', $karyawan->asal_instansi) }}">
-                                @error('asal_instansi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="pendidikan_diakui" class="form-label">Pendidikan Diakui</label>
-                                <input type="text"
-                                    class="form-control @error('pendidikan_diakui') is-invalid @enderror"
-                                    id="pendidikan_diakui" name="pendidikan_diakui"
-                                    value="{{ old('pendidikan_diakui', $karyawan->pendidikan_diakui) }}">
-                                @error('pendidikan_diakui')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="tmt_karyawan" class="form-label">TMT Karyawan</label>
-                                <input type="text" class="form-control @error('tmt_karyawan') is-invalid @enderror"
-                                    id="tmt_karyawan" name="tmt_karyawan"
-                                    value="{{ old('tmt_karyawan', $karyawan->tmt_karyawan) }}" placeholder="dd/mm/yyyy">
-                                @error('tmt_karyawan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -244,6 +250,15 @@
                     <!-- Tab 3: Info Jabatan -->
                     <div class="tab-pane fade" id="job" role="tabpanel">
                         <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="asal_instansi" class="form-label">Asal Instansi</label>
+                                <input type="text" class="form-control @error('asal_instansi') is-invalid @enderror"
+                                    id="asal_instansi" name="asal_instansi"
+                                    value="{{ old('asal_instansi', $karyawan->asal_instansi) }}">
+                                @error('asal_instansi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-md-6 mb-3">
                                 <label for="status_jabatan" class="form-label">Status Jabatan</label>
                                 <select class="form-select" id="status_jabatan" name="status_jabatan">

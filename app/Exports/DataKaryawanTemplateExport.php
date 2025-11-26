@@ -21,36 +21,122 @@ class DataKaryawanTemplateExport implements FromArray, WithHeadings, WithStyles,
         // Example rows for template
         return [
             [
-                '18617368',
-                'CONTOH : Andi Firmansyah D',
-                'Laki-laki',
-                'CGKD01AD03DIV06DEP022J0175',
-                'KCU. Bandara Internasional Soekarno-Hatta',
-                'T3 Ventilation & Air Conditioning Services',
-                'T3 Ventilation & Air Conditioning Services Engineer',
-                'BOD-4',
-                '11',
-                'Organic',
-                'PT ANGKASA PURA INDONESIA',
-                '23/07/1995',
-                'S1',
-                '23/12/2022'
+                '21234567', // NIK
+                'Abyasa Hutagalung', // NAMA
+                'CGKD01AD02DIV03DEP008J0085', // KODE JABATAN
+                'Airport Operation & Security Services', // UNIT DEPUTY EGM
+                'Airport Rescue & Fire Fighting', // UNIT ASSISTANT DEPUTY
+                'Airport Rescue & Fire Fighting Operation Performance', // UNIT DIVISION HEAD
+                'Building Rescue & Fire Fighting', // UNIT DEPARTMENT HEAD
+                'Building Rescue & Fire Fighting', // UNIT KERJA
+                'Building Rescue & Firefighting Basic Firefighter', // JABATAN
+                '-', // PERSON GRADE
+                'CGK', // LOKASI KERJA
+                'PT Angkasa Pura Indonesia', // AWAL LOKASI KERJA
+                'KARYAWAN', // STATUS JABATAN
+                'ALIH DAYA', // SUB STATUS
+                '-', // ASAL INSTANSI
+                'PT IAS SUPPORT INDONESIA', // INSTANSI
+                'PEREMPUAN', // JENIS KELAMIN
+                '16/02/1994', // TANGGAL LAHIR
+                '31', // USIA
+                '01 March 2051', // RENCANA MPP
+                '01 August 2052', // RENCANA PENSIUN
+                'D2', // PENDIDIKAN DIAKUI
+                'SMP', // PENDIDIKAN DIMILIKI
+                'Teknik Informatika', // JURUSAN
+                '01/10/2023', // TMT KARYAWAN
+                '2', // MASA KERJA
+                '01/10/2023', // TMT KJ TERTINGGI
+                '2', // MASA KJ TERTINGGI (TAHUN)
+                'ARFF', // SUB KELUARGA JABATAN
+                'AIRPORT OPERATION', // KELUARGA JABATAN
+                'Operation & Services', // FUNGSI JABATAN
+                'Non Manajerial', // JALUR KARIR
+                '-', // JENJANG KARIR
+                '-', // KELOMPOK KELAS JABATAN
+                'Operasional', // FUNGSI PEKERJAAN
+                '-', // LISENCE DIMILIKI
+                '87', // RATING
+                '-', // NO STKP
+                '-', // MASA BERLAKU
+                '-', // LISENCE DIBAYARKAN JANUARI
+                'BUDDHA', // AGAMA
+                '87', // NILAI NPI 2022
+                '-', // KATEGORI
+                '3507900000000001', // NO KTP
+                'Jakarta', // ALAMAT KTP
+                '-', // NO KONTRAK
+                'agus.maharani@ap1.co.id', // EMAIL
+                '085580173457', // NO HP
+                'MENIKAH', // STATUS PERNIKAHAN
+                'GEN X', // GENERASI
+                'SK-901/AP1/2025', // NO SK JABATAN TERAKHIR
+                '07-Sep-2024', // TGL SK JABATAN TERAKHIR
+                '-', // CEK LISENCE/SERKOM
+                '87', // KPI 2023
+                '', // KRITERIA
+                'ARFF', // FUNGSI KONTRAK OS
+                '-', // PENUGASAN
             ],
             [
-                '455425237',
-                'CONTOH : Cantika Ayu',
-                'Perempuan',
-                'A2910',
-                'KCU. Bandara Internasional Soekarno-Hatta',
-                'Terminal 1 Building',
-                'OS',
-                'OS',
-                '5',
-                'Outsourcing',
-                'PT KOSAMI SEJAHTERA UTAMA',
-                '27/09/1993',
-                'S1',
-                '12/04/2022'
+                '27654321', // NIK
+                'drg. Adikara Laksmiwati, S.Pt', // NAMA
+                'HLPD00AD00DIV00AM006J1113', // KODE JABATAN
+                '-', // UNIT DEPUTY EGM
+                '-', // UNIT ASSISTANT DEPUTY
+                '-', // UNIT DIVISION HEAD
+                'Infrastructure & Maintenance', // UNIT DEPARTMENT HEAD
+                'Infrastructure & Maintenance', // UNIT KERJA
+                'Airside Infrastructure & Accessibility Supervisor', // JABATAN
+                '12', // PERSON GRADE
+                'HLP', // LOKASI KERJA
+                'KC Bandara Halim Perdanakusuma', // AWAL LOKASI KERJA
+                'KARYAWAN', // STATUS JABATAN
+                'KP', // SUB STATUS
+                'PT Angkasa Pura II', // ASAL INSTANSI
+                'PT ANGKASA PURA INDONESIA', // INSTANSI
+                'LAKI-LAKI', // JENIS KELAMIN
+                '07/11/1998', // TANGGAL LAHIR
+                '103', // USIA
+                '26 March 2030', // RENCANA MPP
+                '26 January 2031', // RENCANA PENSIUN
+                'S3', // PENDIDIKAN DIAKUI
+                'S2', // PENDIDIKAN DIMILIKI
+                'Teknik Informatika', // JURUSAN
+                '01/10/2024', // TMT KARYAWAN
+                '2', // MASA KERJA
+                '01/10/2024', // TMT KJ TERTINGGI
+                '2', // MASA KJ TERTINGGI (TAHUN)
+                'Airport Security', // SUB KELUARGA JABATAN
+                'AIRPORT OPERATION', // KELUARGA JABATAN
+                'Administration', // FUNGSI JABATAN
+                'Manajerial', // JALUR KARIR
+                '-', // JENJANG KARIR
+                'BOD-3', // KELOMPOK KELAS JABATAN
+                'Administrasi', // FUNGSI PEKERJAAN
+                '-', // LISENCE DIMILIKI
+                '87', // RATING
+                '-', // NO STKP
+                '-', // MASA BERLAKU
+                '-', // LISENCE DIBAYARKAN JANUARI
+                'HINDU', // AGAMA
+                '87', // NILAI NPI 2022
+                '-', // KATEGORI
+                '3507900000000002', // NO KTP
+                'Jakarta', // ALAMAT KTP
+                '-', // NO KONTRAK
+                'agus.maharani@ap1.co.id', // EMAIL
+                '85580173452', // NO HP
+                'MENIKAH', // STATUS PERNIKAHAN
+                'GEN X', // GENERASI
+                'SK-901/AP1/2026', // NO SK JABATAN TERAKHIR
+                '07-Sep-2025', // TGL SK JABATAN TERAKHIR
+                '-', // CEK LISENCE/SERKOM
+                '87', // KPI 2023
+                '', // KRITERIA
+                '-', // FUNGSI KONTRAK OS
+                '-', // PENUGASAN
             ],
         ];
     }
