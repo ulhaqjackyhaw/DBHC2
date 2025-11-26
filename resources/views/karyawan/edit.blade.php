@@ -190,12 +190,21 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="tmt_karyawan" class="form-label">TMT Karyawan</label>
-                                <input type="text" class="form-control @error('tmt_karyawan') is-invalid @enderror"
-                                    id="tmt_karyawan" name="tmt_karyawan"
-                                    value="{{ old('tmt_karyawan', $karyawan->tmt_karyawan) }}" placeholder="dd/mm/yyyy">
-                                @error('tmt_karyawan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                @php
+                                    $tmtKaryawanFormatted = '';
+                                    if ($karyawan->tmt_karyawan) {
+                                        try {
+                                            $tmtKaryawanFormatted = \Carbon\Carbon::createFromFormat(
+                                                'd/m/Y',
+                                                $karyawan->tmt_karyawan,
+                                            )->format('Y-m-d');
+                                        } catch (\Exception $e) {
+                                            $tmtKaryawanFormatted = '';
+                                        }
+                                    }
+                                @endphp
+                                <input type="date" class="form-control" id="tmt_karyawan" name="tmt_karyawan"
+                                    value="{{ old('tmt_karyawan', $tmtKaryawanFormatted) }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="sub_status" class="form-label">Sub Status</label>
@@ -395,24 +404,6 @@
                                 <label for="rencana_pensiun" class="form-label">Rencana Pensiun</label>
                                 <input type="text" class="form-control" id="rencana_pensiun" name="rencana_pensiun"
                                     value="{{ old('rencana_pensiun', $karyawan->rencana_pensiun) }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="tmt_karyawan" class="form-label">TMT Karyawan</label>
-                                @php
-                                    $tmtKaryawanFormatted = '';
-                                    if ($karyawan->tmt_karyawan) {
-                                        try {
-                                            $tmtKaryawanFormatted = \Carbon\Carbon::createFromFormat(
-                                                'd/m/Y',
-                                                $karyawan->tmt_karyawan,
-                                            )->format('Y-m-d');
-                                        } catch (\Exception $e) {
-                                            $tmtKaryawanFormatted = '';
-                                        }
-                                    }
-                                @endphp
-                                <input type="date" class="form-control" id="tmt_karyawan" name="tmt_karyawan"
-                                    value="{{ old('tmt_karyawan', $tmtKaryawanFormatted) }}">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="masa_kerja" class="form-label">Masa Kerja</label>

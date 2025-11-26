@@ -153,9 +153,8 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="tmt_karyawan" class="form-label">TMT Karyawan</label>
-                                <input type="text" class="form-control @error('tmt_karyawan') is-invalid @enderror"
-                                    id="tmt_karyawan" name="tmt_karyawan" value="{{ old('tmt_karyawan') }}"
-                                    placeholder="dd/mm/yyyy">
+                                <input type="date" class="form-control @error('tmt_karyawan') is-invalid @enderror"
+                                    id="tmt_karyawan" name="tmt_karyawan" value="{{ old('tmt_karyawan') }}">
                                 @error('tmt_karyawan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

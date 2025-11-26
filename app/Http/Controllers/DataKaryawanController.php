@@ -71,7 +71,7 @@ class DataKaryawanController extends Controller
             'generasi' => 'nullable|string',
             'rencana_mpp' => 'nullable|string',
             'rencana_pensiun' => 'nullable|string',
-            'tmt_karyawan' => 'nullable|string',
+            'tmt_karyawan' => 'nullable|date',
             'masa_kerja' => 'nullable|string',
             'kategori' => 'nullable|string',
             'nilai_npi_2022' => 'nullable|numeric',
@@ -124,6 +124,7 @@ class DataKaryawanController extends Controller
         // Konversi semua field tanggal dari Y-m-d ke d/m/Y
         $dateFields = [
             'tanggal_lahir',
+            'tmt_karyawan',
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
             'masa_berlaku',
@@ -144,7 +145,6 @@ class DataKaryawanController extends Controller
             'jenis_kelamin',
             'asal_instansi',
             'pendidikan_diakui',
-            'tmt_karyawan',
             'awal_lokasi_kerja',
             'unit_deputy_egm',
             'unit_assistant_deputy',
@@ -221,7 +221,7 @@ class DataKaryawanController extends Controller
             'asal_instansi' => 'nullable|string',
             'tanggal_lahir' => 'nullable|date',
             'pendidikan_diakui' => 'nullable|string',
-            'tmt_karyawan' => 'nullable|string',
+            'tmt_karyawan' => 'nullable|date',
 
             // Unit & Struktur
             'unit_deputy_egm' => 'nullable|string',
@@ -302,6 +302,7 @@ class DataKaryawanController extends Controller
         // Konversi semua field tanggal dari Y-m-d ke d/m/Y
         $dateFields = [
             'tanggal_lahir',
+            'tmt_karyawan',
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
             'masa_berlaku'
@@ -322,7 +323,6 @@ class DataKaryawanController extends Controller
             'jenis_kelamin',
             'asal_instansi',
             'pendidikan_diakui',
-            'tmt_karyawan',
             'awal_lokasi_kerja',
             'unit_deputy_egm',
             'unit_assistant_deputy',
