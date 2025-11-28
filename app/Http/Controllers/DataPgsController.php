@@ -175,7 +175,34 @@ class DataPgsController extends Controller
         ]);
 
         try {
+            $countBefore = DataPgs::count();
             Excel::import(new DataPgsImport, $request->file('file'));
+            $countAfter = DataPgs::count();
+            $imported = $countAfter - $countBefore;
+
+            // Catat ke audit log
+            if (\Auth::check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => \Auth::id(),
+                    'user_name' => \Auth::user()->name,
+                    'user_email' => \Auth::user()->email,
+                    'action' => 'bulk_created',
+                    'model_type' => 'App\\Models\\DataPgs',
+                    'model_id' => null,
+                    'model_identifier' => 'Bulk Import - ' . $request->file('file')->getClientOriginalName(),
+                    'old_values' => null,
+                    'new_values' => [
+                        'imported' => $imported,
+                        'total_after' => $countAfter,
+                        'mode' => 'add',
+                        'filename' => $request->file('file')->getClientOriginalName()
+                    ],
+                    'changes' => null,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            }
+
             return redirect()->route('data-pgs.index')->with('success', 'Data PGS berhasil diimport dan ditambahkan.');
         } catch (\Exception $e) {
             return redirect()->route('data-pgs.index')->with('error', 'Error import data: ' . $e->getMessage());
@@ -193,10 +220,35 @@ class DataPgsController extends Controller
 
         try {
             // Hapus semua data yang ada
+            $countBefore = DataPgs::count();
             DataPgs::truncate();
 
             // Import data baru
             Excel::import(new DataPgsImport, $request->file('file'));
+            $countAfter = DataPgs::count();
+
+            // Catat ke audit log
+            if (\Auth::check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => \Auth::id(),
+                    'user_name' => \Auth::user()->name,
+                    'user_email' => \Auth::user()->email,
+                    'action' => 'bulk_replaced',
+                    'model_type' => 'App\\Models\\DataPgs',
+                    'model_id' => null,
+                    'model_identifier' => 'Bulk Import - ' . $request->file('file')->getClientOriginalName(),
+                    'old_values' => ['total_records' => $countBefore],
+                    'new_values' => [
+                        'imported' => $countAfter,
+                        'total_after' => $countAfter,
+                        'mode' => 'replace',
+                        'filename' => $request->file('file')->getClientOriginalName()
+                    ],
+                    'changes' => null,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            }
 
             return redirect()->route('data-pgs.index')->with('success', 'Data PGS berhasil diganti dengan data baru dari file import.');
         } catch (\Exception $e) {

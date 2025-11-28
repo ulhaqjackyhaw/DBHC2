@@ -52,8 +52,15 @@ class ImportDataKaryawanJob implements ShouldQueue
                 'message' => 'Membaca file Excel...'
             ], 3600);
 
+            // Track count sebelum import
+            $countBefore = \App\Models\DataKaryawan::count();
+
             $import = new DataKaryawanImport($this->sessionId);
             Excel::import($import, $this->filePath);
+
+            // Track count setelah import
+            $countAfter = \App\Models\DataKaryawan::count();
+            $imported = $countAfter - $countBefore;
 
             $skipped = $import->getSkippedCount();
             $message = $this->mode === 'replace'
@@ -62,6 +69,30 @@ class ImportDataKaryawanJob implements ShouldQueue
 
             if ($skipped > 0) {
                 $message .= " ({$skipped} baris dilewati karena NIK duplikat atau kosong)";
+            }
+
+            // Catat ke audit log
+            if (\Auth::check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => \Auth::id(),
+                    'user_name' => \Auth::user()->name,
+                    'user_email' => \Auth::user()->email,
+                    'action' => $this->mode === 'replace' ? 'bulk_replaced' : 'bulk_created',
+                    'model_type' => 'App\\Models\\DataKaryawan',
+                    'model_id' => null,
+                    'model_identifier' => 'Bulk Import - ' . basename($this->filePath),
+                    'old_values' => $this->mode === 'replace' ? ['total_records' => $countBefore] : null,
+                    'new_values' => [
+                        'imported' => $imported,
+                        'skipped' => $skipped,
+                        'total_after' => $countAfter,
+                        'mode' => $this->mode,
+                        'filename' => basename($this->filePath)
+                    ],
+                    'changes' => null,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
             }
 
             Cache::put("import_progress_{$this->sessionId}", [

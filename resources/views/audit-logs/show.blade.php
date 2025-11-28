@@ -40,6 +40,10 @@
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
         }
+
+        .bg-purple {
+            background-color: #6f42c1 !important;
+        }
     </style>
 @endpush
 
@@ -177,6 +181,116 @@
                     <div class="json-viewer">
                         <pre>{{ json_encode($auditLog->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                     </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- Bulk Import Details --}}
+        @if (in_array($auditLog->action, ['bulk_created', 'bulk_replaced']) && !empty($auditLog->new_values))
+            <div class="card detail-card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-arrow-up"></i> Detail Bulk Import
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="30%">Mode Import:</th>
+                            <td>
+                                <span
+                                    class="badge bg-{{ $auditLog->action === 'bulk_replaced' ? 'dark' : 'primary' }} fs-6">
+                                    {{ $auditLog->new_values['mode'] === 'replace' ? 'REPLACE (Ganti Semua)' : 'ADD (Tambah Data)' }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Nama File:</th>
+                            <td><code>{{ $auditLog->new_values['filename'] ?? '-' }}</code></td>
+                        </tr>
+                        <tr>
+                            <th>Data Berhasil Di-import:</th>
+                            <td>
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-check-circle"></i> {{ $auditLog->new_values['imported'] ?? 0 }} data
+                                </span>
+                            </td>
+                        </tr>
+                        @if (isset($auditLog->new_values['skipped']) && $auditLog->new_values['skipped'] > 0)
+                            <tr>
+                                <th>Data Dilewati:</th>
+                                <td>
+                                    <span class="badge bg-warning text-dark fs-6">
+                                        <i class="bi bi-exclamation-triangle"></i> {{ $auditLog->new_values['skipped'] }}
+                                        baris
+                                    </span>
+                                    <small class="text-muted d-block mt-1">
+                                        (NIK duplikat atau data tidak valid)
+                                    </small>
+                                </td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <th>Total Data Setelah Import:</th>
+                            <td><strong>{{ number_format($auditLog->new_values['total_after'] ?? 0) }} records</strong>
+                            </td>
+                        </tr>
+                        @if ($auditLog->action === 'bulk_replaced' && isset($auditLog->old_values['total_records']))
+                            <tr>
+                                <th>Total Data Sebelum Replace:</th>
+                                <td class="text-danger">
+                                    <del>{{ number_format($auditLog->old_values['total_records']) }} records</del>
+                                    <small class="text-muted d-block">(Data lama dihapus)</small>
+                                </td>
+                            </tr>
+                        @endif
+                    </table>
+                </div>
+            </div>
+        @endif
+
+        {{-- Version Restore Details --}}
+        @if ($auditLog->action === 'version_restored' && !empty($auditLog->new_values))
+            <div class="card detail-card mb-4">
+                <div class="card-header text-white" style="background-color: #6f42c1;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i> Detail Restore Snapshot
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="30%">Deskripsi Snapshot:</th>
+                            <td><strong>{{ $auditLog->new_values['description'] ?? '-' }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Snapshot:</th>
+                            <td>
+                                <span class="badge bg-info fs-6">
+                                    <i class="bi bi-calendar-check"></i>
+                                    {{ $auditLog->new_values['snapshot_date'] ?? '-' }}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Jumlah Data Di-restore:</th>
+                            <td>
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-database-fill-check"></i>
+                                    {{ number_format($auditLog->new_values['records_count'] ?? 0) }} records
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="2" class="pt-3">
+                                <div class="alert alert-warning mb-0">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    <strong>Perhatian:</strong> Operasi restore menghapus semua data karyawan yang ada dan
+                                    menggantinya dengan data dari snapshot.
+                                </div>
+                            </th>
+                        </tr>
+                    </table>
                 </div>
             </div>
         @endif

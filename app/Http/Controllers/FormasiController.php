@@ -118,7 +118,34 @@ class FormasiController extends Controller
             ini_set('memory_limit', '1024M');
             ini_set('max_execution_time', 300); // 5 menit
 
+            $countBefore = Formasi::count();
             Excel::import(new FormasiImport, $request->file('file'));
+            $countAfter = Formasi::count();
+            $imported = $countAfter - $countBefore;
+
+            // Catat ke audit log
+            if (\Auth::check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => \Auth::id(),
+                    'user_name' => \Auth::user()->name,
+                    'user_email' => \Auth::user()->email,
+                    'action' => 'bulk_created',
+                    'model_type' => 'App\\Models\\Formasi',
+                    'model_id' => null,
+                    'model_identifier' => 'Bulk Import - ' . $request->file('file')->getClientOriginalName(),
+                    'old_values' => null,
+                    'new_values' => [
+                        'imported' => $imported,
+                        'total_after' => $countAfter,
+                        'mode' => 'add',
+                        'filename' => $request->file('file')->getClientOriginalName()
+                    ],
+                    'changes' => null,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            }
+
             return redirect()->route('formasi.index')->with('success', 'Data formasi berhasil ditambahkan.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -137,8 +164,34 @@ class FormasiController extends Controller
             ini_set('memory_limit', '1024M');
             ini_set('max_execution_time', 300); // 5 menit
 
+            $countBefore = Formasi::count();
             Formasi::query()->delete();
             Excel::import(new FormasiImport, $request->file('file'));
+            $countAfter = Formasi::count();
+
+            // Catat ke audit log
+            if (\Auth::check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => \Auth::id(),
+                    'user_name' => \Auth::user()->name,
+                    'user_email' => \Auth::user()->email,
+                    'action' => 'bulk_replaced',
+                    'model_type' => 'App\\Models\\Formasi',
+                    'model_id' => null,
+                    'model_identifier' => 'Bulk Import - ' . $request->file('file')->getClientOriginalName(),
+                    'old_values' => ['total_records' => $countBefore],
+                    'new_values' => [
+                        'imported' => $countAfter,
+                        'total_after' => $countAfter,
+                        'mode' => 'replace',
+                        'filename' => $request->file('file')->getClientOriginalName()
+                    ],
+                    'changes' => null,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            }
+
             return redirect()->route('formasi.index')->with('success', 'Semua data formasi berhasil diganti.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

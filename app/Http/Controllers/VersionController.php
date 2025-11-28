@@ -232,6 +232,22 @@ class VersionController extends Controller
 
             Schema::enableForeignKeyConstraints();
             DB::commit();
+
+            // Audit log untuk restore version
+            \App\Models\AuditLog::create([
+                'user_id' => auth()->id(),
+                'model_type' => Version::class,
+                'model_id' => $version->id,
+                'action' => 'version_restored',
+                'model_identifier' => $version->description,
+                'new_values' => [
+                    'description' => $version->description,
+                    'snapshot_date' => $version->created_at->format('d/m/Y H:i:s'),
+                    'records_count' => $version->history_count ?? $version->history()->count(),
+                ],
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             Schema::enableForeignKeyConstraints();

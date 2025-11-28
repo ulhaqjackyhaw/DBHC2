@@ -29,8 +29,14 @@ class AuditLogController extends Controller
                 case 'realisasi':
                     $query->where('model_type', 'App\\Models\\Realisasi');
                     break;
+                case 'data-pgs':
+                    $query->where('model_type', 'App\\Models\\DataPgs');
+                    break;
                 case 'user':
                     $query->where('model_type', 'App\\Models\\User');
+                    break;
+                case 'version':
+                    $query->where('model_type', 'App\\Models\\Version');
                     break;
             }
         }
@@ -77,9 +83,11 @@ class AuditLogController extends Controller
             ->mapWithKeys(function ($type) {
                 $name = match ($type) {
                     'App\\Models\\DataKaryawan' => 'Data Karyawan',
-                    'App\\Models\\Formasi' => 'Formasi',
-                    'App\\Models\\Realisasi' => 'Realisasi',
+                    'App\\Models\\Formasi' => 'Data Formasi',
+                    'App\\Models\\Realisasi' => 'Data Realisasi',
+                    'App\\Models\\DataPgs' => 'Data PGS',
                     'App\\Models\\User' => 'User',
+                    'App\\Models\\Version' => 'Version Snapshot',
                     default => class_basename($type),
                 };
                 return [$type => $name];

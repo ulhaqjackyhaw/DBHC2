@@ -41,6 +41,18 @@
             border-left-color: #17a2b8;
         }
 
+        .audit-card.action-bulk_created {
+            border-left-color: #0d6efd;
+        }
+
+        .audit-card.action-bulk_replaced {
+            border-left-color: #212529;
+        }
+
+        .audit-card.action-version_restored {
+            border-left-color: #6f42c1;
+        }
+
         .change-item {
             background: #f8f9fa;
             padding: 0.5rem;
@@ -90,6 +102,11 @@
         .menu-badge.badge-user {
             background: #fee2e2;
             color: #b91c1c;
+        }
+
+        .menu-badge.badge-version {
+            background: #f3e8ff;
+            color: #6b21a8;
         }
     </style>
 
@@ -151,6 +168,10 @@
                     class="btn btn-sm {{ request('menu_filter') == 'user' ? 'btn-danger' : 'btn-outline-danger' }}">
                     <i class="bi bi-person-plus-fill"></i> User Management
                 </a>
+                <a href="{{ route('audit-logs.index', ['menu_filter' => 'version']) }}"
+                    class="btn btn-sm {{ request('menu_filter') == 'version' ? 'btn-secondary' : 'btn-outline-secondary' }}">
+                    <i class="bi bi-clock-history"></i> Version Snapshot
+                </a>
             </div>
         </div>
 
@@ -175,6 +196,12 @@
                         <option value="deleted" {{ request('action') == 'deleted' ? 'selected' : '' }}>Menghapus Data
                         </option>
                         <option value="restored" {{ request('action') == 'restored' ? 'selected' : '' }}>Memulihkan Data
+                        </option>
+                        <option value="bulk_created" {{ request('action') == 'bulk_created' ? 'selected' : '' }}>Import
+                            Data (Tambah)
+                        </option>
+                        <option value="bulk_replaced" {{ request('action') == 'bulk_replaced' ? 'selected' : '' }}>Import
+                            Data (Replace)
                         </option>
                     </select>
                 </div>
@@ -252,6 +279,10 @@
                                                 @case('user')
                                                     User Management
                                                 @break
+
+                                                @case('version')
+                                                    Version Snapshot
+                                                @break
                                             @endswitch
                                         </span>
                                     @endif
@@ -275,6 +306,18 @@
 
                                                 @case('restored')
                                                     Memulihkan Data
+                                                @break
+
+                                                @case('bulk_created')
+                                                    Import Data (Tambah)
+                                                @break
+
+                                                @case('bulk_replaced')
+                                                    Import Data (Replace)
+                                                @break
+
+                                                @case('version_restored')
+                                                    Restore dari Snapshot
                                                 @break
                                             @endswitch
                                         </span>
@@ -353,6 +396,61 @@
                                                 @endif
                                             </div>
                                         @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (in_array($log->action, ['bulk_created', 'bulk_replaced']) && !empty($log->new_values))
+                                <div class="mt-2">
+                                    <strong class="text-muted"><i class="bi bi-file-earmark-arrow-up"></i> Detail
+                                        Import:</strong>
+                                    <div class="ms-3 mt-2">
+                                        <div class="change-item">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <strong>Berhasil di-import:</strong>
+                                            <span class="badge bg-success">{{ $log->new_values['imported'] ?? 0 }}
+                                                data</span>
+                                        </div>
+                                        @if (isset($log->new_values['skipped']) && $log->new_values['skipped'] > 0)
+                                            <div class="change-item">
+                                                <i class="bi bi-exclamation-circle text-warning"></i>
+                                                <strong>Dilewati:</strong>
+                                                <span class="badge bg-warning">{{ $log->new_values['skipped'] }}
+                                                    baris</span>
+                                            </div>
+                                        @endif
+                                        <div class="change-item">
+                                            <i class="bi bi-file-earmark"></i>
+                                            <strong>File:</strong>
+                                            <code>{{ $log->new_values['filename'] ?? '-' }}</code>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($log->action === 'version_restored' && !empty($log->new_values))
+                                <div class="mt-2">
+                                    <strong class="text-muted"><i class="bi bi-clock-history"></i> Detail
+                                        Restore:</strong>
+                                    <div class="ms-3 mt-2">
+                                        <div class="change-item">
+                                            <i class="bi bi-calendar-check text-info"></i>
+                                            <strong>Snapshot:</strong>
+                                            <span
+                                                class="badge bg-info">{{ $log->new_values['snapshot_date'] ?? '-' }}</span>
+                                        </div>
+                                        <div class="change-item">
+                                            <i class="bi bi-database-fill-check text-success"></i>
+                                            <strong>Data di-restore:</strong>
+                                            <span
+                                                class="badge bg-success">{{ number_format($log->new_values['records_count'] ?? 0) }}
+                                                records</span>
+                                        </div>
+                                        <div class="change-item">
+                                            <i class="bi bi-tag"></i>
+                                            <strong>Deskripsi:</strong>
+                                            <code>{{ $log->new_values['description'] ?? '-' }}</code>
+                                        </div>
                                     </div>
                                 </div>
                             @endif

@@ -131,7 +131,34 @@ class RealisasiController extends Controller
             $tahun = $request->integer('tahun');
             $file = $request->file('file');
 
+            $countBefore = \App\Models\Realisasi::where('tahun', $tahun)->count();
             Excel::import(new RealisasiImport($tahun), $file);
+            $countAfter = \App\Models\Realisasi::where('tahun', $tahun)->count();
+            $imported = $countAfter - $countBefore;
+
+            // Catat ke audit log
+            if (\Auth::check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => \Auth::id(),
+                    'user_name' => \Auth::user()->name,
+                    'user_email' => \Auth::user()->email,
+                    'action' => 'bulk_created',
+                    'model_type' => 'App\\Models\\Realisasi',
+                    'model_id' => null,
+                    'model_identifier' => 'Bulk Import - ' . $file->getClientOriginalName() . ' (Tahun: ' . $tahun . ')',
+                    'old_values' => null,
+                    'new_values' => [
+                        'imported' => $imported,
+                        'total_after' => $countAfter,
+                        'tahun' => $tahun,
+                        'mode' => 'add',
+                        'filename' => $file->getClientOriginalName()
+                    ],
+                    'changes' => null,
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            }
 
             return redirect()->route('realisasi.index', ['tahun' => $tahun])
                 ->with('success', 'Data realisasi berhasil diimport.');

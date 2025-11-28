@@ -50,6 +50,9 @@ class AuditLog extends Model
             'updated' => 'Mengubah Data',
             'deleted' => 'Menghapus Data',
             'restored' => 'Memulihkan Data',
+            'bulk_created' => 'Import Data (Tambah)',
+            'bulk_replaced' => 'Import Data (Replace)',
+            'version_restored' => 'Restore dari Snapshot',
             default => ucfirst($this->action),
         };
     }
@@ -61,9 +64,11 @@ class AuditLog extends Model
     {
         return match ($this->model_type) {
             'App\\Models\\DataKaryawan' => 'Data Karyawan',
-            'App\\Models\\Formasi' => 'Formasi',
-            'App\\Models\\Realisasi' => 'Realisasi',
+            'App\\Models\\Formasi' => 'Data Formasi',
+            'App\\Models\\Realisasi' => 'Data Realisasi',
+            'App\\Models\\DataPgs' => 'Data PGS',
             'App\\Models\\User' => 'User',
+            'App\\Models\\Version' => 'Version Snapshot',
             default => class_basename($this->model_type),
         };
     }
@@ -78,6 +83,9 @@ class AuditLog extends Model
             'updated' => 'warning',
             'deleted' => 'danger',
             'restored' => 'info',
+            'bulk_created' => 'primary',
+            'bulk_replaced' => 'dark',
+            'version_restored' => 'purple',
             default => 'secondary',
         };
     }
@@ -167,36 +175,89 @@ class AuditLog extends Model
     private function getFieldLabel($field)
     {
         $labels = [
-            // DataKaryawan fields
-            'nipp' => 'NIPP',
+            // Data Karyawan fields
+            'nik' => 'NIK',
             'nama' => 'Nama',
             'jenis_kelamin' => 'Jenis Kelamin',
             'tanggal_lahir' => 'Tanggal Lahir',
-            'pendidikan_terakhir' => 'Pendidikan Terakhir',
-            'kode_jabatan' => 'Kode Jabatan',
-            'jabatan' => 'Jabatan',
-            'unit' => 'Unit',
-            'lokasi' => 'Lokasi',
-            'status_pegawai' => 'Status Pegawai',
-            'tanggal_masuk' => 'Tanggal Masuk',
+            'pendidikan_diakui' => 'Pendidikan Diakui',
+            'asal_instansi' => 'Asal Instansi',
+            'unit_deputy_egm' => 'Unit Deputy/EGM',
+            'unit_assistant_deputy' => 'Unit Assistant Deputy',
+            'unit_division_head' => 'Unit Division Head',
+            'unit_department_head' => 'Unit Department Head',
+            'person_grade' => 'Person Grade',
+            'kelompok_kelas_jabatan' => 'Kelompok Kelas Jabatan',
+            'awal_lokasi_kerja' => 'Awal Lokasi Kerja',
+            'status_jabatan' => 'Status Jabatan',
+            'sub_status' => 'Sub Status',
+            'instansi' => 'Instansi',
+            'fungsi_kontrak_os' => 'Fungsi Kontrak OS',
+            'penugasan' => 'Penugasan',
+            'agama' => 'Agama',
+            'status_pernikahan' => 'Status Pernikahan',
+            'jurusan' => 'Jurusan',
+            'pendidikan_dimiliki' => 'Pendidikan Dimiliki',
+            'no_ktp' => 'No. KTP',
+            'alamat_ktp' => 'Alamat KTP',
+            'no_kontrak' => 'No. Kontrak',
+            'generasi' => 'Generasi',
+            'rencana_mpp' => 'Rencana MPP',
+            'rencana_pensiun' => 'Rencana Pensiun',
+            'tmt_karyawan' => 'TMT Karyawan',
+            'masa_kerja' => 'Masa Kerja',
+            'kategori' => 'Kategori',
+            'nilai_npi_2022' => 'Nilai NPI 2022',
+            'usia' => 'Usia',
+            'keluarga_jabatan' => 'Keluarga Jabatan',
+            'sub_keluarga_jabatan' => 'Sub Keluarga Jabatan',
+            'fungsi_jabatan' => 'Fungsi Jabatan',
+            'fungsi_pekerjaan' => 'Fungsi Pekerjaan',
+            'jalur_karir' => 'Jalur Karir',
+            'jenjang_karir' => 'Jenjang Karir',
+            'tmt_kj_tertinggi' => 'TMT KJ Tertinggi',
+            'masa_kj_tertinggi_tahun' => 'Masa KJ Tertinggi (Tahun)',
+            'no_sk_jabatan_terakhir' => 'No. SK Jabatan Terakhir',
+            'tgl_sk_jabatan_terakhir' => 'Tanggal SK Jabatan Terakhir',
+            'kpi_2023' => 'KPI 2023',
+            'kriteria' => 'Kriteria',
+            'lisence_dimiliki' => 'Lisensi Dimiliki',
+            'rating' => 'Rating',
+            'no_stkp' => 'No. STKP',
+            'masa_berlaku' => 'Masa Berlaku',
+            'lisence_dibayarkan_januari' => 'Lisensi Dibayarkan Januari',
+            'cek_lisence_serkom' => 'Cek Lisensi Serkom',
+            'email' => 'Email',
+            'no_hp' => 'No. HP',
 
             // Formasi fields
+            'kode_jabatan' => 'Kode Jabatan',
+            'lokasi_kerja' => 'Lokasi Kerja',
+            'unit_kerja' => 'Unit Kerja',
+            'jabatan' => 'Jabatan',
+            'grade' => 'Grade',
             'kuota' => 'Kuota',
-            'level' => 'Level',
 
             // Realisasi fields
             'program_kerja' => 'Program Kerja',
             'tahun' => 'Tahun',
             'rkap' => 'RKAP',
-            'realisasi_s1' => 'Realisasi S1',
-            'realisasi_ytd' => 'Realisasi YTD',
-            'outlook' => 'Outlook',
+            'realisasi_jan_mar' => 'Realisasi Jan-Mar',
+            'realisasi_jan_jun' => 'Realisasi Jan-Jun',
+            'realisasi_jul_sep' => 'Realisasi Jul-Sep',
+            'realisasi_jul_des' => 'Realisasi Jul-Des',
+
+            // DataPgs fields
+            'jabatan_definitif' => 'Jabatan Definitif',
+            'jabatan_pgs' => 'Jabatan PGS',
+            'lokasi_unit_kerja' => 'Lokasi Unit Kerja',
+            'tanggal_pgs' => 'Tanggal PGS',
+            'tanggal_selesai_pgs' => 'Tanggal Selesai PGS',
 
             // User fields
             'name' => 'Nama',
-            'email' => 'Email',
-            'role' => 'Role',
             'password' => 'Password',
+            'role' => 'Role',
         ];
 
         return $labels[$field] ?? ucwords(str_replace('_', ' ', $field));
