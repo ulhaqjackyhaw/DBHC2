@@ -65,11 +65,11 @@ class ImportDataKaryawanJob implements ShouldQueue
             $skipped = $import->getSkippedCount();
             $skippedNiks = $import->getSkippedNiks();
             $duplicateNiks = $import->getDuplicateNiks();
-            
+
             // Hitung yang di-update vs insert baru
             $inserted = max(0, $imported);
             $updated = max(0, $countAfter - $countBefore - $inserted);
-            
+
             $message = $this->mode === 'replace'
                 ? "Data berhasil diganti. Total: {$countAfter} karyawan."
                 : "Import selesai! Berhasil: {$imported} data, Dilewati: {$skipped} baris (NIK kosong).";

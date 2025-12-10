@@ -105,8 +105,8 @@
                         <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Detail Import:</h6>
                         <div id="skipSummary"></div>
                         <hr>
-                        <button class="btn btn-sm btn-outline-warning" type="button" data-bs-toggle="collapse" 
-                                data-bs-target="#skipDetailList" aria-expanded="false">
+                        <button class="btn btn-sm btn-outline-warning" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#skipDetailList" aria-expanded="false">
                             <i class="bi bi-list"></i> Lihat Baris yang Dilewati
                         </button>
                         <div class="collapse mt-3" id="skipDetailList">
@@ -236,7 +236,8 @@
 
                             // Empty NIK list
                             if (emptyCount > 0) {
-                                let emptyHtml = `<h6><i class="bi bi-x-circle text-danger"></i> Baris dengan NIK Kosong (${emptyCount} baris):</h6><ul class="mb-0" style="max-height: 200px; overflow-y: auto;">`;
+                                let emptyHtml =
+                                    `<h6><i class="bi bi-x-circle text-danger"></i> Baris dengan NIK Kosong (${emptyCount} baris):</h6><ul class="mb-0" style="max-height: 200px; overflow-y: auto;">`;
                                 data.skipped_details.empty_nik.forEach(item => {
                                     emptyHtml += `<li>Baris ${item.row}: ${item.nama} - ${item.reason}</li>`;
                                 });
