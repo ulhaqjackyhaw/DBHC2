@@ -100,6 +100,21 @@
                     <p class="mb-0" id="statusMessage">Menginisialisasi proses import...</p>
                 </div>
 
+                <div id="skipDetails" class="mt-3" style="display: none;">
+                    <div class="alert alert-warning">
+                        <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Detail Import:</h6>
+                        <div id="skipSummary"></div>
+                        <hr>
+                        <button class="btn btn-sm btn-outline-warning" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#skipDetailList" aria-expanded="false">
+                            <i class="bi bi-list"></i> Lihat Baris yang Dilewati
+                        </button>
+                        <div class="collapse mt-3" id="skipDetailList">
+                            <div id="emptyNikList" class="mb-3"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="actionButtons" class="mt-4" style="display: none;">
                     <a href="{{ route('karyawan.index') }}" class="btn btn-primary btn-lg">
                         <i class="bi bi-arrow-left me-2"></i>Kembali ke Data Karyawan
@@ -200,6 +215,37 @@
 
                         const messageBox = document.getElementById('messageBox');
                         messageBox.classList.add('success-box');
+
+                        // Show skip details if any
+                        if (data.skipped && data.skipped > 0 && data.skipped_details) {
+                            const skipDetails = document.getElementById('skipDetails');
+                            const skipSummary = document.getElementById('skipSummary');
+                            const emptyNikList = document.getElementById('emptyNikList');
+
+                            const emptyCount = data.skipped_details.empty_nik?.length || 0;
+
+                            skipSummary.innerHTML = `
+                                <p class="mb-1"><strong>📊 Total berhasil:</strong> <span class="badge bg-success">${data.imported || 0} data</span></p>
+                                <p class="mb-1"><strong>⚠️ Total dilewati:</strong> <span class="badge bg-warning">${data.skipped} baris</span></p>
+                                <p class="mb-0"><strong>📝 Total diproses:</strong> <span class="badge bg-info">${data.total_processed || 0} baris</span></p>
+                                <hr>
+                                <p class="mb-0 text-muted small">
+                                    <i class="bi bi-info-circle"></i> NIK duplikat otomatis di-UPDATE dengan data terbaru dari Excel.
+                                </p>
+                            `;
+
+                            // Empty NIK list
+                            if (emptyCount > 0) {
+                                let emptyHtml = `<h6><i class="bi bi-x-circle text-danger"></i> Baris dengan NIK Kosong (${emptyCount} baris):</h6><ul class="mb-0" style="max-height: 200px; overflow-y: auto;">`;
+                                data.skipped_details.empty_nik.forEach(item => {
+                                    emptyHtml += `<li>Baris ${item.row}: ${item.nama} - ${item.reason}</li>`;
+                                });
+                                emptyHtml += '</ul>';
+                                emptyNikList.innerHTML = emptyHtml;
+                            }
+
+                            skipDetails.style.display = 'block';
+                        }
 
                         document.getElementById('actionButtons').style.display = 'block';
 

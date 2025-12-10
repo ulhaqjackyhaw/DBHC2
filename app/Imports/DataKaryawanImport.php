@@ -12,14 +12,16 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Validators\Failure;
 
-class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, SkipsEmptyRows, SkipsOnError, SkipsOnFailure
+class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, SkipsEmptyRows, SkipsOnError, SkipsOnFailure, WithUpserts
 {
     use Importable;
 
     private $errors = [];
     private $skipped = 0;
+    private $skippedNiks = []; // NIK yang di-skip (kosong)
     private $sessionId;
     private $processedRows = 0;
     private $totalRows = 0;
@@ -70,8 +72,16 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
         $nik = (string) $getValue($row, 'nik');
         if (empty($nik)) {
             $this->skipped++;
+            $this->skippedNiks[] = [
+                'row' => $this->processedRows,
+                'reason' => 'NIK kosong atau tidak valid',
+                'nama' => $getValue($row, 'nama') ?? 'N/A'
+            ];
+            \Log::warning("Import: Baris {$this->processedRows} di-skip - NIK kosong. Nama: " . ($getValue($row, 'nama') ?? 'N/A'));
             return null; // Skip rows without NIK
         }
+
+        // WithUpserts akan handle update/insert otomatis berdasarkan NIK
 
         return new DataKaryawan([
             // Mapping langsung 1:1 dengan header Excel
@@ -185,6 +195,22 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
         return $this->errors;
     }
 
+    /**
+     * Get skipped NIKs detail
+     */
+    public function getSkippedNiks(): array
+    {
+        return $this->skippedNiks;
+    }
+
+    /**
+     * Get duplicate NIKs detail (deprecated - now using upsert)
+     */
+    public function getDuplicateNiks(): array
+    {
+        return []; // No longer tracking duplicates, using upsert instead
+    }
+
 
 
     /**
@@ -209,5 +235,13 @@ class DataKaryawanImport implements ToModel, WithHeadingRow, WithBatchInserts, W
     public function setTotalRows(int $total)
     {
         $this->totalRows = $total;
+    }
+
+    /**
+     * Unique field untuk upsert (update jika ada, insert jika tidak)
+     */
+    public function uniqueBy()
+    {
+        return 'nik';
     }
 }

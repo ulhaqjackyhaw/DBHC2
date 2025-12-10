@@ -63,12 +63,20 @@ class ImportDataKaryawanJob implements ShouldQueue
             $imported = $countAfter - $countBefore;
 
             $skipped = $import->getSkippedCount();
+            $skippedNiks = $import->getSkippedNiks();
+            $duplicateNiks = $import->getDuplicateNiks();
+            
+            // Hitung yang di-update vs insert baru
+            $inserted = max(0, $imported);
+            $updated = max(0, $countAfter - $countBefore - $inserted);
+            
             $message = $this->mode === 'replace'
-                ? 'Semua data berhasil diganti.'
-                : 'Data berhasil ditambahkan.';
+                ? "Data berhasil diganti. Total: {$countAfter} karyawan."
+                : "Import selesai! Berhasil: {$imported} data, Dilewati: {$skipped} baris (NIK kosong).";
 
             if ($skipped > 0) {
-                $message .= " ({$skipped} baris dilewati karena NIK duplikat atau kosong)";
+                $emptyNikCount = count($skippedNiks);
+                $message .= " Detail: {$emptyNikCount} baris dengan NIK kosong di-skip.";
             }
 
             // Catat ke audit log
@@ -99,7 +107,13 @@ class ImportDataKaryawanJob implements ShouldQueue
                 'progress' => 100,
                 'status' => 'completed',
                 'message' => $message,
-                'skipped' => $skipped
+                'skipped' => $skipped,
+                'imported' => $countAfter, // Total data akhir di database
+                'skipped_details' => [
+                    'empty_nik' => $skippedNiks,
+                    'duplicate_nik' => [], // No longer relevant with upsert
+                ],
+                'total_processed' => $countAfter + $skipped,
             ], 3600);
 
         } catch (\Exception $e) {
