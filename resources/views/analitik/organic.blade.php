@@ -301,10 +301,24 @@
                         </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-12" id="bodNamesSection">
                         <div class="card">
                             <div class="card-body d-flex flex-column">
-                                <h6 class="card-title">Daftar Nama Karyawan berdasarkan Kelompokan Kelas Jabatan</h6>
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                                    <h6 class="card-title mb-0">Daftar Nama Karyawan berdasarkan Kelompokan Kelas Jabatan
+                                    </h6>
+                                    <div class="input-group input-group-sm" style="max-width: 260px;">
+                                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                        <input type="text" class="form-control" id="bodSearchInput"
+                                            placeholder="Cari nama atau jabatan..." autocomplete="off"
+                                            @if (
+                                                ($bodGroups['BOD-1'] ?? []) === [] &&
+                                                    ($bodGroups['BOD-2'] ?? []) === [] &&
+                                                    ($bodGroups['BOD-3'] ?? []) === [] &&
+                                                    ($bodGroups['BOD-4'] ?? []) === []
+                                            ) disabled @endif>
+                                    </div>
+                                </div>
                                 <div style="max-height: 400px; overflow-y: auto;">
                                     <div class="table-responsive">
                                         @php
@@ -327,7 +341,7 @@
                                             </thead>
                                             <tbody>
                                                 @for ($i = 0; $i < $maxRows; $i++)
-                                                    <tr>
+                                                    <tr data-bod-row>
                                                         <td>
                                                             @if (isset($bodGroups['BOD-1'][$i]))
                                                                 <div class="cell-name">
@@ -366,6 +380,10 @@
                                                         </td>
                                                     </tr>
                                                 @endfor
+                                                <tr id="bodSearchEmptyRow" class="d-none">
+                                                    <td colspan="4" class="text-center text-muted p-4">Tidak ada nama
+                                                        yang cocok.</td>
+                                                </tr>
                                                 @if ($maxRows === 0)
                                                     <tr>
                                                         <td colspan="4" class="text-center text-muted p-4">Data BOD
@@ -876,6 +894,100 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('bodNamesSection');
+            if (!container) {
+                return;
+            }
+
+            const input = container.querySelector('#bodSearchInput');
+            const rows = Array.from(container.querySelectorAll('[data-bod-row]'));
+            const emptyRow = container.querySelector('#bodSearchEmptyRow');
+            const nameCells = Array.from(container.querySelectorAll('.cell-name'));
+
+            if (!input || rows.length === 0) {
+                return;
+            }
+
+            const escapeHtml = (value) =>
+                value
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+
+            const highlightText = (text, keyword) => {
+                if (!keyword) {
+                    return escapeHtml(text);
+                }
+
+                const lowerText = text.toLowerCase();
+                const lowerKeyword = keyword.toLowerCase();
+                let searchIndex = lowerText.indexOf(lowerKeyword);
+
+                if (searchIndex === -1) {
+                    return escapeHtml(text);
+                }
+
+                let result = '';
+                let lastIndex = 0;
+
+                while (searchIndex !== -1) {
+                    result += escapeHtml(text.slice(lastIndex, searchIndex));
+                    result += '<mark class="bg-warning text-dark px-1 rounded-1">' +
+                        escapeHtml(text.slice(searchIndex, searchIndex + keyword.length)) +
+                        '</mark>';
+                    lastIndex = searchIndex + keyword.length;
+                    searchIndex = lowerText.indexOf(lowerKeyword, lastIndex);
+                }
+
+                result += escapeHtml(text.slice(lastIndex));
+                return result;
+            };
+
+            nameCells.forEach((cell) => {
+                if (!cell.dataset.originalText) {
+                    cell.dataset.originalText = cell.textContent || '';
+                }
+            });
+
+            const runFilter = () => {
+                const rawQuery = input.value.trim();
+                const query = rawQuery.toLowerCase();
+                let visibleCount = 0;
+
+                nameCells.forEach((cell) => {
+                    const original = cell.dataset.originalText || '';
+                    cell.innerHTML = highlightText(original, rawQuery);
+                });
+
+                rows.forEach((row) => {
+                    if (!query) {
+                        row.classList.remove('d-none');
+                        visibleCount += 1;
+                        return;
+                    }
+
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        row.classList.remove('d-none');
+                        visibleCount += 1;
+                    } else {
+                        row.classList.add('d-none');
+                    }
+                });
+
+                if (emptyRow) {
+                    emptyRow.classList.toggle('d-none', visibleCount !== 0);
+                }
+            };
+
+            input.addEventListener('input', runFilter);
+            runFilter();
+        });
+    </script>
     <script>
         $(document).ready(function() {
             // Inisialisasi DataTables untuk tabel employees (jika ada)
