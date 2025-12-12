@@ -352,18 +352,38 @@ class EmployeeController extends Controller
             ->orderBy('pendidikan_diakui')
             ->get();
 
+        // Mapping untuk normalisasi pendidikan dari database ke format standar
+        $pendidikanMapping = [
+            'S3 - STRATA 3' => 'S3',
+            'S2 - STRATA 2' => 'S2',
+            'S1 - STRATA 1' => 'S1',
+            'DIV - DIPLOMA IV' => 'D4',
+            'DIII - DIPLOMA III' => 'D3',
+            'DII  - DIPLOMA II' => 'D2',
+            'DII - DIPLOMA II' => 'D2',
+            'DI - DIPLOMA I' => 'D1',
+            'SLTA' => 'SMA/SMK',
+            'SMA' => 'SMA/SMK',
+            'SMK' => 'SMA/SMK',
+            'SMP' => 'Lainnya',
+            'SD' => 'Lainnya',
+        ];
+
         // Transform data untuk matrix lokasi-pendidikan
         $locationMatrix = [];
-        $educationLevels = ['S3', 'S2', 'S1', 'D4', 'D3', 'D2', 'D1', 'SMA/SMK', 'SMP', 'Lainnya'];
+        $educationLevels = ['S3', 'S2', 'S1', 'D4', 'D3', 'D2', 'D1', 'SMA/SMK', 'Lainnya'];
 
         foreach ($locationEducation as $item) {
             if (!isset($locationMatrix[$item->lokasi_kerja])) {
                 $locationMatrix[$item->lokasi_kerja] = array_fill_keys($educationLevels, 0);
                 $locationMatrix[$item->lokasi_kerja]['total'] = 0;
-                $locationMatrix[$item->lokasi_kerja]['Lainnya'] = 0; // Tambahkan kolom Lainnya
             }
 
-            $locationMatrix[$item->lokasi_kerja][$item->pendidikan_diakui] = $item->jumlah;
+            // Normalisasi nilai pendidikan
+            $pendidikan = $item->pendidikan_diakui;
+            $normalizedPendidikan = $pendidikanMapping[$pendidikan] ?? 'Lainnya';
+
+            $locationMatrix[$item->lokasi_kerja][$normalizedPendidikan] += $item->jumlah;
             $locationMatrix[$item->lokasi_kerja]['total'] += $item->jumlah;
         }
 
@@ -377,8 +397,7 @@ class EmployeeController extends Controller
             'D2' => 4,
             'D1' => 3,
             'SMA/SMK' => 2,
-            'SMP' => 1,
-            'Lainnya' => 0
+            'Lainnya' => 1
         ];
 
         foreach ($locationMatrix as $location => $data) {
