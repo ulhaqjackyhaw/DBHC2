@@ -532,23 +532,23 @@ class EmployeeController extends Controller
 
         // Analisis Instansi per Lokasi (for grouped/stacked bar chart)
         $instansiLocationRaw = (clone $baseQuery)
-            ->select('lokasi_kerja', 'asal_instansi', DB::raw('COUNT(*) as total'))
-            ->whereNotNull('asal_instansi')
-            ->where('asal_instansi', '!=', '')
+            ->select('lokasi_kerja', 'instansi', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('instansi')
+            ->where('instansi', '!=', '')
             ->whereNotNull('lokasi_kerja')
             ->where('lokasi_kerja', '!=', '')
-            ->groupBy('lokasi_kerja', 'asal_instansi')
+            ->groupBy('lokasi_kerja', 'instansi')
             ->orderBy('lokasi_kerja')
             ->get();
 
         $instansiLocationLabels = $instansiLocationRaw->pluck('lokasi_kerja')->unique()->values();
-        $instansiList = $instansiLocationRaw->pluck('asal_instansi')->unique()->values();
+        $instansiList = $instansiLocationRaw->pluck('instansi')->unique()->values();
         $instansiColorPalette = ['#4f46e5', '#db2777', '#f97316', '#16a34a', '#8b5cf6', '#64748b', '#eab308', '#0ea5e9', '#f43f5e', '#22d3ee'];
         $instansiLocationDatasets = [];
         foreach ($instansiList as $i => $instansi) {
             $row = [];
             foreach ($instansiLocationLabels as $lokasi) {
-                $found = $instansiLocationRaw->first(fn($item) => $item->lokasi_kerja == $lokasi && $item->asal_instansi == $instansi);
+                $found = $instansiLocationRaw->first(fn($item) => $item->lokasi_kerja == $lokasi && $item->instansi == $instansi);
                 $row[] = $found ? $found->total : 0;
             }
             $instansiLocationDatasets[] = [

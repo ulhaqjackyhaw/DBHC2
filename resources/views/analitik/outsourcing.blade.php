@@ -99,8 +99,15 @@
                                             if (!isset($genderData[$lokasi])) {
                                                 $genderData[$lokasi] = ['Laki-laki' => 0, 'Perempuan' => 0];
                                             }
-                                            if (isset($genderData[$lokasi][$gender])) {
-                                                $genderData[$lokasi][$gender]++;
+                                            // Normalize gender untuk matching
+                                            $normalizedGender =
+                                                strtoupper($gender) === 'LAKI-LAKI'
+                                                    ? 'Laki-laki'
+                                                    : (strtoupper($gender) === 'PEREMPUAN'
+                                                        ? 'Perempuan'
+                                                        : $gender);
+                                            if (isset($genderData[$lokasi][$normalizedGender])) {
+                                                $genderData[$lokasi][$normalizedGender]++;
                                             }
                                         }
                                         $totalLaki = 0;
@@ -245,12 +252,13 @@
                             <i class="fa-solid fa-building me-2 text-info"></i>
                             Distribusi Instansi per Lokasi
                         </h5>
+
                         <div class="table-responsive">
                             <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.9rem;">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 30%;">Lokasi</th>
-                                        <th style="width: 50%;">Asal Instansi</th>
+                                        <th style="width: 50%;">Instansi</th>
                                         <th class="text-center" style="width: 10%;">Jumlah</th>
                                         <th style="width: 10%;">Persentase</th>
                                     </tr>
@@ -261,7 +269,8 @@
                                         $lokasiTotal = [];
                                         foreach ($employees as $emp) {
                                             $lokasi = $emp->lokasi_kerja ?? '(Kosong)';
-                                            $instansi = $emp->asal_instansi ?? '(Kosong)';
+                                            $instansi = $emp->instansi ?? '(Kosong)';
+
                                             if (!isset($instansiData[$lokasi])) {
                                                 $instansiData[$lokasi] = [];
                                             }
@@ -281,7 +290,8 @@
                                             <tr>
                                                 @if ($firstRow)
                                                     <td rowspan="{{ $rowspan }}" class="align-middle">
-                                                        <strong>{{ $lokasi }}</strong></td>
+                                                        <strong>{{ $lokasi }}</strong>
+                                                    </td>
                                                     @php $firstRow = false; @endphp
                                                 @endif
                                                 <td>{{ $instansi }}</td>
@@ -382,7 +392,7 @@
                         // Kumpulkan semua kombinasi unit & instansi
                         $unitInstansi = collect($employees)
                             ->map(function ($e) {
-                                return [$e->unit_kerja, $e->asal_instansi];
+                                return [$e->unit_kerja, $e->instansi];
                             })
                             ->unique()
                             ->sortBy(function ($arr) {
@@ -392,17 +402,17 @@
                         // Bangun pivot: [unit][instansi][lokasi] = count
                         $pivot = [];
                         foreach ($employees as $e) {
-                            $pivot[$e->unit_kerja][$e->asal_instansi][$e->lokasi_kerja] =
-                                ($pivot[$e->unit_kerja][$e->asal_instansi][$e->lokasi_kerja] ?? 0) + 1;
-                            $pivot[$e->unit_kerja][$e->asal_instansi]['total'] =
-                                ($pivot[$e->unit_kerja][$e->asal_instansi]['total'] ?? 0) + 1;
+                            $pivot[$e->unit_kerja][$e->instansi][$e->lokasi_kerja] =
+                                ($pivot[$e->unit_kerja][$e->instansi][$e->lokasi_kerja] ?? 0) + 1;
+                            $pivot[$e->unit_kerja][$e->instansi]['total'] =
+                                ($pivot[$e->unit_kerja][$e->instansi]['total'] ?? 0) + 1;
                         }
                     @endphp
                     <table class="table table-bordered table-hover align-middle" id="pivotOutsourcingTable">
                         <thead class="table-light">
                             <tr>
                                 <th>Unit</th>
-                                <th>Asal Instansi</th>
+                                <th>Instansi</th>
                                 @foreach ($allLocations as $lokasi)
                                     <th>{{ $lokasi }}</th>
                                 @endforeach
