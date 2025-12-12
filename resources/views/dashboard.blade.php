@@ -579,8 +579,83 @@
                                 Komposisi tingkat pendidikan karyawan
                             </small>
                         </div>
-                        <div style="position: relative; height: 220px;">
-                            <canvas id="pendChart"></canvas>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 5%;" class="text-center">#</th>
+                                        <th style="width: 30%;">Tingkat Pendidikan</th>
+                                        <th style="width: 15%;" class="text-center">Organik</th>
+                                        <th style="width: 15%;" class="text-center">Outsourcing</th>
+                                        <th style="width: 15%;" class="text-center">Total</th>
+                                        <th style="width: 20%;">Persentase</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (isset($pendGroupLabels) && count($pendGroupLabels) > 0)
+                                        @php
+                                            $totalAll = array_sum($pendGroupOrganic) + array_sum($pendGroupOS);
+                                        @endphp
+                                        @foreach ($pendGroupLabels as $index => $label)
+                                            @php
+                                                $organic = $pendGroupOrganic[$index] ?? 0;
+                                                $os = $pendGroupOS[$index] ?? 0;
+                                                $total = $organic + $os;
+                                                $percentage = $totalAll > 0 ? ($total / $totalAll) * 100 : 0;
+                                            @endphp
+                                            <tr>
+                                                <td class="text-center fw-semibold text-muted">{{ $index + 1 }}</td>
+                                                <td>
+                                                    <i class="fa-solid fa-graduation-cap me-2 text-primary"></i>
+                                                    <strong>{{ $label }}</strong>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary"
+                                                        style="min-width: 60px;">{{ number_format($organic) }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-warning"
+                                                        style="min-width: 60px;">{{ number_format($os) }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong class="text-dark">{{ number_format($total) }}</strong>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <div class="progress flex-grow-1" style="height: 20px;">
+                                                            <div class="progress-bar bg-success" role="progressbar"
+                                                                style="width: {{ $percentage }}%;"
+                                                                aria-valuenow="{{ $percentage }}" aria-valuemin="0"
+                                                                aria-valuemax="100">
+                                                                <small
+                                                                    class="fw-semibold">{{ number_format($percentage, 1) }}%</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <tr class="table-secondary fw-bold">
+                                            <td colspan="2" class="text-end">TOTAL KESELURUHAN</td>
+                                            <td class="text-center">{{ number_format(array_sum($pendGroupOrganic)) }}</td>
+                                            <td class="text-center">{{ number_format(array_sum($pendGroupOS)) }}</td>
+                                            <td class="text-center">{{ number_format($totalAll) }}</td>
+                                            <td>
+                                                <span class="badge bg-dark"
+                                                    style="font-size: 0.9rem; padding: 0.5rem 1rem;">100%</span>
+                                            </td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted p-4">
+                                                <i class="fa-solid fa-inbox fa-2x mb-2"></i>
+                                                <p class="mb-0">Data pendidikan tidak tersedia</p>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -1111,7 +1186,15 @@
             const pendGroupOrganic = @json($pendGroupOrganic ?? []);
             const hasPendGrouped = Array.isArray(pendGroupLabels) && pendGroupLabels.length > 0;
 
+            // Debug: Tampilkan data di console
+            console.log('=== DEBUG PENDIDIKAN CHART ===');
+            console.log('pendGroupLabels:', pendGroupLabels);
+            console.log('pendGroupOS:', pendGroupOS);
+            console.log('pendGroupOrganic:', pendGroupOrganic);
+            console.log('hasPendGrouped:', hasPendGrouped);
+
             const pendCanvas = document.getElementById('pendChart');
+            console.log('pendCanvas:', pendCanvas);
 
             // 2. Cek apakah data terkelompok ada, jika ya, buat grouped bar chart
             if (pendCanvas && hasPendGrouped) {

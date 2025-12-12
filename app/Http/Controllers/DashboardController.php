@@ -94,20 +94,27 @@ class DashboardController extends Controller
             DB::raw("SUM(CASE WHEN UPPER(TRIM(sub_status)) IN ('ALIH DAYA','OUTSOURCING','OS','OUTSOURCE') OR LOWER(TRIM(sub_status)) LIKE '%alih%' OR LOWER(TRIM(sub_status)) LIKE '%outsour%' THEN 0 ELSE 1 END) AS organic")
         )
             ->groupBy('pend_label')
-            // ---- MODIFIKASI DIMULAI DI SINI ----
+            // ---- SORTING BERDASARKAN FORMAT DATA ASLI ----
             ->orderByRaw("
                 CASE pend_label
                     WHEN 'SMP' THEN 1
-                    WHEN 'SMA/SMK' THEN 2
-                    WHEN 'D2' THEN 3
-                    WHEN 'D3' THEN 4
-                    WHEN 'S1' THEN 5
-                    WHEN 'S2' THEN 6
-                    WHEN 'S3' THEN 7
+                    WHEN 'SLTP' THEN 2
+                    WHEN 'SLTA' THEN 3
+                    WHEN 'SMA/SMK' THEN 4
+                    WHEN 'DII  - DIPLOMA II' THEN 5
+                    WHEN 'D2' THEN 6
+                    WHEN 'DIII - DIPLOMA III' THEN 7
+                    WHEN 'D3' THEN 8
+                    WHEN 'DIV - DIPLOMA IV' THEN 9
+                    WHEN 'S1 - STRATA 1' THEN 10
+                    WHEN 'S1' THEN 11
+                    WHEN 'S2 - STRATA 2' THEN 12
+                    WHEN 'S2' THEN 13
+                    WHEN 'S3 - STRATA 3' THEN 14
+                    WHEN 'S3' THEN 15
                     ELSE 99
                 END ASC
             ")
-            // ---- MODIFIKASI SELESAI ----
             ->get();
 
         $pendGroupLabels = $pendidikanStatus->pluck('pend_label')->toArray();
@@ -310,18 +317,9 @@ class DashboardController extends Controller
             }
         }
 
-        // ====== VARIABEL PENDIDIKAN GROUPED YANG HILANG ======
-        $pendGroupLabels = ['SMP', 'SMA/SMK', 'D2', 'D3', 'S1', 'S2', 'S3'];
-        $mapPend = [];
-        foreach ($pendidikanStatus as $row) {
-            $mapPend[$row->pend_label] = ['os' => (int) $row->os, 'organic' => (int) $row->organic];
-        }
-        $pendGroupOS = [];
-        $pendGroupOrganic = [];
-        foreach ($pendGroupLabels as $p) {
-            $pendGroupOS[] = $mapPend[$p]['os'] ?? 0;
-            $pendGroupOrganic[] = $mapPend[$p]['organic'] ?? 0;
-        }
+        // CATATAN: Data pendidikan grouped ($pendGroupLabels, $pendGroupOS, $pendGroupOrganic) 
+        // sudah didefinisikan di baris ~113-115 dari query database
+        // Tidak perlu override karena data asli sudah benar
 
         // ====== GRAFIK PERTUMBUHAN KARYAWAN DARI VERSION HISTORY ======
         $versionGrowth = $this->getVersionGrowthData();

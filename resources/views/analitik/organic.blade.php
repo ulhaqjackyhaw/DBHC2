@@ -380,43 +380,265 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+                    {{-- Tabel Gender per Lokasi --}}
+                    <div class="col-12 col-lg-6">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">Distribusi Gender per Lokasi</h5>
-                                <div class="chart-container" style="height:250px;"><canvas
-                                        id="genderLocationChart"></canvas></div>
-                                <div class="small text-muted mt-2 text-center w-100">
-                                    <i class="fa fa-info-circle text-info"></i>
-                                    Klik pada Kotak warna di bawah chart untuk menyembunyikan/menampilkan jenis
-                                    tertentu.
+                                <h5 class="card-title">
+                                    <i class="fa-solid fa-venus-mars me-2 text-primary"></i>
+                                    Distribusi Gender per Lokasi
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 50%;">Lokasi</th>
+                                                <th class="text-center" style="width: 20%;">Laki-laki</th>
+                                                <th class="text-center" style="width: 20%;">Perempuan</th>
+                                                <th class="text-center" style="width: 10%;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                // Gunakan data dari chart yang sudah ada
+                                                $genderData = [];
+                                                if (isset($genderLocationLabels) && isset($genderLocationDatasets)) {
+                                                    foreach ($genderLocationLabels as $index => $lokasi) {
+                                                        $genderData[$lokasi] = [
+                                                            'Laki-laki' => 0,
+                                                            'Perempuan' => 0,
+                                                        ];
+                                                        foreach ($genderLocationDatasets as $dataset) {
+                                                            if ($dataset['label'] === 'Laki-laki') {
+                                                                $genderData[$lokasi]['Laki-laki'] =
+                                                                    $dataset['data'][$index] ?? 0;
+                                                            } elseif ($dataset['label'] === 'Perempuan') {
+                                                                $genderData[$lokasi]['Perempuan'] =
+                                                                    $dataset['data'][$index] ?? 0;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                $totalLaki = 0;
+                                                $totalPerempuan = 0;
+                                            @endphp
+                                            @foreach ($genderData as $lokasi => $data)
+                                                @php
+                                                    $totalLokasi = $data['Laki-laki'] + $data['Perempuan'];
+                                                    $totalLaki += $data['Laki-laki'];
+                                                    $totalPerempuan += $data['Perempuan'];
+                                                @endphp
+                                                <tr>
+                                                    <td><strong>{{ $lokasi }}</strong></td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-primary"
+                                                            style="min-width: 50px;">{{ number_format($data['Laki-laki']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-danger"
+                                                            style="min-width: 50px;">{{ number_format($data['Perempuan']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <strong>{{ number_format($totalLokasi) }}</strong>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            <tr class="table-secondary fw-bold">
+                                                <td>TOTAL</td>
+                                                <td class="text-center">{{ number_format($totalLaki) }}</td>
+                                                <td class="text-center">{{ number_format($totalPerempuan) }}</td>
+                                                <td class="text-center">{{ number_format($totalLaki + $totalPerempuan) }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+
+                    {{-- Tabel Generasi per Lokasi --}}
+                    <div class="col-12 col-lg-6">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">Distribusi Generasi per Lokasi</h5>
-                                <div class="chart-container" style="height:250px;"><canvas id="ageChart"></canvas></div>
-                                <div class="small text-muted mt-2 text-center w-100">
-                                    <i class="fa fa-info-circle text-info"></i>
-                                    Klik pada Kotak warna di bawah chart untuk menyembunyikan/menampilkan jenis
-                                    tertentu.
+                                <h5 class="card-title">
+                                    <i class="fa-solid fa-users-between-lines me-2 text-success"></i>
+                                    Distribusi Generasi per Lokasi
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 40%;">Lokasi</th>
+                                                <th class="text-center" style="width: 15%;">Gen Z</th>
+                                                <th class="text-center" style="width: 15%;">Milenial</th>
+                                                <th class="text-center" style="width: 15%;">Gen X</th>
+                                                <th class="text-center" style="width: 15%;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                // Gunakan data dari chart yang sudah ada
+                                                $generasiData = [];
+                                                if (isset($ageLocationLabels) && isset($ageLocationDatasets)) {
+                                                    foreach ($ageLocationLabels as $index => $lokasi) {
+                                                        $generasiData[$lokasi] = [
+                                                            'Gen Z' => 0,
+                                                            'Milenial' => 0,
+                                                            'Gen X' => 0,
+                                                        ];
+                                                        foreach ($ageLocationDatasets as $dataset) {
+                                                            $label = $dataset['label'];
+                                                            if (isset($generasiData[$lokasi][$label])) {
+                                                                $generasiData[$lokasi][$label] =
+                                                                    $dataset['data'][$index] ?? 0;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                $totalGenZ = 0;
+                                                $totalMilenial = 0;
+                                                $totalGenX = 0;
+                                            @endphp
+                                            @foreach ($generasiData as $lokasi => $data)
+                                                @php
+                                                    $totalLokasi = $data['Gen Z'] + $data['Milenial'] + $data['Gen X'];
+                                                    $totalGenZ += $data['Gen Z'];
+                                                    $totalMilenial += $data['Milenial'];
+                                                    $totalGenX += $data['Gen X'];
+                                                @endphp
+                                                <tr>
+                                                    <td><strong>{{ $lokasi }}</strong></td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-info"
+                                                            style="min-width: 40px;">{{ number_format($data['Gen Z']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-success"
+                                                            style="min-width: 40px;">{{ number_format($data['Milenial']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-warning"
+                                                            style="min-width: 40px;">{{ number_format($data['Gen X']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <strong>{{ number_format($totalLokasi) }}</strong>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            <tr class="table-secondary fw-bold">
+                                                <td>TOTAL</td>
+                                                <td class="text-center">{{ number_format($totalGenZ) }}</td>
+                                                <td class="text-center">{{ number_format($totalMilenial) }}</td>
+                                                <td class="text-center">{{ number_format($totalGenX) }}</td>
+                                                <td class="text-center">
+                                                    {{ number_format($totalGenZ + $totalMilenial + $totalGenX) }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    {{-- Tabel Masa Kerja per Lokasi --}}
                     <div class="col-12">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">Distribusi Masa Kerja per Lokasi</h5>
-                                <div class="chart-container" style="height:250px;"><canvas
-                                        id="tenureLocationChart"></canvas></div>
-                                <div class="small text-muted mt-2 text-center w-100">
-                                    <i class="fa fa-info-circle text-info"></i>
-                                    Klik pada Kotak warna di bawah chart untuk menyembunyikan/menampilkan jenis
-                                    tertentu.
+                                <h5 class="card-title">
+                                    <i class="fa-solid fa-business-time me-2 text-warning"></i>
+                                    Distribusi Masa Kerja per Lokasi
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 30%;">Lokasi</th>
+                                                <th class="text-center" style="width: 12%;">0-1 thn</th>
+                                                <th class="text-center" style="width: 12%;">2-3 thn</th>
+                                                <th class="text-center" style="width: 12%;">4-6 thn</th>
+                                                <th class="text-center" style="width: 12%;">7-10 thn</th>
+                                                <th class="text-center" style="width: 12%;">&gt;10 thn</th>
+                                                <th class="text-center" style="width: 10%;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                // Gunakan data dari chart yang sudah ada
+                                                $masaKerjaData = [];
+                                                if (isset($tenureLocationLabels) && isset($tenureLocationDatasets)) {
+                                                    foreach ($tenureLocationLabels as $index => $lokasi) {
+                                                        $masaKerjaData[$lokasi] = [
+                                                            '0-1 thn' => 0,
+                                                            '2-3 thn' => 0,
+                                                            '4-6 thn' => 0,
+                                                            '7-10 thn' => 0,
+                                                            '>10 thn' => 0,
+                                                        ];
+                                                        foreach ($tenureLocationDatasets as $dataset) {
+                                                            $label = $dataset['label'];
+                                                            if (isset($masaKerjaData[$lokasi][$label])) {
+                                                                $masaKerjaData[$lokasi][$label] =
+                                                                    $dataset['data'][$index] ?? 0;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                $total01 = 0;
+                                                $total23 = 0;
+                                                $total46 = 0;
+                                                $total710 = 0;
+                                                $totalAbove10 = 0;
+                                            @endphp
+                                            @foreach ($masaKerjaData as $lokasi => $data)
+                                                @php
+                                                    $totalLokasi = array_sum($data);
+                                                    $total01 += $data['0-1 thn'];
+                                                    $total23 += $data['2-3 thn'];
+                                                    $total46 += $data['4-6 thn'];
+                                                    $total710 += $data['7-10 thn'];
+                                                    $totalAbove10 += $data['>10 thn'];
+                                                @endphp
+                                                <tr>
+                                                    <td><strong>{{ $lokasi }}</strong></td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-info"
+                                                            style="min-width: 45px;">{{ number_format($data['0-1 thn']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-success"
+                                                            style="min-width: 45px;">{{ number_format($data['2-3 thn']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-primary"
+                                                            style="min-width: 45px;">{{ number_format($data['4-6 thn']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-warning text-dark"
+                                                            style="min-width: 45px;">{{ number_format($data['7-10 thn']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-danger"
+                                                            style="min-width: 45px;">{{ number_format($data['>10 thn']) }}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <strong>{{ number_format($totalLokasi) }}</strong>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            <tr class="table-secondary fw-bold">
+                                                <td>TOTAL</td>
+                                                <td class="text-center">{{ number_format($total01) }}</td>
+                                                <td class="text-center">{{ number_format($total23) }}</td>
+                                                <td class="text-center">{{ number_format($total46) }}</td>
+                                                <td class="text-center">{{ number_format($total710) }}</td>
+                                                <td class="text-center">{{ number_format($totalAbove10) }}</td>
+                                                <td class="text-center">
+                                                    {{ number_format($total01 + $total23 + $total46 + $total710 + $totalAbove10) }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

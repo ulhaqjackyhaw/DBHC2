@@ -70,37 +70,302 @@
             </div>
         </div>
 
-        {{-- Charts --}}
+        {{-- Tables --}}
         <div class="row g-4 mb-4">
+            {{-- Tabel Gender per Lokasi --}}
             <div class="col-12 col-lg-6">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Distribusi Gender per Lokasi</h5>
-                        <div class="chart-container" style="height:350px;"><canvas id="genderChart"></canvas></div>
+                        <h5 class="card-title">
+                            <i class="fa-solid fa-venus-mars me-2 text-primary"></i>
+                            Distribusi Gender per Lokasi
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 50%;">Lokasi</th>
+                                        <th class="text-center" style="width: 20%;">Laki-laki</th>
+                                        <th class="text-center" style="width: 20%;">Perempuan</th>
+                                        <th class="text-center" style="width: 10%;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $genderData = [];
+                                        foreach ($employees as $emp) {
+                                            $lokasi = $emp->lokasi_kerja ?? '(Kosong)';
+                                            $gender = $emp->jenis_kelamin ?? '(Kosong)';
+                                            if (!isset($genderData[$lokasi])) {
+                                                $genderData[$lokasi] = ['Laki-laki' => 0, 'Perempuan' => 0];
+                                            }
+                                            if (isset($genderData[$lokasi][$gender])) {
+                                                $genderData[$lokasi][$gender]++;
+                                            }
+                                        }
+                                        $totalLaki = 0;
+                                        $totalPerempuan = 0;
+                                    @endphp
+                                    @foreach ($genderData as $lokasi => $data)
+                                        @php
+                                            $totalLokasi = $data['Laki-laki'] + $data['Perempuan'];
+                                            $totalLaki += $data['Laki-laki'];
+                                            $totalPerempuan += $data['Perempuan'];
+                                        @endphp
+                                        <tr>
+                                            <td><strong>{{ $lokasi }}</strong></td>
+                                            <td class="text-center">
+                                                <span class="badge bg-primary"
+                                                    style="min-width: 50px;">{{ number_format($data['Laki-laki']) }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger"
+                                                    style="min-width: 50px;">{{ number_format($data['Perempuan']) }}</span>
+                                            </td>
+                                            <td class="text-center"><strong>{{ number_format($totalLokasi) }}</strong></td>
+                                        </tr>
+                                    @endforeach
+                                    <tr class="table-secondary fw-bold">
+                                        <td>TOTAL</td>
+                                        <td class="text-center">{{ number_format($totalLaki) }}</td>
+                                        <td class="text-center">{{ number_format($totalPerempuan) }}</td>
+                                        <td class="text-center">{{ number_format($totalLaki + $totalPerempuan) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {{-- Tabel Generasi per Lokasi --}}
             <div class="col-12 col-lg-6">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Distribusi Generasi per Lokasi</h5>
-                        <div class="chart-container" style="height:350px;"><canvas id="ageChart"></canvas></div>
+                        <h5 class="card-title">
+                            <i class="fa-solid fa-users-between-lines me-2 text-success"></i>
+                            Distribusi Generasi per Lokasi
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 40%;">Lokasi</th>
+                                        <th class="text-center" style="width: 15%;">Gen Z</th>
+                                        <th class="text-center" style="width: 15%;">Milenial</th>
+                                        <th class="text-center" style="width: 15%;">Gen X</th>
+                                        <th class="text-center" style="width: 15%;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $generasiData = [];
+                                        foreach ($employees as $emp) {
+                                            $lokasi = $emp->lokasi_kerja ?? '(Kosong)';
+                                            // Hitung usia dari tanggal_lahir
+                                            $usia = 0;
+                                            if ($emp->tanggal_lahir) {
+                                                try {
+                                                    $parts = explode('/', $emp->tanggal_lahir);
+                                                    if (count($parts) === 3) {
+                                                        $birth = \Carbon\Carbon::createFromFormat(
+                                                            'd/m/Y',
+                                                            $emp->tanggal_lahir,
+                                                        );
+                                                        $usia = $birth->age;
+                                                    }
+                                                } catch (\Exception $e) {
+                                                }
+                                            }
+
+                                            $generasi = 'Lainnya';
+                                            if ($usia >= 18 && $usia <= 27) {
+                                                $generasi = 'Gen Z';
+                                            } elseif ($usia >= 28 && $usia <= 43) {
+                                                $generasi = 'Milenial';
+                                            } elseif ($usia >= 44 && $usia <= 59) {
+                                                $generasi = 'Gen X';
+                                            }
+
+                                            if (!isset($generasiData[$lokasi])) {
+                                                $generasiData[$lokasi] = ['Gen Z' => 0, 'Milenial' => 0, 'Gen X' => 0];
+                                            }
+                                            if (isset($generasiData[$lokasi][$generasi])) {
+                                                $generasiData[$lokasi][$generasi]++;
+                                            }
+                                        }
+                                        $totalGenZ = 0;
+                                        $totalMilenial = 0;
+                                        $totalGenX = 0;
+                                    @endphp
+                                    @foreach ($generasiData as $lokasi => $data)
+                                        @php
+                                            $totalLokasi = $data['Gen Z'] + $data['Milenial'] + $data['Gen X'];
+                                            $totalGenZ += $data['Gen Z'];
+                                            $totalMilenial += $data['Milenial'];
+                                            $totalGenX += $data['Gen X'];
+                                        @endphp
+                                        <tr>
+                                            <td><strong>{{ $lokasi }}</strong></td>
+                                            <td class="text-center">
+                                                <span class="badge bg-info"
+                                                    style="min-width: 40px;">{{ number_format($data['Gen Z']) }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success"
+                                                    style="min-width: 40px;">{{ number_format($data['Milenial']) }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-warning"
+                                                    style="min-width: 40px;">{{ number_format($data['Gen X']) }}</span>
+                                            </td>
+                                            <td class="text-center"><strong>{{ number_format($totalLokasi) }}</strong></td>
+                                        </tr>
+                                    @endforeach
+                                    <tr class="table-secondary fw-bold">
+                                        <td>TOTAL</td>
+                                        <td class="text-center">{{ number_format($totalGenZ) }}</td>
+                                        <td class="text-center">{{ number_format($totalMilenial) }}</td>
+                                        <td class="text-center">{{ number_format($totalGenX) }}</td>
+                                        <td class="text-center">
+                                            {{ number_format($totalGenZ + $totalMilenial + $totalGenX) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {{-- Tabel Instansi per Lokasi --}}
             <div class="col-12">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Distribusi Instansi per Lokasi</h5>
-                        <div class="chart-container" style="height:350px;"><canvas id="instansiChart"></canvas></div>
+                        <h5 class="card-title">
+                            <i class="fa-solid fa-building me-2 text-info"></i>
+                            Distribusi Instansi per Lokasi
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm align-middle mb-0" style="font-size: 0.9rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 30%;">Lokasi</th>
+                                        <th style="width: 50%;">Asal Instansi</th>
+                                        <th class="text-center" style="width: 10%;">Jumlah</th>
+                                        <th style="width: 10%;">Persentase</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $instansiData = [];
+                                        $lokasiTotal = [];
+                                        foreach ($employees as $emp) {
+                                            $lokasi = $emp->lokasi_kerja ?? '(Kosong)';
+                                            $instansi = $emp->asal_instansi ?? '(Kosong)';
+                                            if (!isset($instansiData[$lokasi])) {
+                                                $instansiData[$lokasi] = [];
+                                            }
+                                            if (!isset($instansiData[$lokasi][$instansi])) {
+                                                $instansiData[$lokasi][$instansi] = 0;
+                                            }
+                                            $instansiData[$lokasi][$instansi]++;
+                                            $lokasiTotal[$lokasi] = ($lokasiTotal[$lokasi] ?? 0) + 1;
+                                        }
+                                    @endphp
+                                    @foreach ($instansiData as $lokasi => $instansis)
+                                        @php
+                                            $firstRow = true;
+                                            $rowspan = count($instansis);
+                                        @endphp
+                                        @foreach ($instansis as $instansi => $jumlah)
+                                            <tr>
+                                                @if ($firstRow)
+                                                    <td rowspan="{{ $rowspan }}" class="align-middle">
+                                                        <strong>{{ $lokasi }}</strong></td>
+                                                    @php $firstRow = false; @endphp
+                                                @endif
+                                                <td>{{ $instansi }}</td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary">{{ number_format($jumlah) }}</span>
+                                                </td>
+                                                <td>
+                                                    @php $pct = $lokasiTotal[$lokasi] > 0 ? ($jumlah / $lokasiTotal[$lokasi] * 100) : 0; @endphp
+                                                    <div class="progress" style="height: 18px;">
+                                                        <div class="progress-bar bg-info"
+                                                            style="width: {{ $pct }}%;">
+                                                            <small>{{ number_format($pct, 1) }}%</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {{-- Tabel Unit --}}
             <div class="col-12">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Distribusi per Unit</h5>
-                        <div class="chart-container" style="height:350px;"><canvas id="unitChart"></canvas></div>
+                        <h5 class="card-title">
+                            <i class="fa-solid fa-sitemap me-2 text-warning"></i>
+                            Distribusi per Unit
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 5%;" class="text-center">#</th>
+                                        <th style="width: 60%;">Unit Kerja</th>
+                                        <th class="text-center" style="width: 15%;">Jumlah</th>
+                                        <th style="width: 20%;">Persentase</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $unitData = [];
+                                        foreach ($employees as $emp) {
+                                            $unit = $emp->unit_kerja ?? '(Kosong)';
+                                            $unitData[$unit] = ($unitData[$unit] ?? 0) + 1;
+                                        }
+                                        arsort($unitData);
+                                        $totalUnit = array_sum($unitData);
+                                    @endphp
+                                    @foreach ($unitData as $unit => $jumlah)
+                                        @php $pct = $totalUnit > 0 ? ($jumlah / $totalUnit * 100) : 0; @endphp
+                                        <tr>
+                                            <td class="text-center text-muted fw-semibold">{{ $loop->iteration }}</td>
+                                            <td><strong>{{ $unit }}</strong></td>
+                                            <td class="text-center">
+                                                <span class="badge bg-warning text-dark"
+                                                    style="min-width: 60px;">{{ number_format($jumlah) }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-warning"
+                                                        style="width: {{ $pct }}%;">
+                                                        <small
+                                                            class="fw-semibold text-dark">{{ number_format($pct, 1) }}%</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr class="table-secondary fw-bold">
+                                        <td colspan="2" class="text-end">TOTAL KESELURUHAN</td>
+                                        <td class="text-center">{{ number_format($totalUnit) }}</td>
+                                        <td>
+                                            <span class="badge bg-dark"
+                                                style="font-size: 0.9rem; padding: 0.5rem 1rem;">100%</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,7 +424,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="small text-muted mt-2">* Setiap sel = jumlah karyawan outsourcing pada kombinasi unit, instansi,
+                <div class="small text-muted mt-2">* Setiap sel = jumlah karyawan outsourcing pada kombinasi unit,
+                    instansi,
                     dan lokasi tsb</div>
             </div>
         </div>

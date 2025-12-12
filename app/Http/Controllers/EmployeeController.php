@@ -119,7 +119,13 @@ class EmployeeController extends Controller
 
         // Distribusi Masa Kerja per Lokasi
         $tenureLocationRaw = (clone $baseQuery)
-            ->select('lokasi_kerja', DB::raw("CASE WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) < 1 THEN '< 1' WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) BETWEEN 1 AND 5 THEN '1-5' WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) BETWEEN 6 AND 10 THEN '6-10' WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) BETWEEN 11 AND 20 THEN '11-20' ELSE '> 20' END as tenure_group"), DB::raw('COUNT(*) as total'))
+            ->select('lokasi_kerja', DB::raw("CASE 
+                WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) < 1 THEN '0-1 thn' 
+                WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) BETWEEN 1 AND 3 THEN '2-3 thn' 
+                WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) BETWEEN 4 AND 6 THEN '4-6 thn' 
+                WHEN TIMESTAMPDIFF(YEAR, STR_TO_DATE(tmt_karyawan, '%d/%m/%Y'), CURDATE()) BETWEEN 7 AND 10 THEN '7-10 thn' 
+                ELSE '>10 thn' 
+            END as tenure_group"), DB::raw('COUNT(*) as total'))
             ->whereNotNull('tmt_karyawan')
             ->whereNotNull('lokasi_kerja')
             ->groupBy('lokasi_kerja', 'tenure_group')
@@ -137,7 +143,7 @@ class EmployeeController extends Controller
                 $row[] = $found ? $found->total : 0;
             }
             $tenureLocationDatasets[] = [
-                'label' => $tenureGroup,
+                'label' => $tenureGroup,  // Sudah match dengan Blade karena query sudah diubah
                 'data' => $row,
                 'backgroundColor' => $tenureColorPalette[$i % count($tenureColorPalette)]
             ];
@@ -200,8 +206,11 @@ class EmployeeController extends Controller
                 $found = $genderLocationRaw->first(fn($item) => $item->lokasi_kerja == $lokasi && $item->jenis_kelamin == $gender);
                 $row[] = $found ? $found->total : 0;
             }
+            // Normalize gender label to title case untuk consistency
+            $normalizedGender = strtoupper($gender) === 'LAKI-LAKI' ? 'Laki-laki' :
+                (strtoupper($gender) === 'PEREMPUAN' ? 'Perempuan' : $gender);
             $genderLocationDatasets[] = [
-                'label' => $gender,
+                'label' => $normalizedGender,
                 'data' => $row,
                 'backgroundColor' => $genderColorPalette[$i % count($genderColorPalette)]
             ];
@@ -233,8 +242,10 @@ class EmployeeController extends Controller
                 $found = $ageLocationRaw->first(fn($item) => $item->lokasi_kerja == $lokasi && $item->age_group == $ageGroup);
                 $row[] = $found ? $found->total : 0;
             }
+            // Normalize age group label untuk consistency dengan Blade
+            $normalizedAge = $ageGroup === 'Gen Y (Milenial)' ? 'Milenial' : $ageGroup;
             $ageLocationDatasets[] = [
-                'label' => $ageGroup,
+                'label' => $normalizedAge,
                 'data' => $row,
                 'backgroundColor' => $ageColorPalette[$i % count($ageColorPalette)]
             ];
