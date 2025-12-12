@@ -128,6 +128,8 @@ class DataKaryawanController extends Controller
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
             'masa_berlaku',
+            'rencana_mpp',
+            'rencana_pensiun',
         ];
 
         foreach ($dateFields as $field) {
@@ -305,7 +307,9 @@ class DataKaryawanController extends Controller
             'tmt_karyawan',
             'tmt_kj_tertinggi',
             'tgl_sk_jabatan_terakhir',
-            'masa_berlaku'
+            'masa_berlaku',
+            'rencana_mpp',
+            'rencana_pensiun'
         ];
 
         foreach ($dateFields as $field) {
