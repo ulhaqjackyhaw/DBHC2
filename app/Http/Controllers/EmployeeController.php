@@ -67,6 +67,13 @@ class EmployeeController extends Controller
         $employees = (clone $baseQuery)->get();
         $totalOrganic = $employees->count();
 
+        // Hitung berdasarkan status jabatan
+        $statusJabatanCounts = (clone $baseQuery)
+            ->select('status_jabatan', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('status_jabatan')
+            ->groupBy('status_jabatan')
+            ->get();
+
         // Helper function untuk pivot data menjadi matriks
         $pivot = function ($data, $rowKey, $colKey, $valKey) {
             $matrix = [];
@@ -302,6 +309,15 @@ class EmployeeController extends Controller
             return $i;
         });
 
+        // Analisis Rencana Pensiun per Tahun
+        $retirementByYear = (clone $baseQuery)
+            ->select(DB::raw("SUBSTRING_INDEX(rencana_pensiun, '/', -1) as tahun_pensiun"), DB::raw('COUNT(*) as total'))
+            ->whereNotNull('rencana_pensiun')
+            ->where('rencana_pensiun', '!=', '')
+            ->groupBy('tahun_pensiun')
+            ->orderBy('tahun_pensiun', 'asc')
+            ->get();
+
         // E. Analisis Top 10 Unit dengan tingkat pendidikan tertinggi
         $topEducatedUnits = (clone $baseQuery)
             ->select(
@@ -490,6 +506,8 @@ class EmployeeController extends Controller
             'locationMatrix' => $locationMatrix,
             'locationSummary' => $locationSummary,
             'educationLevels' => $educationLevels,
+            'retirementByYear' => $retirementByYear,
+            'statusJabatanCounts' => $statusJabatanCounts,
         ]);
     }
 

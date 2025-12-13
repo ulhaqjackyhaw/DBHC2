@@ -135,6 +135,45 @@
                     <div style="font-size: 2.5rem; font-weight: 700;">{{ number_format($totalOrganic ?? 0) }}</div>
                     <div style="font-size: 1rem; color: var(--text-color-light);">Total Karyawan Organik</div>
                 </div>
+
+                {{-- Breakdown Status Jabatan --}}
+                @if (isset($statusJabatanCounts) && $statusJabatanCounts->count() > 0)
+                    <div class="mt-4 pt-3 border-top w-100">
+                        <div class="row g-3">
+                            @foreach ($statusJabatanCounts as $status)
+                                @php
+                                    $percentage = $totalOrganic > 0 ? ($status->total / $totalOrganic) * 100 : 0;
+                                    $iconClass =
+                                        strtoupper($status->status_jabatan) === 'PEJABAT' ? 'fa-user-tie' : 'fa-user';
+                                    $colorClass =
+                                        strtoupper($status->status_jabatan) === 'PEJABAT'
+                                            ? 'text-success'
+                                            : 'text-info';
+                                    $bgColor =
+                                        strtoupper($status->status_jabatan) === 'PEJABAT' ? '#dcfce7' : '#dbeafe';
+                                    $textColor =
+                                        strtoupper($status->status_jabatan) === 'PEJABAT' ? '#166534' : '#1e40af';
+                                @endphp
+                                <div class="col-6">
+                                    <div class="d-flex align-items-center justify-content-center flex-column p-3 rounded"
+                                        style="background-color: {{ $bgColor }};">
+                                        <i class="fa-solid {{ $iconClass }} {{ $colorClass }} mb-2"
+                                            style="font-size: 1.5rem;"></i>
+                                        <div class="fw-bold" style="font-size: 1.75rem; color: {{ $textColor }};">
+                                            {{ number_format($status->total) }}
+                                        </div>
+                                        <div class="small" style="color: {{ $textColor }}; opacity: 0.8;">
+                                            {{ $status->status_jabatan }}
+                                        </div>
+                                        <div class="small text-muted mt-1">
+                                            ({{ number_format($percentage, 1) }}%)
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -830,6 +869,121 @@
                                                 skor tertinggi<br>
                                                 • <strong>Pendidikan Terbanyak:</strong> Tingkat pendidikan dengan jumlah
                                                 karyawan paling banyak di lokasi tersebut
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Tabel Rencana Pensiun per Tahun --}}
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fa-solid fa-calendar-check me-2 text-danger"></i>
+                                    Distribusi Rencana Pensiun per Tahun
+                                </h5>
+                                <p class="text-muted small mb-3">
+                                    <strong>Proyeksi pensiun karyawan</strong> berdasarkan tahun rencana pensiun.<br>
+                                    <i class="fa fa-info-circle text-info"></i> <strong>Data:</strong> Karyawan organik •
+                                    Grouped by tahun pensiun
+                                </p>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="text-center" style="width: 5%;">#</th>
+                                                <th class="text-center" style="width: 20%;">Tahun Pensiun</th>
+                                                <th class="text-center" style="width: 20%;">Jumlah Karyawan</th>
+                                                <th style="width: 55%;">Persentase</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (isset($retirementByYear) && $retirementByYear->count() > 0)
+                                                @php
+                                                    $totalRetirement = $retirementByYear->sum('total');
+                                                @endphp
+                                                @foreach ($retirementByYear as $retirement)
+                                                    @php
+                                                        $pct =
+                                                            $totalRetirement > 0
+                                                                ? ($retirement->total / $totalRetirement) * 100
+                                                                : 0;
+                                                        $currentYear = date('Y');
+                                                        $yearsUntil = $retirement->tahun_pensiun - $currentYear;
+                                                    @endphp
+                                                    <tr
+                                                        class="{{ $yearsUntil <= 5 && $yearsUntil >= 0 ? 'table-warning' : '' }}">
+                                                        <td class="text-center text-muted fw-semibold">
+                                                            {{ $loop->iteration }}</td>
+                                                        <td class="text-center fw-bold">
+                                                            {{ $retirement->tahun_pensiun }}
+                                                            @if ($yearsUntil <= 5 && $yearsUntil >= 0)
+                                                                <span class="badge bg-warning text-dark ms-2">
+                                                                    <i class="fa-solid fa-exclamation-triangle"></i>
+                                                                    {{ $yearsUntil }} tahun lagi
+                                                                </span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-primary"
+                                                                style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                                                {{ number_format($retirement->total) }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="progress" style="height: 25px;">
+                                                                <div class="progress-bar bg-gradient {{ $yearsUntil <= 5 && $yearsUntil >= 0 ? 'bg-warning' : 'bg-info' }}"
+                                                                    style="width: {{ $pct }}%;">
+                                                                    <small
+                                                                        class="fw-semibold">{{ number_format($pct, 1) }}%</small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                <tr class="table-secondary fw-bold">
+                                                    <td colspan="2" class="text-end">TOTAL KARYAWAN</td>
+                                                    <td class="text-center">{{ number_format($totalRetirement) }}</td>
+                                                    <td>
+                                                        <span class="badge bg-dark"
+                                                            style="font-size: 0.95rem; padding: 0.5rem 1rem;">
+                                                            100%
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @else
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted py-4">
+                                                        Data rencana pensiun tidak tersedia
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mt-3 p-3 bg-light rounded-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="small text-muted">
+                                                <strong>📌 Keterangan:</strong><br>
+                                                • <span class="badge bg-warning text-dark">⚠️ 5 tahun lagi</span> =
+                                                Karyawan yang akan pensiun dalam 5 tahun ke depan<br>
+                                                • Data diambil dari kolom <code>rencana_pensiun</code><br>
+                                                • Tahun pensiun diekstrak dari tanggal lengkap
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="small text-muted">
+                                                <strong>🎯 Manfaat Data:</strong><br>
+                                                • Perencanaan suksesi jabatan<br>
+                                                • Proyeksi kebutuhan rekrutmen<br>
+                                                • Manajemen talent pipeline<br>
+                                                • Strategi knowledge transfer
                                             </div>
                                         </div>
                                     </div>
