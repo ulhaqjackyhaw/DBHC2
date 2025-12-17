@@ -332,7 +332,7 @@
                             <i class="menu-icon bi bi-arrow-left-right {{ request()->routeIs('data-penugasan.*') ? 'text-white' : 'text-pink-600' }}"
                                 style="font-size: 14px;"></i>
                         </div>
-                        <span class="fw-medium">Data Penugasan</span>
+                        <span class="fw-medium">Data Penugasan Karyawan</span>
                         @if (request()->routeIs('data-penugasan.*'))
                             <i class="bi bi-chevron-right ms-auto opacity-75"></i>
                         @endif

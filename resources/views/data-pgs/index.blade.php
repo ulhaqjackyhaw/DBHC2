@@ -324,9 +324,7 @@
                                 <td><span class="badge bg-light text-dark border" x-text="pgs.nik"></span></td>
                                 <td x-text="pgs.nama"></td>
                                 <td x-text="pgs.jabatan_definitif"></td>
-                                <td><span
-                                        class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25"
-                                        x-text="pgs.jabatan_pgs"></span></td>
+                                <td x-text="pgs.jabatan_pgs"></td>
                                 <td x-text="pgs.lokasi_unit_kerja"></td>
                                 <td x-text="pgs.tanggal_pgs_formatted"></td>
                                 <td>
@@ -453,9 +451,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-muted small">Jabatan PGS</label>
-                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light">
-                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary"
-                                        x-text="selectedPgs?.jabatan_pgs || '-'"></span>
+                                <p class="form-control-plaintext border rounded px-3 py-2 bg-light"
+                                    x-text="selectedPgs?.jabatan_pgs || '-'">
                                 </p>
                             </div>
                             <div class="col-md-12">

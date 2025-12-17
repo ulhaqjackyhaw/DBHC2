@@ -26,7 +26,7 @@
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-slate-700 mb-1">Jabatan PGS</label>
                     <div class="form-control-plaintext bg-light rounded px-3 py-2">
-                        <span class="badge bg-warning text-dark">{{ $dataPgs->jabatan_pgs }}</span>
+                        {{ $dataPgs->jabatan_pgs }}
                     </div>
                 </div>
 
