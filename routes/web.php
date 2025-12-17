@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataKaryawanController;
 use App\Http\Controllers\DataPgsController;
+use App\Http\Controllers\DataPenugasanController;
 use App\Http\Controllers\FormasiController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\VersionController;
@@ -79,6 +80,11 @@ Route::middleware('auth', )->group(function () {
     Route::get('/data-pgs', [DataPgsController::class, 'index'])->name('data-pgs.index');
     Route::get('/data-pgs/template/download', [DataPgsController::class, 'downloadTemplate'])->name('data-pgs.template.download');
     Route::get('/data-pgs/export', [DataPgsController::class, 'export'])->name('data-pgs.export');
+
+    // Data Penugasan - Basic access (view list)
+    Route::get('/data-penugasan', [DataPenugasanController::class, 'index'])->name('data-penugasan.index');
+    Route::get('/data-penugasan/template', [DataPenugasanController::class, 'downloadTemplate'])->name('data-penugasan.template');
+    Route::get('/data-penugasan/export', [DataPenugasanController::class, 'export'])->name('data-penugasan.export');
 
     // Dashboard - Detail jabatan lowong bisa diakses semua user
     Route::get('/dashboard/jabatan-lowong-detail', [DashboardController::class, 'getJabatanLowongDetail'])->name('dashboard.jabatan.detail');
@@ -175,6 +181,24 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
         });
     });
 
+    // Data Penugasan - Admin only CRUD
+    Route::prefix('data-penugasan')->name('data-penugasan.')->group(function () {
+        Route::get('/create', [DataPenugasanController::class, 'create'])->name('create');
+        Route::post('/', [DataPenugasanController::class, 'store'])->name('store');
+        Route::get('/{dataPenugasan}/edit', [DataPenugasanController::class, 'edit'])->name('edit');
+        Route::put('/{dataPenugasan}', [DataPenugasanController::class, 'update'])->name('update');
+        Route::delete('/{dataPenugasan}', [DataPenugasanController::class, 'destroy'])->name('destroy');
+
+        // Import operations with large.import middleware
+        Route::middleware('large.import')->group(function () {
+            Route::post('import-add', [DataPenugasanController::class, 'importAdd'])->name('import.add');
+            Route::post('import-replace', [DataPenugasanController::class, 'importReplace'])->name('import.replace');
+        });
+
+        // Import operations
+        Route::post('/import', [DataPenugasanController::class, 'import'])->name('import');
+    });
+
     // Audit Logs - Admin only
     Route::prefix('audit-logs')->name('audit-logs.')->group(function () {
         Route::get('/', [AuditLogController::class, 'index'])->name('index');
@@ -206,6 +230,7 @@ Route::middleware('auth')->get('/data-karyawan/{dataKaryawan}', [DataKaryawanCon
 Route::middleware('auth')->get('/formasi/{formasi}', [FormasiController::class, 'show'])->name('formasi.show');
 Route::middleware('auth')->get('/realisasi/{realisasi}', [RealisasiController::class, 'show'])->name('realisasi.show');
 Route::middleware('auth')->get('/data-pgs/{dataPgs}', [DataPgsController::class, 'show'])->name('data-pgs.show');
+Route::middleware('auth')->get('/data-penugasan/{dataPenugasan}', [DataPenugasanController::class, 'show'])->name('data-penugasan.show');
 
 // Version control routes (accessible by all authenticated users)
 Route::middleware('auth')->prefix('versions')->name('versions.')->group(function () {

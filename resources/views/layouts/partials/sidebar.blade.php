@@ -302,6 +302,43 @@
                     </a>
                 </li>
 
+                {{-- Data Penugasan --}}
+                <li class="nav-item">
+                    <a href="{{ route('data-penugasan.index') }}" id="data-penugasan-link"
+                        class="nav-link d-flex align-items-center rounded-xl px-4 py-3 position-relative transition-all duration-200 {{ request()->routeIs('data-penugasan.*') ? 'text-white shadow-lg is-active' : 'text-slate-600' }}"
+                        style="{{ request()->routeIs('data-penugasan.*') ? 'background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); transform: translateX(8px);' : '' }}"
+                        onmouseover="if (!this.classList.contains('is-active')) { 
+                            this.style.background = 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)'; 
+                            this.style.transform = 'translateX(4px)'; 
+                            this.classList.add('text-pink-800'); 
+                            this.classList.remove('text-slate-600'); 
+                            const iconBox = this.querySelector('.icon-box');
+                            const icon = this.querySelector('.menu-icon');
+                            if (iconBox) iconBox.style.background = '#ec4899';
+                            if (icon) { icon.classList.remove('text-pink-600'); icon.classList.add('text-white'); }
+                        }"
+                        onmouseout="if (!this.classList.contains('is-active')) { 
+                            this.style.background = ''; 
+                            this.style.transform = ''; 
+                            this.classList.remove('text-pink-800'); 
+                            this.classList.add('text-slate-600'); 
+                            const iconBox = this.querySelector('.icon-box');
+                            const icon = this.querySelector('.menu-icon');
+                            if (iconBox) iconBox.style.background = '';
+                            if (icon) { icon.classList.remove('text-white'); icon.classList.add('text-pink-600'); }
+                        }">
+                        <div class="icon-box d-flex align-items-center justify-content-center rounded-lg me-3 {{ request()->routeIs('data-penugasan.*') ? 'bg-white/20' : 'bg-pink-100' }}"
+                            style="width: 32px; height: 32px; min-width: 32px;">
+                            <i class="menu-icon bi bi-arrow-left-right {{ request()->routeIs('data-penugasan.*') ? 'text-white' : 'text-pink-600' }}"
+                                style="font-size: 14px;"></i>
+                        </div>
+                        <span class="fw-medium">Data Penugasan</span>
+                        @if (request()->routeIs('data-penugasan.*'))
+                            <i class="bi bi-chevron-right ms-auto opacity-75"></i>
+                        @endif
+                    </a>
+                </li>
+
                 {{-- Kelola User --}}
                 @can(abilities: 'admin')
                     <li class="nav-item">
