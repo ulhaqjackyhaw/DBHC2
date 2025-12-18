@@ -503,9 +503,11 @@
                             <div class="alert alert-success alert-dismissible fade show py-2 px-3 mb-3" role="alert"
                                 style="font-size: 0.85rem;">
                                 <i class="fa-solid fa-lightbulb me-2"></i>
-                                <strong>Info:</strong> Grafik ini menampilkan perubahan jumlah karyawan dari waktu ke waktu
+                                <strong>Info:</strong> Grafik ini dihasilkan dari perubahan jumlah karyawan dari waktu ke
+                                waktu
                                 berdasarkan
-                                <strong>snapshot version</strong> yang Anda simpan. Semakin sering menyimpan snapshot,
+                                <strong>history snapshot version</strong> yang Anda simpan. Semakin sering menyimpan
+                                snapshot,
                                 semakin detail tren yang terlihat.
                                 <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"
                                     aria-label="Close" style="font-size: 0.7rem;"></button>
@@ -727,12 +729,20 @@
                             <h6 class="card-title mb-0">Rekapitulasi Jabatan Lowong Karyawan Organik PT Angkasa Pura
                                 Indonesia
                                 Regional 1</h6>
-                            <a href="{{ route('jabatan-lowong.export') }}"
-                                class="btn btn-success btn-sm d-flex align-items-center gap-2"
-                                title="Export data jabatan yang masih lowong (sisa formasi > 0) per lokasi">
-                                <i class="fa-solid fa-download"></i>
-                                <span class="text-nowrap">Unduh Data Jabatan Lowong</span>
-                            </a>
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('jabatan-lowong.export') }}"
+                                    class="btn btn-success btn-sm d-flex align-items-center gap-2"
+                                    title="Export hanya jabatan yang lowong (sisa > 0)">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span class="text-nowrap">Unduh Jabatan Lowong</span>
+                                </a>
+                                <a href="{{ route('formasi.export.semua.lengkap') }}"
+                                    class="btn btn-primary btn-sm d-flex align-items-center gap-2"
+                                    title="Export semua jabatan lengkap dengan kolom: Formasi, Terisi, Lowong">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                    <span class="text-nowrap">Unduh Semua Formatif Terisi Lowong</span>
+                                </a>
+                            </div>
                         </div>
                         @if (isset($jabatanLowongGrouped) && $jabatanLowongGrouped->isNotEmpty())
 

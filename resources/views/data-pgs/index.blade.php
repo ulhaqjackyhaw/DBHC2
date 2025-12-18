@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Data PGS')
-@section('header-title', 'Data Pelaksana Tugas Sementara (PGS)')
+@section('header-title', 'Data Pejabat Pengganti Sementara (PGS)')
 
 @push('head-styles')
     <style>

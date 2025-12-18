@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\FormasiImport;
 use App\Exports\FormasiExport;
 use App\Exports\FormasiTemplateExport;
+use App\Exports\SemuaJabatanLengkapExport;
 use Illuminate\Validation\Rule;
 
 class FormasiController extends Controller
@@ -201,5 +202,10 @@ class FormasiController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new FormasiTemplateExport, 'template_formasi.xlsx');
+    }
+
+    public function exportSemuaJabatanLengkap()
+    {
+        return Excel::download(new SemuaJabatanLengkapExport, 'semua_jabatan_lengkap_' . date('Y-m-d_His') . '.xlsx');
     }
 }

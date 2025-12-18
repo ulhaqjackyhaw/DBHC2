@@ -72,6 +72,7 @@ Route::middleware('auth', )->group(function () {
     Route::get('/formasi', [FormasiController::class, 'index'])->name('formasi.index');
     Route::get('/formasi/template/download', [FormasiController::class, 'downloadTemplate'])->name('formasi.template.download');
     Route::get('/formasi/export', [FormasiController::class, 'export'])->name('formasi.export');
+    Route::get('/formasi/export-semua-lengkap', [FormasiController::class, 'exportSemuaJabatanLengkap'])->name('formasi.export.semua.lengkap');
 
     // Realisasi - Basic access (view list)
     Route::get('/realisasi', [RealisasiController::class, 'index'])->name('realisasi.index');

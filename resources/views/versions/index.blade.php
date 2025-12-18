@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'History Versi Data')
-@section('header-title', 'History Versi Data')
+@section('header-title', 'History Snapshot Version Data')
 
 @section('content')
     {{-- Notifikasi --}}
@@ -62,10 +62,19 @@
     <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm" x-data="versionActions()">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-lg font-semibold text-slate-800 mb-0">Daftar Versi Tersimpan</h2>
-            <a href="{{ route('karyawan.index') }}" class="btn btn-secondary d-flex align-items-center gap-2">
-                <i class="bi bi-arrow-left"></i>
-                <span>Kembali ke Data Karyawan</span>
-            </a>
+            <div class="d-flex gap-2">
+                @can('admin')
+                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal"
+                        data-bs-target="#createSnapshotModal">
+                        <i class="bi bi-camera-fill"></i>
+                        <span>Buat Snapshot Baru</span>
+                    </button>
+                @endcan
+                <a href="{{ route('karyawan.index') }}" class="btn btn-secondary d-flex align-items-center gap-2">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Kembali ke Data Karyawan</span>
+                </a>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -132,6 +141,55 @@
 
         <div class="mt-4">
             {{ $versions->links() }}
+        </div>
+
+        <!-- Modal Buat Snapshot Baru -->
+        <div class="modal fade" id="createSnapshotModal" tabindex="-1" aria-labelledby="createSnapshotLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="{{ route('versions.store') }}" method="POST">
+                        @csrf
+                        <div class="modal-header bg-primary text-white">
+                            <h1 class="modal-title fs-5" id="createSnapshotLabel">
+                                <i class="bi bi-camera-fill me-2"></i> Buat Snapshot Baru
+                            </h1>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-semibold">
+                                    Deskripsi / Catatan <span class="text-danger">*</span>
+                                </label>
+                                <textarea name="description" id="description" class="form-control" rows="3" required
+                                    placeholder="Contoh: Backup sebelum update data bulan Januari 2025"></textarea>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i> Berikan deskripsi yang jelas untuk memudahkan
+                                    identifikasi snapshot ini di kemudian hari.
+                                </div>
+                            </div>
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-clock-history me-2"></i>
+                                <strong>Snapshot akan dibuat untuk:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Semua data karyawan aktif saat ini</li>
+                                    <li>Waktu snapshot: {{ now()->timezone('Asia/Jakarta')->format('d F Y, H:i') }} WIB
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle"></i> Batal
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Buat Snapshot
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Modal Konfirmasi Dinamis -->

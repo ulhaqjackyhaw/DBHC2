@@ -295,7 +295,7 @@
                             <i class="menu-icon bi bi-person-gear {{ request()->routeIs('data-pgs.*') ? 'text-white' : 'text-violet-600' }}"
                                 style="font-size: 14px;"></i>
                         </div>
-                        <span class="fw-medium">Data PGS</span>
+                        <span class="fw-medium">Data PGS Pejabat</span>
                         @if (request()->routeIs('data-pgs.*'))
                             <i class="bi bi-chevron-right ms-auto opacity-75"></i>
                         @endif
