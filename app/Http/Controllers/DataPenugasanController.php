@@ -175,9 +175,9 @@ class DataPenugasanController extends Controller
     }
 
     /**
-     * Import data from Excel
+     * Import data from Excel (mode tambah)
      */
-    public function import(Request $request)
+    public function importAdd(Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv|max:10240',
@@ -187,7 +187,31 @@ class DataPenugasanController extends Controller
             Excel::import(new DataPenugasanImport, $request->file('file'));
 
             return redirect()->route('data-penugasan.index')
-                ->with('success', 'Data berhasil diimport.');
+                ->with('success', 'Data berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->route('data-penugasan.index')
+                ->with('error', 'Gagal import data: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Import data from Excel (mode ganti semua)
+     */
+    public function importReplace(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            // Hapus semua data lama
+            DataPenugasan::truncate();
+
+            // Import data baru
+            Excel::import(new DataPenugasanImport, $request->file('file'));
+
+            return redirect()->route('data-penugasan.index')
+                ->with('success', 'Semua data lama berhasil dihapus dan diganti dengan data baru.');
         } catch (\Exception $e) {
             return redirect()->route('data-penugasan.index')
                 ->with('error', 'Gagal import data: ' . $e->getMessage());
