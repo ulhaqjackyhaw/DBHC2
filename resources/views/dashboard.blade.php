@@ -34,10 +34,61 @@
             /* Slate 200 */
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            width: 100%;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+            position: relative;
+            width: 100%;
+        }
+
         body {
             background-color: var(--body-bg);
             font-family: 'Inter', sans-serif;
             color: var(--text-color-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container,
+        .container-fluid {
+            overflow-x: hidden;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        /* Force all rows and columns to stay within viewport */
+        .row {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            max-width: 100%;
+        }
+
+        [class*="col-"] {
+            max-width: 100%;
+        }
+
+        /* Prevent text overflow */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        span {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .fw-semibold {
@@ -66,9 +117,10 @@
         /* ===== MODERN KPI WIDGETS ===== */
         .kpi {
             display: flex;
+            flex-direction: row;
             align-items: center;
-            gap: 1rem;
-            padding: 1.25rem;
+            gap: 0.85rem;
+            padding: 1rem 0.85rem;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 1rem;
@@ -85,33 +137,66 @@
             flex-shrink: 0;
             display: grid;
             place-items: center;
-            width: 48px;
-            height: 48px;
+            width: clamp(36px, 5vw, 48px);
+            height: clamp(36px, 5vw, 48px);
             border-radius: 50%;
-            font-size: 1.25rem;
+            font-size: clamp(0.9rem, 1.5vw, 1.25rem);
+            transition: all 0.3s ease;
         }
 
         .kpi .value {
-            font-size: clamp(1rem, 3vw, 1.75rem);
+            font-size: clamp(1rem, 2.2vw, 1.75rem);
             /* Responsive font size */
             font-weight: 700;
             line-height: 1.2;
             color: var(--text-color-dark);
             word-break: break-word;
+            transition: font-size 0.3s ease;
         }
 
         .kpi .label {
-            font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+            font-size: clamp(0.65rem, 1.3vw, 0.85rem);
             /* Responsive font size */
             color: var(--text-color-light);
             line-height: 1.3;
             word-break: break-word;
+            transition: font-size 0.3s ease;
         }
 
         .kpi .content {
             min-width: 0;
             flex: 1;
             overflow: hidden;
+        }
+
+        /* Fluid Typography untuk Header */
+        .navbar-brand {
+            font-size: clamp(0.85rem, 2.5vw, 1.1rem) !important;
+            white-space: normal;
+            line-height: 1.3;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+        }
+
+        h2 {
+            font-size: clamp(1.25rem, 3.5vw, 2rem);
+        }
+
+        h3 {
+            font-size: clamp(1.1rem, 3vw, 1.75rem);
+        }
+
+        h4,
+        h5,
+        h6 {
+            font-size: clamp(0.9rem, 2.5vw, 1.25rem);
+        }
+
+        /* Specific header title di dashboard */
+        [class*="header-title"] {
+            font-size: clamp(0.8rem, 2.5vw, 1.1rem) !important;
         }
 
         .kpi .icon-total {
@@ -195,6 +280,49 @@
             color: var(--text-color-light);
         }
 
+        /* ===== RESPONSIVE CHART CONTAINERS ===== */
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+            transition: all 0.3s ease;
+        }
+
+        /* Chart parent container */
+        [class*="chart-container"],
+        [style*="position: relative"] canvas {
+            display: block;
+        }
+
+        /* Responsive table wrapper */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+        }
+
+        .table {
+            width: 100%;
+            table-layout: auto;
+        }
+
+        .table td,
+        .table th {
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+            max-width: 200px;
+        }
+
+        @media (max-width: 576px) {
+
+            .table td,
+            .table th {
+                max-width: 150px;
+                font-size: 0.75rem;
+                padding: 0.5rem 0.25rem;
+            }
+        }
+
         /* ===== CSS BARU & PENYESUAIAN UNTUK JABATAN LOWONG ===== */
         .total-lowongan-card {
             /* Kartu total keseluruhan */
@@ -215,8 +343,15 @@
 
         .lowongan-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
             gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .lowongan-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
         }
 
         .lowongan-group {
@@ -296,6 +431,28 @@
 
         /* ===== END OF CSS BARU ===== */
 
+        /* ===== BUTTON GROUP FIX ===== */
+        .btn-group {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .btn-group .btn {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-group-sm>.btn,
+        .btn-sm {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.6rem;
+        }
+
+        /* Ensure buttons don't overflow */
+        .d-flex.flex-wrap {
+            max-width: 100%;
+        }
+
         /* ===== INTERACTIVE CHART HINTS ===== */
         .chart-hint {
             background-color: #eff6ff;
@@ -333,16 +490,355 @@
         /* Mobile phones (portrait) */
         @media (max-width: 576px) {
             .kpi {
-                padding: 0.85rem;
-                gap: 0.75rem;
-                flex-direction: column;
-                text-align: center;
+                padding: 0.65rem 0.5rem !important;
+                gap: 0.45rem !important;
+                flex-direction: row !important;
             }
 
             .kpi .icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 0.85rem !important;
+            }
+
+            .kpi .value {
+                font-size: 1.1rem !important;
+            }
+
+            .kpi .label {
+                font-size: 0.62rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .card-title {
+                font-size: 0.85rem !important;
+                line-height: 1.3 !important;
+            }
+
+            h6.card-title {
+                margin-bottom: 0.5rem !important;
+            }
+
+            .card-body {
+                padding: 1rem !important;
+            }
+
+            .total-lowongan-card .value {
+                font-size: 1.5rem !important;
+            }
+
+            .lowongan-container {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+
+            /* Button groups responsive */
+            .btn-sm {
+                font-size: 0.7rem !important;
+                padding: 0.35rem 0.5rem !important;
+                white-space: nowrap;
+            }
+
+            .btn-group {
+                flex-wrap: wrap !important;
+                gap: 0.25rem !important;
+            }
+
+            /* Hide long text in buttons */
+            .btn .me-1 {
+                margin-right: 0.25rem !important;
+            }
+
+            /* Button text tidak wrap */
+            .btn span {
+                display: inline-block;
+            }
+
+            /* Table responsive */
+            .table {
+                font-size: 0.75rem !important;
+            }
+
+            .table thead th {
+                font-size: 0.65rem !important;
+                padding: 0.5rem 0.25rem !important;
+            }
+
+            .table tbody td {
+                padding: 0.5rem 0.25rem !important;
+            }
+
+            .badge {
+                font-size: 0.65rem !important;
+                padding: 0.2rem 0.4rem !important;
+            }
+
+            /* Chart containers - limit height di mobile */
+            canvas {
+                max-height: 220px !important;
+            }
+
+            [style*="height: clamp"] {
+                height: 200px !important;
+            }
+
+            /* Specific chart heights */
+            #growthChart,
+            #statusChart,
+            #genderChart {
+                max-height: 200px !important;
+            }
+
+            #usiaChart,
+            #mkChart,
+            #fungsiJabatanChart,
+            #instansiChart {
+                max-height: 220px !important;
+            }
+
+            /* Row gaps - reduce spacing */
+            .g-3 {
+                --bs-gutter-x: 0.5rem !important;
+                --bs-gutter-y: 0.75rem !important;
+            }
+
+            .g-4 {
+                --bs-gutter-x: 0.75rem !important;
+                --bs-gutter-y: 1rem !important;
+            }
+
+            .gap-1 {
+                gap: 0.25rem !important;
+            }
+
+            .gap-2 {
+                gap: 0.35rem !important;
+            }
+
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+
+            .mb-3 {
+                margin-bottom: 0.75rem !important;
+            }
+
+            /* Make sure flex wraps */
+            .d-flex:not(.flex-nowrap) {
+                flex-wrap: wrap !important;
+            }
+
+            /* Reduce heading size */
+            .card-title {
+                line-height: 1.3 !important;
+            }
+        }
+
+        /* iPad (768-1024px) - DEDICATED BREAKPOINT */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .card-body {
+                padding: 1rem !important;
+            }
+
+            .kpi {
+                padding: 0.85rem 0.7rem !important;
+                gap: 0.65rem !important;
+                flex-direction: row !important;
+            }
+
+            .kpi .icon {
+                width: 38px !important;
+                height: 38px !important;
+                font-size: 0.95rem !important;
+            }
+
+            .kpi .value {
+                font-size: 1.25rem !important;
+            }
+
+            .kpi .label {
+                font-size: 0.68rem !important;
+                line-height: 1.2 !important;
+            }
+
+            /* Chart heights optimal untuk iPad */
+            [style*="height: clamp"] {
+                height: 240px !important;
+            }
+
+            canvas {
+                max-height: 240px !important;
+            }
+
+            /* Button groups */
+            .btn-sm {
+                font-size: 0.7rem !important;
+                padding: 0.35rem 0.55rem !important;
+            }
+
+            .btn-group {
+                flex-wrap: wrap !important;
+                gap: 0.35rem !important;
+            }
+
+            /* Grid gaps */
+            .g-2 {
+                --bs-gutter-x: 0.5rem !important;
+                --bs-gutter-y: 0.5rem !important;
+            }
+
+            .g-3 {
+                --bs-gutter-x: 0.75rem !important;
+                --bs-gutter-y: 0.75rem !important;
+            }
+
+            /* Table font sizes */
+            .table {
+                font-size: 0.8rem !important;
+            }
+
+            .table thead th {
+                font-size: 0.7rem !important;
+                padding: 0.5rem 0.5rem !important;
+            }
+
+            .table tbody td {
+                padding: 0.6rem 0.5rem !important;
+            }
+
+            /* Lowongan container */
+            .lowongan-container {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+                gap: 1rem !important;
+            }
+
+            .lowongan-header {
+                padding: 0.6rem 0.85rem !important;
+                font-size: 0.85rem !important;
+            }
+
+            .lowongan-item {
+                padding: 0.5rem 0.4rem !important;
+            }
+
+            .lowongan-level {
+                font-size: 0.8rem !important;
+            }
+
+            /* Card title */
+            .card-title {
+                font-size: 0.9rem !important;
+            }
+
+            /* Margin/padding adjustments */
+            .mb-3 {
+                margin-bottom: 0.75rem !important;
+            }
+
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+        }
+
+        /* MacBook (1280-1440px) - DEDICATED BREAKPOINT */
+        @media (min-width: 1280px) and (max-width: 1440px) {
+            .card-body {
+                padding: 1.25rem !important;
+            }
+
+            .kpi {
+                padding: 0.9rem 0.75rem !important;
+                gap: 0.75rem !important;
+                flex-direction: row !important;
+            }
+
+            .kpi .icon {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 1rem !important;
+            }
+
+            .kpi .value {
+                font-size: 1.45rem !important;
+            }
+
+            .kpi .label {
+                font-size: 0.72rem !important;
+                line-height: 1.2 !important;
+            }
+
+            /* Chart heights untuk MacBook */
+            [style*="height: clamp"] {
+                height: 280px !important;
+            }
+
+            canvas {
+                max-height: 280px !important;
+            }
+
+            /* Button groups */
+            .btn-sm {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 0.65rem !important;
+            }
+
+            /* Grid gaps */
+            .g-2 {
+                --bs-gutter-x: 0.75rem !important;
+                --bs-gutter-y: 0.75rem !important;
+            }
+
+            .g-3 {
+                --bs-gutter-x: 1rem !important;
+                --bs-gutter-y: 1rem !important;
+            }
+
+            /* Lowongan container */
+            .lowongan-container {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+            }
+
+            /* Card title */
+            .card-title {
+                font-size: 0.95rem !important;
+            }
+        }
+
+        /* Desktop besar (≥1441px) - FHD & above */
+        @media (min-width: 1441px) {
+            .kpi {
+                padding: 1.1rem 0.9rem !important;
+                gap: 1rem !important;
+                flex-direction: row !important;
+            }
+
+            .kpi .icon {
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 1.25rem !important;
+            }
+
+            .kpi .value {
+                font-size: 1.75rem !important;
+            }
+
+            .kpi .label {
+                font-size: 0.85rem !important;
+            }
+        }
+
+        /* Tablets (portrait) */
+        @media (min-width: 577px) and (max-width: 767px) {
+            .kpi {
+                padding: 1rem !important;
+                gap: 0.75rem !important;
+                flex-direction: row !important;
+            }
+
+            .kpi .icon {
+                width: 42px !important;
+                height: 42px !important;
+                font-size: 1.05rem !important;
             }
 
             .kpi .value {
@@ -353,42 +849,21 @@
                 font-size: 0.75rem !important;
             }
 
-            .card-title {
-                font-size: 0.9rem;
-            }
-
-            .total-lowongan-card .value {
-                font-size: 1.75rem;
+            .card-body {
+                padding: 1.25rem !important;
             }
 
             .lowongan-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Tablets (portrait) */
-        @media (min-width: 577px) and (max-width: 768px) {
-            .kpi {
-                padding: 1rem;
-                gap: 0.85rem;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
             }
 
-            .kpi .icon {
-                width: 44px;
-                height: 44px;
-                font-size: 1.1rem;
+            .btn-sm {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 0.6rem !important;
             }
 
-            .kpi .value {
-                font-size: 1.75rem !important;
-            }
-
-            .kpi .label {
-                font-size: 0.8rem !important;
-            }
-
-            .lowongan-container {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            canvas {
+                max-height: 250px !important;
             }
         }
 
@@ -409,16 +884,74 @@
                 font-size: 1.9rem !important;
             }
         }
+
+        /* ===== TOUCH DEVICE OPTIMIZATION ===== */
+        @media (hover: none) and (pointer: coarse) {
+
+            /* Untuk touchscreen devices */
+            .btn,
+            .kpi,
+            .card,
+            .lowongan-item {
+                -webkit-tap-highlight-color: rgba(79, 70, 229, 0.1);
+                touch-action: manipulation;
+            }
+
+            .kpi:active,
+            .btn:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+
+            /* Increase touch target size */
+            .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            /* Smooth scroll on touch */
+            .table-responsive,
+            .modal-body {
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+            }
+
+            /* Better tap feedback */
+            a,
+            button {
+                -webkit-tap-highlight-color: rgba(79, 70, 229, 0.15);
+            }
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+
+            .btn,
+            .alert,
+            .modal,
+            .btn-group {
+                display: none !important;
+            }
+
+            .card {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            canvas {
+                max-height: 300px !important;
+            }
+        }
     </style>
 @endpush
 
 {{-- Konten utama --}}
 @section('content')
-    <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm mb-5">
+    <div class="bg-white p-3 p-md-4 p-lg-5 rounded-xl shadow-sm mb-4 mb-md-5" style="max-width: 100%; overflow-x: hidden;">
 
         {{-- ROW 0: KPI Ringkas (Modernized with Icons) --}}
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-4 col-xl-2">
+        <div class="row g-2 g-md-3 mb-3 mb-md-4">
+            <div class="col-6 col-md-6 col-lg-4 col-xl-2">
                 <div class="kpi h-100">
                     <div class="icon icon-total"><i class="fa-solid fa-users"></i></div>
                     <div class="content">
@@ -427,7 +960,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4 col-xl-2">
+            <div class="col-6 col-md-6 col-lg-4 col-xl-2">
                 <div class="kpi h-100">
                     <div class="icon icon-female"><i class="fa-solid fa-venus"></i></div>
                     <div class="content">
@@ -436,7 +969,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4 col-xl-2">
+            <div class="col-6 col-md-6 col-lg-4 col-xl-2">
                 <div class="kpi h-100">
                     <div class="icon icon-male"><i class="fa-solid fa-mars"></i></div>
                     <div class="content">
@@ -447,7 +980,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-6 col-xl-3">
+            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
                 <div class="kpi h-100">
                     <div class="icon icon-age"><i class="fa-solid fa-cake-candles"></i></div>
                     <div class="content">
@@ -456,7 +989,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-6 col-xl-3">
+            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
                 <div class="kpi h-100">
                     <div class="icon icon-mk"><i class="fa-solid fa-business-time"></i></div>
                     <div class="content">
@@ -469,7 +1002,7 @@
 
         {{-- ROW 0.5: Grafik Pertumbuhan Karyawan (BARU) --}}
         @if (isset($versionGrowth) && $versionGrowth['hasData'])
-            <div class="row g-4 mb-4">
+            <div class="row g-2 g-md-3 mb-3 mb-md-4">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
@@ -481,46 +1014,45 @@
                                         Berdasarkan snapshot history database
                                     </small>
                                 </div>
-                                <div class="d-flex gap-2 align-items-center">
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Filter periode">
                                         <input type="radio" class="btn-check" name="periodFilter" id="filterAll"
                                             value="all" autocomplete="off" checked>
                                         <label class="btn btn-outline-primary" for="filterAll">
-                                            <i class="fa-solid fa-infinity me-1"></i>Semua
+                                            <i class="fa-solid fa-infinity me-1 d-none d-sm-inline"></i><span
+                                                class="d-none d-sm-inline">Semua</span><span
+                                                class="d-inline d-sm-none">All</span>
                                         </label>
 
                                         <input type="radio" class="btn-check" name="periodFilter" id="filterYear"
                                             value="year" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="filterYear">
-                                            <i class="fa-solid fa-calendar-alt me-1"></i>Per Tahun
+                                            <i class="fa-solid fa-calendar-alt me-1 d-none d-sm-inline"></i>Tahun
                                         </label>
 
                                         <input type="radio" class="btn-check" name="periodFilter" id="filterMonth"
                                             value="month" autocomplete="off">
                                         <label class="btn btn-outline-primary" for="filterMonth">
-                                            <i class="fa-solid fa-calendar-days me-1"></i>Per Bulan
+                                            <i class="fa-solid fa-calendar-days me-1 d-none d-sm-inline"></i>Bulan
                                         </label>
                                     </div>
 
                                     <a href="{{ route('versions.index') }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fa-solid fa-archive me-1"></i>
-                                        History
+                                        <i class="fa-solid fa-archive"></i>
+                                        <span class="d-none d-md-inline ms-1">History</span>
                                     </a>
                                 </div>
                             </div>
                             <div class="alert alert-success alert-dismissible fade show py-2 px-3 mb-3" role="alert"
-                                style="font-size: 0.85rem;">
-                                <i class="fa-solid fa-lightbulb me-2"></i>
-                                <strong>Info:</strong> Grafik ini dihasilkan dari perubahan jumlah karyawan dari waktu ke
-                                waktu
-                                berdasarkan
-                                <strong>history snapshot version</strong> yang Anda simpan. Semakin sering menyimpan
-                                snapshot,
-                                semakin detail tren yang terlihat.
+                                style="font-size: clamp(0.7rem, 2vw, 0.85rem);">
+                                <i class="fa-solid fa-lightbulb me-2 d-none d-md-inline"></i>
+                                <strong>Info:</strong> Grafik dari <strong>history snapshot version</strong>. <span
+                                    class="d-none d-lg-inline">Semakin sering menyimpan snapshot, semakin detail tren yang
+                                    terlihat.</span>
                                 <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"
                                     aria-label="Close" style="font-size: 0.7rem;"></button>
                             </div>
-                            <div style="position: relative; height: 320px;">
+                            <div style="position: relative; height: clamp(200px, 30vh, 300px); max-height: 300px;">
                                 <canvas id="growthChart"></canvas>
                             </div>
                         </div>
@@ -530,30 +1062,28 @@
         @endif
 
         {{-- ROW 1 (BARU): Status & Gender --}}
-        <div class="row g-4 mb-4">
+        <div class="row g-2 g-md-3 mb-3 mb-md-4">
             <div class="col-12 col-lg-6">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-3 gap-2">
                             <h6 class="card-title mb-0">Status Kepegawaian</h6>
-                            <div class="text-end">
-                                <small class="text-muted d-block">
-                                    <i class="fa-solid fa-mouse-pointer me-1"></i>
-                                    Klik untuk analisis detail
+                            <div class="text-start text-sm-end">
+                                <small class="text-muted d-block" style="font-size: clamp(0.65rem, 1.8vw, 0.8rem);">
+                                    <i class="fa-solid fa-mouse-pointer me-1 d-none d-md-inline"></i>
+                                    <span class="d-none d-lg-inline">Klik untuk analisis detail</span>
+                                    <span class="d-inline d-lg-none">Klik untuk detail</span>
                                 </small>
                             </div>
                         </div>
-                        <div class="alert alert-info alert-dismissible fade show py-2 px-3 mb-3" role="alert"
-                            style="font-size: 0.85rem;">
+                        <div class="alert alert-info alert-dismissible fade show py-2 px-3 mb-3 d-none d-md-block"
+                            role="alert" style="font-size: clamp(0.7rem, 2vw, 0.85rem);">
                             <i class="fa-solid fa-info-circle me-2"></i>
-                            <strong>Tips:</strong> Klik pada segmen chart <strong>Organik</strong> untuk melihat analisis
-                            mendalam
-                            karyawan tetap,<br> atau klik <strong>Outsourcing</strong> untuk data karyawan
-                            kontrak/outsourcing.
+                            <strong>Tips:</strong> Klik segmen chart untuk analisis detail.
                             <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"
                                 aria-label="Close" style="font-size: 0.7rem;"></button>
                         </div>
-                        <div style="position: relative; height: 220px;">
+                        <div style="position: relative; height: clamp(180px, 28vh, 240px); max-height: 240px;">
                             <canvas id="statusChart"></canvas>
                         </div>
                     </div>
@@ -562,14 +1092,15 @@
             <div class="col-12 col-lg-6">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-3 gap-2">
                             <h6 class="card-title mb-0">Distribusi Gender</h6>
-                            <small class="text-muted">
-                                <i class="fa-solid fa-chart-bar me-1"></i>
-                                Perbandingan organik vs outsourcing
+                            <small class="text-muted" style="font-size: clamp(0.65rem, 1.8vw, 0.8rem);">
+                                <i class="fa-solid fa-chart-bar me-1 d-none d-md-inline"></i>
+                                <span class="d-none d-lg-inline">Perbandingan organik vs outsourcing</span>
+                                <span class="d-inline d-lg-none">Organik vs OS</span>
                             </small>
                         </div>
-                        <div style="position: relative; height: 220px;">
+                        <div style="position: relative; height: clamp(180px, 28vh, 240px); max-height: 240px;">
                             <canvas id="genderChart"></canvas>
                         </div>
                     </div>
@@ -578,13 +1109,17 @@
         </div>
 
         {{-- ROW 1.5 (BARU): Pendidikan --}}
-        <div class="row g-4 mb-4">
+        <div class="row g-2 g-md-3 mb-3 mb-md-4">
             <div class="col-12">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h6 class="card-title mb-0">Distribusi Pendidikan yang Diakui Perusahaan</h6>
-                            <small class="text-muted">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-3 gap-2">
+                            <h6 class="card-title mb-0">
+                                <span class="d-none d-lg-inline">Distribusi Pendidikan yang Diakui Perusahaan</span>
+                                <span class="d-none d-md-inline d-lg-none">Distribusi Pendidikan</span>
+                                <span class="d-inline d-md-none">Pendidikan</span>
+                            </h6>
+                            <small class="text-muted" style="font-size: clamp(0.65rem, 1.8vw, 0.8rem);">
                                 <i class="fa-solid fa-graduation-cap me-1"></i>
                                 Komposisi tingkat pendidikan karyawan
                             </small>
@@ -673,12 +1208,12 @@
         </div>
 
         {{-- ROW 3: Usia & Masa Kerja --}}
-        <div class="row g-4 mb-4">
+        <div class="row g-2 g-md-3 mb-3 mb-md-4">
             <div class="col-12 col-lg-6">
                 <div class="card h-100">
                     <div class="card-body">
                         <h6 class="card-title">Sebaran Usia (tahun)</h6>
-                        <div style="position: relative; height: 280px;">
+                        <div style="position: relative; height: clamp(200px, 32vh, 260px); max-height: 260px;">
                             <canvas id="usiaChart"></canvas>
                         </div>
                     </div>
@@ -688,7 +1223,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h6 class="card-title">Sebaran Masa Kerja (tahun)</h6>
-                        <div style="position: relative; height: 280px;">
+                        <div style="position: relative; height: clamp(200px, 32vh, 260px); max-height: 260px;">
                             <canvas id="mkChart"></canvas>
                         </div>
                     </div>
@@ -697,16 +1232,17 @@
         </div>
 
         {{-- ROW 3.25: Fungsi Jabatan & Instansi --}}
-        <div class="row g-4 mb-4">
+        <div class="row g-2 g-md-3 mb-3 mb-md-4">
             <div class="col-12 col-lg-6">
                 <div class="card h-100">
                     <div class="card-body">
                         <h6 class="card-title">Distribusi Fungsi Jabatan</h6>
                         <small class="text-muted d-block mb-3">
-                            <i class="fa-solid fa-briefcase me-1"></i>
-                            Distribusi karyawan berdasarkan fungsi jabatan
+                            <i class="fa-solid fa-briefcase me-1 d-none d-md-inline"></i>
+                            <span class="d-none d-lg-inline">Distribusi karyawan berdasarkan fungsi jabatan</span>
+                            <span class="d-inline d-lg-none">Per fungsi jabatan</span>
                         </small>
-                        <div style="position: relative; height: 280px;">
+                        <div style="position: relative; height: clamp(200px, 32vh, 260px); max-height: 260px;">
                             <canvas id="fungsiJabatanChart"></canvas>
                         </div>
                     </div>
@@ -717,10 +1253,11 @@
                     <div class="card-body">
                         <h6 class="card-title">Distribusi Instansi</h6>
                         <small class="text-muted d-block mb-3">
-                            <i class="fa-solid fa-building me-1"></i>
-                            Jumlah karyawan per instansi
+                            <i class="fa-solid fa-building me-1 d-none d-md-inline"></i>
+                            <span class="d-none d-lg-inline">Jumlah karyawan per instansi</span>
+                            <span class="d-inline d-lg-none">Per instansi</span>
                         </small>
-                        <div style="position: relative; height: 280px;">
+                        <div style="position: relative; height: clamp(200px, 32vh, 260px); max-height: 260px;">
                             <canvas id="instansiChart"></canvas>
                         </div>
                     </div>
@@ -729,26 +1266,34 @@
         </div>
 
         {{-- ROW 3.5: TAMPILAN BARU JABATAN LOWONG --}}
-        <div class="row g-4 mb-4">
+        <div class="row g-2 g-md-3 mb-3 mb-md-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="card-title mb-0">Rekapitulasi Jabatan Lowong Karyawan Organik PT Angkasa Pura
-                                Indonesia
-                                Regional 1</h6>
-                            <div class="d-flex gap-2">
+                        <div
+                            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+                            <h6 class="card-title mb-0">
+                                <span class="d-none d-lg-inline">Rekapitulasi Jabatan Lowong Karyawan Organik PT Angkasa
+                                    Pura Indonesia Regional 1</span>
+                                <span class="d-none d-md-inline d-lg-none">Jabatan Lowong Karyawan Organik</span>
+                                <span class="d-inline d-md-none">Jabatan Lowong</span>
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
                                 <a href="{{ route('jabatan-lowong.export') }}"
-                                    class="btn btn-success btn-sm d-flex align-items-center gap-2"
+                                    class="btn btn-success btn-sm d-flex align-items-center gap-1"
                                     title="Export hanya jabatan yang lowong (sisa > 0)">
                                     <i class="fa-solid fa-download"></i>
-                                    <span class="text-nowrap">Unduh Jabatan Lowong</span>
+                                    <span class="d-none d-lg-inline">Unduh Jabatan Lowong</span>
+                                    <span class="d-none d-md-inline d-lg-none">Jabatan Lowong</span>
+                                    <span class="d-inline d-md-none">Lowong</span>
                                 </a>
                                 <a href="{{ route('formasi.export.semua.lengkap') }}"
-                                    class="btn btn-primary btn-sm d-flex align-items-center gap-2"
+                                    class="btn btn-primary btn-sm d-flex align-items-center gap-1"
                                     title="Export semua jabatan lengkap dengan kolom: Formasi, Terisi, Lowong">
                                     <i class="fa-solid fa-file-excel"></i>
-                                    <span class="text-nowrap">Unduh Semua Formatif Terisi Lowong</span>
+                                    <span class="d-none d-xl-inline">Unduh Semua Formatif</span>
+                                    <span class="d-none d-md-inline d-xl-none">Semua</span>
+                                    <span class="d-inline d-md-none">All</span>
                                 </a>
                             </div>
                         </div>
@@ -805,12 +1350,12 @@
 
 
         {{-- ROW 4: Top Unit & Tabel Unit --}}
-        <div class="row g-4">
+        <div class="row g-2 g-md-3 mb-3 mb-md-4">
             <div class="col-12 col-lg-6">
                 <div class="card h-100">
                     <div class="card-body">
                         <h6 class="card-title">Top 10 Unit Berdasarkan Jumlah Karyawan</h6>
-                        <div style="position: relative; height: 420px;">
+                        <div style="position: relative; height: clamp(250px, 40vh, 380px); max-height: 380px;">
                             <canvas id="unitTopChart"></canvas>
                         </div>
                     </div>
@@ -825,7 +1370,8 @@
                             <input id="searchUnit" class="form-control form-control-sm" style="max-width: 240px"
                                 placeholder="Cari nama unit...">
                         </div>
-                        <div class="table-responsive flex-grow-1" style="max-height: 420px; overflow:auto;">
+                        <div class="table-responsive flex-grow-1"
+                            style="max-height: clamp(250px, 40vh, 380px); overflow:auto;">
                             <table class="table table-sm align-middle">
                                 <thead>
                                     <tr>
@@ -836,8 +1382,9 @@
                                 <tbody id="unitTableBody">
                                     @forelse(($unitTable ?? []) as $row)
                                         <tr>
-                                            <td>{{ $row->unit_kerja }}</td>
-                                            <td class="text-end">{{ number_format($row->total) }}</td>
+                                            <td>{{ $row->unit_kerja ?? '-' }}</td>
+                                            <td class="text-end">
+                                                {{ isset($row->total) ? number_format($row->total) : '0' }}</td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -858,7 +1405,7 @@
     {{-- Modal Detail Jabatan Lowong --}}
     <div class="modal fade" id="detailLowongModal" tabindex="-1" aria-labelledby="detailLowongModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-fullscreen-sm-down modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailLowongModalLabel">

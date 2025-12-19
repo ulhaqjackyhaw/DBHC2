@@ -6,7 +6,48 @@
 {{-- CSS yang sudah diperbaiki untuk tampilan responsif --}}
 @push('head-scripts')
     <style>
-        /* Bagian 1: Mengembalikan gaya dasar tabel Bootstrap (TIDAK BERUBAH) */
+        /* ===== GLOBAL & BASE STYLES ===== */
+        #realisasi-page * {
+            box-sizing: border-box;
+        }
+
+        #realisasi-page {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Fluid Typography */
+        #realisasi-page .btn {
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+            padding: clamp(0.35rem, 1vw, 0.5rem) clamp(0.65rem, 2vw, 1rem);
+            white-space: nowrap;
+        }
+
+        #realisasi-page .form-control,
+        #realisasi-page .form-select {
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+        }
+
+        #realisasi-page .small {
+            font-size: clamp(0.7rem, 1.3vw, 0.875rem) !important;
+        }
+
+        /* Prevent overflow */
+        #realisasi-page .d-flex {
+            max-width: 100%;
+        }
+
+        #realisasi-page .flex-wrap {
+            flex-wrap: wrap !important;
+        }
+
+        /* Button groups */
+        #realisasi-page .btn-group {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        /* Bagian 1: Gaya dasar tabel Bootstrap */
         #realisasi-page .table {
             --bs-table-color: var(--bs-body-color);
             --bs-table-bg: transparent;
@@ -31,7 +72,7 @@
             background-color: var(--bs-table-bg);
             border-bottom-width: 1px;
             box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
-            font-size: 0.875rem;
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
         }
 
         #realisasi-page .table>thead {
@@ -46,53 +87,322 @@
             vertical-align: middle !important;
         }
 
-        /* Bagian 2: CSS BARU untuk tampilan kartu di mobile (Lebih Rapi & Anti-Overflow) */
-        @media (max-width: 991.98px) {
+        /* ===== MOBILE (<576px) ===== */
+        @media (max-width: 575.98px) {
+            #realisasi-page .p-3 {
+                padding: 0.75rem !important;
+            }
+
+            #realisasi-page .mb-3 {
+                margin-bottom: 0.75rem !important;
+            }
+
+            #realisasi-page .gap-2 {
+                gap: 0.35rem !important;
+            }
+
+            #realisasi-page .btn {
+                font-size: 0.7rem !important;
+                padding: 0.35rem 0.5rem !important;
+            }
+
+            #realisasi-page .btn i {
+                font-size: 0.75rem;
+            }
+
+            #realisasi-page .btn .text-nowrap {
+                display: none;
+            }
+
+            #realisasi-page .form-control,
+            #realisasi-page .form-select {
+                font-size: 0.75rem !important;
+                padding: 0.35rem 0.5rem !important;
+            }
+
+            #realisasi-page .form-label {
+                font-size: 0.7rem !important;
+            }
+
+            /* Stack all controls vertically */
+            #realisasi-page .d-flex.justify-content-between {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+
+            #realisasi-page .d-flex.gap-2 {
+                width: 100%;
+            }
+
+            #realisasi-page input[type="text"] {
+                width: 100% !important;
+            }
+
+            /* Pagination */
+            #realisasi-page .pagination {
+                font-size: 0.7rem;
+                gap: 0.25rem;
+            }
+
+            #realisasi-page .page-link {
+                padding: 0.35rem 0.5rem;
+            }
+
+            /* Card mode untuk tabel */
             #realisasi-page .table thead {
-                /* Sembunyikan header tabel di mobile */
                 display: none;
             }
 
             #realisasi-page .table tr {
-                /* Setiap baris menjadi sebuah kartu */
                 display: block;
                 border: 1px solid #e2e8f0;
                 border-radius: 0.5rem;
-                margin-bottom: 1rem;
+                margin-bottom: 0.75rem;
                 overflow: hidden;
                 box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             }
 
             #realisasi-page .table td {
-                /* Sel menjadi baris di dalam kartu, gunakan Flexbox */
                 display: flex;
                 justify-content: space-between;
-                /* Label di kiri, nilai di kanan */
                 align-items: center;
-                padding: 0.8rem 1rem !important;
-                /* Padding yang lebih nyaman */
+                padding: 0.65rem 0.75rem !important;
                 text-align: right !important;
                 border: none;
                 border-bottom: 1px solid #f1f5f9;
                 word-break: break-word;
-                /* Memastikan teks panjang akan dipecah */
+                font-size: 0.75rem !important;
             }
 
             #realisasi-page .table td:last-child {
-                /* Hapus garis bawah di item terakhir kartu */
                 border-bottom: none;
             }
 
             #realisasi-page .table td:before {
-                /* Buat label dari atribut data-label */
                 content: attr(data-label);
                 font-weight: 600;
                 text-align: left;
-                padding-right: 1rem;
-                /* Jarak antara label dan nilai */
+                padding-right: 0.75rem;
                 color: #334155;
                 flex-shrink: 0;
-                /* Mencegah label menyusut saat nilai terlalu panjang */
+                font-size: 0.7rem;
+            }
+
+            #realisasi-page .table td .d-flex {
+                justify-content: flex-end !important;
+            }
+        }
+
+        /* ===== TABLET (576-767px) ===== */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            #realisasi-page .p-3 {
+                padding: 1rem !important;
+            }
+
+            #realisasi-page .btn {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 0.6rem !important;
+            }
+
+            #realisasi-page .form-control,
+            #realisasi-page .form-select {
+                font-size: 0.8rem !important;
+            }
+
+            /* Normal table dengan horizontal scroll */
+            #realisasi-page .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #realisasi-page .table> :not(caption)>*>* {
+                padding: 0.4rem 0.5rem;
+                font-size: 0.75rem;
+                white-space: nowrap;
+            }
+
+            #realisasi-page .table thead th {
+                font-size: 0.7rem !important;
+            }
+
+            #realisasi-page .table tbody td {
+                font-size: 0.75rem !important;
+            }
+        }
+
+        /* ===== iPAD (768-1024px) ===== */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            #realisasi-page .p-3 {
+                padding: 1.25rem !important;
+            }
+
+            #realisasi-page .btn {
+                font-size: 0.8rem !important;
+                padding: 0.45rem 0.7rem !important;
+            }
+
+            #realisasi-page .form-control,
+            #realisasi-page .form-select {
+                font-size: 0.85rem !important;
+            }
+
+            /* Normal table dengan horizontal scroll */
+            #realisasi-page .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #realisasi-page .table> :not(caption)>*>* {
+                padding: 0.4rem 0.5rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            #realisasi-page .table thead th {
+                font-size: 0.75rem !important;
+            }
+
+            #realisasi-page .table tbody td {
+                font-size: 0.8rem !important;
+            }
+
+            /* Reduce column widths */
+            #realisasi-page input[type="text"] {
+                max-width: 180px !important;
+            }
+
+            /* Wrap controls jika perlu */
+            #realisasi-page .d-flex.justify-content-between {
+                gap: 0.75rem;
+            }
+        }
+
+        /* ===== MacBook 13" (1280-1440px) ===== */
+        @media (min-width: 1280px) and (max-width: 1440px) {
+            #realisasi-page .p-3 {
+                padding: 1.5rem !important;
+            }
+
+            #realisasi-page .btn {
+                font-size: 0.82rem !important;
+                padding: 0.45rem 0.75rem !important;
+            }
+
+            #realisasi-page .form-control,
+            #realisasi-page .form-select {
+                font-size: 0.85rem !important;
+            }
+
+            #realisasi-page input[type="text"] {
+                max-width: 220px !important;
+            }
+
+            /* Normal table dengan horizontal scroll */
+            #realisasi-page .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #realisasi-page .table> :not(caption)>*>* {
+                padding: 0.4rem 0.5rem;
+                font-size: 0.82rem;
+                white-space: nowrap;
+            }
+
+            #realisasi-page .table thead th {
+                font-size: 0.75rem !important;
+            }
+
+            #realisasi-page .table tbody td {
+                font-size: 0.82rem !important;
+            }
+
+            /* Button layout optimization */
+            #realisasi-page .d-flex.gap-2 .btn span {
+                display: inline;
+            }
+        }
+
+        /* ===== DESKTOP (>1440px) ===== */
+        @media (min-width: 1441px) {
+
+            /* Normal table view */
+            #realisasi-page .table thead {
+                display: table-header-group;
+            }
+
+            #realisasi-page .table tr {
+                display: table-row;
+            }
+
+            #realisasi-page .table td {
+                display: table-cell;
+            }
+
+            #realisasi-page .table td:before {
+                content: none;
+            }
+        }
+
+        /* ===== MODAL RESPONSIVENESS ===== */
+        @media (max-width: 575.98px) {
+            #realisasi-page .modal-dialog {
+                margin: 0.5rem;
+                max-width: calc(100% - 1rem);
+            }
+
+            #realisasi-page .modal-body {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+
+            #realisasi-page .modal-header,
+            #realisasi-page .modal-footer {
+                padding: 0.75rem 1rem;
+            }
+
+            #realisasi-page .modal-title {
+                font-size: 1rem !important;
+            }
+
+            #realisasi-page .alert ol {
+                font-size: 0.75rem;
+                padding-left: 1.25rem;
+            }
+        }
+
+        /* ===== TOUCH DEVICE OPTIMIZATION ===== */
+        @media (hover: none) and (pointer: coarse) {
+            #realisasi-page .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            #realisasi-page .form-control,
+            #realisasi-page .form-select {
+                min-height: 44px;
+            }
+
+            #realisasi-page .page-link {
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+
+            #realisasi-page .btn,
+            #realisasi-page .alert,
+            #realisasi-page .pagination {
+                display: none !important;
+            }
+
+            #realisasi-page .table {
+                font-size: 0.7rem;
             }
         }
     </style>
