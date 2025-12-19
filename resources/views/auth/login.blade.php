@@ -2,14 +2,11 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Favicon logo -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo/logo-title.png') }}">
     <title>Login - Analitik Kepegawaian</title>
 
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
@@ -17,21 +14,12 @@
         :root {
             --primary: #6366f1;
             --primary-hover: #4f46e5;
-            --bg-light: #f4f7fc;
-            --bg-dark: #0f172a;
             --text-light: #1e293b;
             --text-dark: #f8fafc;
-            --card-light: rgba(255, 255, 255, 0.95);
-            --card-dark: rgba(30, 41, 59, 0.9);
             --border-light: #e2e8f0;
             --border-dark: #334155;
             --input-light: #f8fafc;
             --input-dark: #1e293b;
-
-            --illus-h-min: 220px;
-            --illus-h-prefer: 48vh;
-            --illus-h-max: 420px;
-            --illus-w-max: 95%;
         }
 
         *,
@@ -40,9 +28,6 @@
             box-sizing: border-box;
         }
 
-        /* =================================
-       LIGHT MODE STYLES (DEFAULT)
-    ==================================== */
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
@@ -51,99 +36,25 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            transition: background-color .3s, color .3s;
-            background-color: var(--bg-light);
-            color: var(--text-light);
+            background: url('{{ asset('images/logo/T3bg.jpg') }}') center/cover no-repeat fixed;
+            position: relative;
         }
 
-        .wrapper {
-            background: var(--card-light);
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(67, 56, 202, 0.12));
+            z-index: 0;
         }
 
-        .form-section {
-            background: transparent;
+        html.dark body::before {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.9));
         }
 
-        .form-section .subtitle {
-            color: #64748b;
-        }
-
-        .separator {
-            color: #94a3b8;
-        }
-
-        .separator::before,
-        .separator::after {
-            border-color: var(--border-light);
-        }
-
-        .social-login .btn {
-            background: var(--input-light);
-            border-color: var(--border-light);
-            color: var(--text-light);
-        }
-
-        .social-login .btn:hover {
-            background: #f1f5f9;
-        }
-
-        .theme-toggle {
-            background-color: #fff;
-            color: var(--text-light);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-
-        /* =================================
-       DARK MODE STYLES
-    ==================================== */
-        html.dark body {
-            background: var(--bg-dark);
-            color: var(--text-dark);
-        }
-
-        html.dark .wrapper {
-            background: var(--card-dark);
-        }
-
-        html.dark .form-section .subtitle {
-            color: #94a3b8;
-        }
-
-        html.dark .form-group input {
-            border-color: var(--border-dark);
-            background: var(--input-dark);
-            color: var(--text-dark);
-        }
-
-        html.dark .separator {
-            color: #475569;
-        }
-
-        html.dark .separator::before,
-        html.dark .separator::after {
-            border-color: var(--border-dark);
-        }
-
-        html.dark .social-login .btn {
-            background: var(--input-dark);
-            border-color: var(--border-dark);
-            color: var(--text-dark);
-        }
-
-        html.dark .social-login .btn:hover {
-            background: #334155;
-        }
-
-        html.dark .theme-toggle {
-            background-color: #1e293b;
-            color: var(--text-dark);
-        }
-
-
-        /* =================================
-       GENERAL STYLES (UNCHANGED BY THEME)
-    ==================================== */
         .wrapper {
             width: 100%;
             max-width: 1050px;
@@ -151,46 +62,57 @@
             overflow: hidden;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, .15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             position: relative;
             z-index: 1;
-            border: 1px solid var(--border-light);
+            background: #ffffff;
         }
 
         html.dark .wrapper {
-            border-color: var(--border-dark);
+            background: rgba(30, 41, 59, 0.98);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         .form-section {
             padding: clamp(2rem, 5vw, 3.5rem);
             text-align: center;
-            backdrop-filter: blur(20px);
+            background: #ffffff;
+        }
+
+        html.dark .form-section {
+            background: rgba(30, 41, 59, 0.98);
         }
 
         .theme-toggle {
             position: fixed;
             top: 1.5rem;
             right: 1.5rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all .3s ease;
             z-index: 100;
-            border: 1px solid var(--border-light);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
         }
 
         html.dark .theme-toggle {
-            border-color: var(--border-dark);
+            background: rgba(30, 41, 59, 0.95);
+            color: #f8fafc;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.1) rotate(15deg);
-            border-color: var(--primary);
-            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+            background: var(--primary);
+            color: #fff;
         }
 
         .theme-toggle .fa-sun {
@@ -219,63 +141,21 @@
             font-weight: 700;
             font-size: 1.75rem;
             margin: .3rem 0 .6rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: .875rem;
-            font-weight: 500;
-            margin-bottom: .4rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: .85rem 1rem;
-            border-radius: .5rem;
-            border: 1px solid var(--border-light);
-            background: var(--input-light);
             color: var(--text-light);
-            font-size: 1rem;
-            font-family: inherit;
-            transition: all .2s;
         }
 
-        /* === Tambahan untuk Icon Mata (Password) === */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
+        html.dark .form-section h1 {
+            color: var(--text-dark);
         }
 
-        .password-wrapper input {
-            padding-right: 3rem;
-            /* Memberi ruang untuk ikon di dalam input */
+        .form-section .subtitle {
+            color: #64748b;
         }
 
-        .password-wrapper .toggle-password {
-            position: absolute;
-            right: 1rem;
-            cursor: pointer;
+        html.dark .form-section .subtitle {
             color: #94a3b8;
-            transition: color .2s;
         }
 
-        .password-wrapper .toggle-password:hover {
-            color: var(--primary);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-
-        /* === Error Alert Styles === */
         .alert {
             margin-bottom: 1.5rem;
             border-radius: 0.75rem;
@@ -339,15 +219,98 @@
             transform: scale(1.1);
         }
 
-        html.dark .alert-close {
-            color: #f87171;
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        html.dark .alert-close:hover {
-            background: rgba(248, 113, 113, 0.1);
+        .alert.fade-out {
+            animation: fadeOut 0.3s ease-out forwards;
         }
 
-        /* === Field Error Styles === */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 100px;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .875rem;
+            font-weight: 500;
+            margin-bottom: .4rem;
+        }
+
+        html.dark .form-group label {
+            color: #f8fafc;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: .85rem 1rem;
+            border-radius: .5rem;
+            border: 1px solid var(--border-light);
+            background: var(--input-light);
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all .2s;
+        }
+
+        html.dark .form-group input {
+            border-color: var(--border-dark);
+            background: var(--input-dark);
+            color: var(--text-dark);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            padding-right: 3rem;
+        }
+
+        .password-wrapper .toggle-password {
+            position: absolute;
+            right: 1rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color .2s;
+        }
+
+        .password-wrapper .toggle-password:hover {
+            color: var(--primary);
+        }
+
         .field-error {
             display: block;
             color: #dc2626;
@@ -365,46 +328,6 @@
             background: rgba(220, 38, 38, 0.05);
         }
 
-        html.dark .form-group input.error {
-            border-color: #f87171 !important;
-            background: rgba(248, 113, 113, 0.1);
-        }
-
-        .form-group input.error:focus {
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2) !important;
-        }
-
-        /* === Animations === */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-                max-height: 100px;
-            }
-
-            to {
-                opacity: 0;
-                transform: translateY(-10px);
-                max-height: 0;
-            }
-        }
-
-        .alert.fade-out {
-            animation: fadeOut 0.3s ease-out forwards;
-        }
-
         .form-extras {
             display: flex;
             justify-content: space-between;
@@ -417,6 +340,10 @@
             display: flex;
             align-items: center;
             gap: .5rem;
+        }
+
+        html.dark .form-extras .checkbox-group label {
+            color: #f8fafc;
         }
 
         .form-extras a {
@@ -448,10 +375,13 @@
         .btn-primary {
             background: var(--primary);
             color: #fff;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
         }
 
         .btn-primary:hover {
             background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
         .btn-primary:disabled {
@@ -459,10 +389,55 @@
             cursor: not-allowed;
         }
 
-        .btn-loading {
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
+        .separator {
+            position: relative;
+            margin: 1.5rem 0;
+            text-align: center;
+            color: #94a3b8;
+            font-size: .875rem;
+        }
+
+        .separator::before,
+        .separator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: var(--border-light);
+        }
+
+        html.dark .separator::before,
+        html.dark .separator::after {
+            background: var(--border-dark);
+        }
+
+        .separator::before {
+            left: 0;
+        }
+
+        .separator::after {
+            right: 0;
+        }
+
+        .social-login .btn {
+            background: var(--input-light);
+            border: 1px solid var(--border-light);
+            color: var(--text-light);
+        }
+
+        html.dark .social-login .btn {
+            background: var(--input-dark);
+            border-color: var(--border-dark);
+            color: var(--text-dark);
+        }
+
+        .social-login .btn:hover {
+            background: #f1f5f9;
+        }
+
+        html.dark .social-login .btn:hover {
+            background: #334155;
         }
 
         .social-login .btn i {
@@ -514,7 +489,6 @@
             display: flex;
             width: 300%;
             animation: slide 15s infinite;
-            transition: transform 0.5s ease-in-out;
         }
 
         .slide {
@@ -526,11 +500,9 @@
 
         .slide img {
             width: auto;
-            height: clamp(var(--illus-h-min) - 40px, var(--illus-h-prefer) - 120px, var(--illus-h-max) - 120px);
-            max-width: var(--illus-w-max);
+            height: clamp(220px, 40vh, 360px);
+            max-width: 90%;
             object-fit: contain;
-            margin: auto;
-            display: block;
         }
 
         .slide-content {
@@ -547,7 +519,6 @@
             font-weight: 700;
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
-            color: #fff;
         }
 
         .slide-content p {
@@ -639,7 +610,6 @@
     </style>
 
     <script>
-        // Skrip ini ditaruh di <head> untuk mencegah "flash" tema yang salah saat loading
         (function() {
             const htmlEl = document.documentElement;
             const storedTheme = localStorage.getItem('theme');
@@ -655,20 +625,17 @@
 </head>
 
 <body>
-
     <button class="theme-toggle" id="theme-toggle" title="Ganti tema">
         <i class="fas fa-moon"></i>
         <i class="fas fa-sun"></i>
     </button>
 
     <div class="wrapper">
-        <!-- FORM -->
         <div class="form-section">
             <img src="images/logo/company-logo.png" alt="Logo Injourney Airports" class="logo" />
             <h1>Analitik Kepegawaian</h1>
             <p class="subtitle">Silakan login untuk melanjutkan</p>
 
-            <!-- Error Alert -->
             @if ($errors->any() || session('error'))
                 <div class="alert alert-error" id="error-alert">
                     <div class="alert-content">
@@ -701,7 +668,6 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <!-- Wrapper untuk input password dan ikon mata -->
                     <div class="password-wrapper">
                         <input type="password" id="password" name="password" required
                             class="@error('password') error @enderror" />
@@ -726,10 +692,7 @@
                     </span>
                 </button>
             </form>
-            <br>
             <div class="separator">atau</div>
-
-
             <div class="social-login">
                 <button class="btn">
                     <i class="fab fa-google"></i><span>Login dengan Google</span>
@@ -737,13 +700,12 @@
             </div>
         </div>
 
-        <!-- ILLUSTRATION -->
         <div class="illustration-section">
             <div class="slider-wrapper">
                 <div class="slider">
                     <div class="slide">
-                        <div class="slide-content"> <img src="{{ asset('images/illustrations/1.svg') }}"
-                                alt="Analytics" />
+                        <div class="slide-content">
+                            <img src="{{ asset('images/illustrations/1.svg') }}" alt="Analytics" />
                             <h2>Dashboard Kepegawaian</h2>
                             <p>Dapatkan insight mendalam tentang kepegawaian Anda.</p>
                         </div>
@@ -774,7 +736,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Skrip untuk meng-handle klik pada tombol toggle tema
             const themeToggle = document.getElementById('theme-toggle');
             const htmlEl = document.documentElement;
 
@@ -787,22 +748,17 @@
                 }
             });
 
-            // Skrip untuk handle show/hide password
             const togglePassword = document.getElementById('togglePassword');
             const passwordInput = document.getElementById('password');
 
             if (togglePassword && passwordInput) {
                 togglePassword.addEventListener('click', function() {
-                    // Toggle tipe atribut input
                     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                     passwordInput.setAttribute('type', type);
-
-                    // Toggle ikon mata
                     this.classList.toggle('fa-eye-slash');
                 });
             }
 
-            // Auto-hide error alert after 5 seconds
             const errorAlert = document.getElementById('error-alert');
             if (errorAlert) {
                 setTimeout(() => {
@@ -810,19 +766,16 @@
                 }, 5000);
             }
 
-            // Handle form submission dengan loading state
             const loginForm = document.querySelector('form');
             const loginBtn = document.getElementById('login-btn');
             const btnText = loginBtn.querySelector('.btn-text');
             const btnLoading = loginBtn.querySelector('.btn-loading');
 
             loginForm.addEventListener('submit', function(e) {
-                // Show loading state
                 btnText.style.display = 'none';
                 btnLoading.style.display = 'flex';
                 loginBtn.disabled = true;
 
-                // Optional: Auto-enable button after 10 seconds (failsafe)
                 setTimeout(() => {
                     btnText.style.display = 'flex';
                     btnLoading.style.display = 'none';
@@ -831,7 +784,6 @@
             });
         });
 
-        // Function untuk close alert
         function closeAlert() {
             const alert = document.getElementById('error-alert');
             if (alert) {
