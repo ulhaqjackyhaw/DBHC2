@@ -5,6 +5,18 @@
 
 @push('head-styles')
     <style>
+        /* Force responsive behavior for all screen sizes */
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        main,
+        .container,
+        .container-fluid {
+            overflow-x: hidden !important;
+        }
+
         .table tbody tr.cursor-pointer:hover {
             background-color: #f8fafc !important;
             transform: translateY(-1px);
@@ -21,9 +33,107 @@
             align-items: center;
         }
 
+        /* Container tabel - pastikan bisa scroll */
+        .bg-white.rounded-xl {
+            overflow: visible !important;
+        }
+
         .table-responsive {
             border-radius: 0.5rem;
-            overflow: hidden;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            -webkit-overflow-scrolling: touch;
+            background-color: #ffffff !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 100% !important;
+            max-width: 100% !important;
+            display: block !important;
+        }
+
+        .table-responsive .table {
+            background-color: #ffffff !important;
+            margin-bottom: 0 !important;
+            min-width: 1400px !important;
+            width: max-content !important;
+            table-layout: auto !important;
+        }
+
+        /* Scrollbar styling */
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Ukuran font tabel - UBAH ANGKA DI SINI */
+        .table-responsive .table,
+        .table-responsive .table * {
+            font-size: 10px !important;
+        }
+
+        /* Header tabel */
+        .table-responsive .table thead th,
+        .table-responsive .table thead th * {
+            font-size: 10px !important;
+            padding: 0.75rem !important;
+            white-space: nowrap !important;
+        }
+
+        /* Body tabel */
+        .table-responsive .table tbody td,
+        .table-responsive .table tbody td *,
+        .table-responsive .table tbody span,
+        .table-responsive .table tbody .badge {
+            font-size: 10px !important;
+            padding: 0.75rem !important;
+        }
+
+        /* Tombol dalam tabel */
+        .table-responsive .table .btn-sm,
+        .table-responsive .table .btn-sm i {
+            font-size: 9px !important;
+            padding: 0.25rem 0.5rem !important;
+        }
+
+        /* Icon sort */
+        .table-responsive .table i {
+            font-size: 10px !important;
+        }
+
+        /* Media queries untuk berbagai ukuran layar */
+        @media (max-width: 1920px) {
+            .table-responsive {
+                overflow-x: auto !important;
+            }
+        }
+
+        @media (max-width: 1366px) {
+            .table-responsive .table {
+                min-width: 1200px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .table-responsive .table {
+                min-width: 1000px !important;
+            }
+
+            .table-responsive .table thead th,
+            .table-responsive .table tbody td {
+                padding: 0.5rem !important;
+            }
         }
 
         .btn-outline-info:hover {
@@ -276,43 +386,43 @@
                 <table class="table table-hover align-middle">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th class="text-slate-500 font-semibold text-nowrap">No</th>
+                            <th class="text-slate-300 font-semibold text-nowrap">No</th>
                             <th @click="sortBy('nik')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 NIK <i :class="sortIcon('nik')"></i>
                             </th>
                             <th @click="sortBy('nama')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 Nama <i :class="sortIcon('nama')"></i>
                             </th>
                             <th @click="sortBy('jabatan_definitif')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 Jabatan Definitif <i :class="sortIcon('jabatan_definitif')"></i>
                             </th>
                             <th @click="sortBy('jabatan_pgs')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 Jabatan PGS <i :class="sortIcon('jabatan_pgs')"></i>
                             </th>
                             <th @click="sortBy('lokasi_unit_kerja')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 Lokasi/Unit Kerja <i :class="sortIcon('lokasi_unit_kerja')"></i>
                             </th>
                             <th @click="sortBy('tanggal_pgs_formatted')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 Tanggal Mulai PGS <i :class="sortIcon('tanggal_pgs_formatted')"></i>
                             </th>
                             <th @click="sortBy('tanggal_selesai_pgs_formatted')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 Tanggal Selesai PGS <i :class="sortIcon('tanggal_selesai_pgs_formatted')"></i>
                             </th>
                             <th @click="sortBy('durasi_pgs')"
-                                class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap">
+                                class="text-slate-300 font-semibold cursor-pointer user-select-none text-nowrap">
                                 Durasi <i :class="sortIcon('durasi_pgs')"></i>
                             </th>
-                            <th class="text-slate-500 font-semibold text-nowrap">Status</th>
-                            <th class="text-slate-500 font-semibold text-nowrap">Detail</th>
+                            <th class="text-slate-300 font-semibold text-nowrap">Status</th>
+                            <th class="text-slate-300 font-semibold text-nowrap">Detail</th>
                             @can('admin')
-                                <th class="text-slate-500 font-semibold text-nowrap">Aksi</th>
+                                <th class="text-slate-300 font-semibold text-nowrap">Aksi</th>
                             @endcan
                         </tr>
                     </thead>

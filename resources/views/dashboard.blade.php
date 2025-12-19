@@ -41,15 +41,6 @@
         html {
             overflow-x: hidden;
             scroll-behavior: smooth;
-            width: 100%;
-        }
-
-        html,
-        body {
-            overflow-x: hidden;
-            max-width: 100vw;
-            position: relative;
-            width: 100%;
         }
 
         body {
@@ -58,37 +49,27 @@
             color: var(--text-color-dark);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
 
         .container,
-        .container-fluid {
-            overflow-x: hidden;
-            max-width: 100%;
-            width: 100%;
-        }
-
-        /* Force all rows and columns to stay within viewport */
-        .row {
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            max-width: 100%;
-        }
-
+        .container-fluid,
+        .row,
         [class*="col-"] {
             max-width: 100%;
         }
 
-        /* Prevent text overflow */
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        p,
-        span {
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+        /* Smooth transitions untuk semua elemen */
+        * {
+            transition: all 0.2s ease-out;
+        }
+
+        /* Override transition untuk hover effects */
+        .kpi,
+        .card,
+        button,
+        a {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .fw-semibold {
@@ -99,8 +80,15 @@
         .card {
             border: 1px solid var(--border-color);
             border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             background-color: var(--card-bg);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .card-title {
@@ -124,13 +112,15 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            transition: all .2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
         }
 
         .kpi:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         .kpi .icon {

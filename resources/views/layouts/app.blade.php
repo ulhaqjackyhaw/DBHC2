@@ -21,9 +21,42 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
+        }
+
+        header {
+            flex-shrink: 0 !important;
+        }
+
+        /* Sidebar selalu di paling depan */
+        aside {
+            z-index: 1060 !important;
+        }
+
+        main {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* Dropdown fix untuk Bootstrap */
+        .dropdown-menu {
+            z-index: 1050 !important;
+        }
+
+        .dropdown-toggle::after {
+            display: none !important;
         }
 
         /* Modern Scrollbar */
@@ -91,18 +124,20 @@
 
         {{-- Overlay untuk mobile --}}
         <div x-show="sidebarOpen && window.innerWidth < 768" @click="sidebarOpen = false"
-            class="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50 z-40 d-md-none" x-transition.opacity
-            x-cloak></div>
+            class="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50 d-md-none" style="z-index: 1055;"
+            x-transition.opacity x-cloak></div>
 
         <div class="flex-grow-1 d-flex flex-column h-100 transition-all duration-300 ease-in-out"
-            :class="{ 'md:ml-[260px]': sidebarOpen }">
+            style="max-width: 100vw; overflow-x: hidden;" :class="{ 'md:ml-[260px]': sidebarOpen }">
 
             {{-- 2. Memanggil file partial header --}}
             @include('layouts.partials.header')
 
             {{-- 3. Konten utama yang akan diisi oleh setiap halaman anak --}}
-            <main class="flex-grow-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-                @yield('content')
+            <main class="flex-grow-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 lg:p-8" style="max-width: 100vw;">
+                <div style="max-width: 100%; overflow-x: hidden;">
+                    @yield('content')
+                </div>
             </main>
         </div>
     </div>

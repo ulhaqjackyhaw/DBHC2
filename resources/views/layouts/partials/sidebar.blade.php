@@ -1,7 +1,6 @@
-<aside
-    class="d-flex flex-column text-slate-700 shadow-xl position-fixed h-100 z-50 transition-all duration-300 ease-in-out"
+<aside class="d-flex flex-column text-slate-700 shadow-xl position-fixed h-100 transition-all duration-300 ease-in-out"
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-    style="width: 280px; left:0; top:0; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);">
+    style="width: 280px; left:0; top:0; z-index: 1060; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);">
 
     {{-- Company Branding Header --}}
     <div class="d-flex flex-column p-2 border-bottom border-slate-200" style="min-height: 100px;">
