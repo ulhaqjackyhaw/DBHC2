@@ -92,18 +92,26 @@
         }
 
         .kpi .value {
-            font-size: clamp(1.25rem, 4vw, 2rem);
+            font-size: clamp(1rem, 3vw, 1.75rem);
             /* Responsive font size */
             font-weight: 700;
             line-height: 1.2;
             color: var(--text-color-dark);
+            word-break: break-word;
         }
 
         .kpi .label {
-            font-size: clamp(0.7rem, 2vw, 0.875rem);
+            font-size: clamp(0.65rem, 1.8vw, 0.8rem);
             /* Responsive font size */
             color: var(--text-color-light);
             line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .kpi .content {
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
         }
 
         .kpi .icon-total {
@@ -409,29 +417,29 @@
     <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm mb-5">
 
         {{-- ROW 0: KPI Ringkas (Modernized with Icons) --}}
-        <div class="row g-4 mb-4">
-            <div class="col-6 col-lg-2">
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-4 col-xl-2">
                 <div class="kpi h-100">
                     <div class="icon icon-total"><i class="fa-solid fa-users"></i></div>
-                    <div>
+                    <div class="content">
                         <div class="value">{{ isset($total) ? number_format($total) : '-' }}</div>
                         <div class="label">Total Karyawan</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-md-4 col-xl-2">
                 <div class="kpi h-100">
                     <div class="icon icon-female"><i class="fa-solid fa-venus"></i></div>
-                    <div>
+                    <div class="content">
                         <div class="value">{{ isset($femalePct) ? number_format($femalePct, 1) . '%' : '-' }}</div>
                         <div class="label">% Perempuan</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-md-4 col-xl-2">
                 <div class="kpi h-100">
                     <div class="icon icon-male"><i class="fa-solid fa-mars"></i></div>
-                    <div>
+                    <div class="content">
                         <div class="value">
                             {{ isset($femalePct) && is_numeric($femalePct) ? number_format(100 - $femalePct, 1) . '%' : '-' }}
                         </div>
@@ -439,19 +447,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-md-6 col-xl-3">
                 <div class="kpi h-100">
                     <div class="icon icon-age"><i class="fa-solid fa-cake-candles"></i></div>
-                    <div>
+                    <div class="content">
                         <div class="value">{{ $avgAge ?? '-' }}</div>
                         <div class="label">Rata-rata Usia</div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-md-6 col-xl-3">
                 <div class="kpi h-100">
                     <div class="icon icon-mk"><i class="fa-solid fa-business-time"></i></div>
-                    <div>
+                    <div class="content">
                         <div class="value">{{ $avgMK ?? '-' }}</div>
                         <div class="label">Rata-rata Masa Kerja (Tahun)</div>
                     </div>
