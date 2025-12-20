@@ -1736,90 +1736,9 @@
                 });
             }
 
-            const pendGroupLabels = @json($pendGroupLabels ?? []);
-            const pendGroupOS = @json($pendGroupOS ?? []);
-            const pendGroupOrganic = @json($pendGroupOrganic ?? []);
-            const hasPendGrouped = Array.isArray(pendGroupLabels) && pendGroupLabels.length > 0;
 
-            // Debug: Tampilkan data di console
-            console.log('=== DEBUG PENDIDIKAN CHART ===');
-            console.log('pendGroupLabels:', pendGroupLabels);
-            console.log('pendGroupOS:', pendGroupOS);
-            console.log('pendGroupOrganic:', pendGroupOrganic);
-            console.log('hasPendGrouped:', hasPendGrouped);
 
-            const pendCanvas = document.getElementById('pendChart');
-            console.log('pendCanvas:', pendCanvas);
 
-            // 2. Cek apakah data terkelompok ada, jika ya, buat grouped bar chart
-            if (pendCanvas && hasPendGrouped) {
-                new Chart(pendCanvas.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: pendGroupLabels,
-                        datasets: [{
-                                label: 'Organik',
-                                data: pendGroupOrganic,
-                                backgroundColor: palette[0], // Warna dari palet (indigo)
-                                borderRadius: 4
-                            },
-                            {
-                                label: 'Outsourcing',
-                                data: pendGroupOS,
-                                backgroundColor: palette[1], // Warna dari palet (pink)
-                                borderRadius: 4
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'top'
-                            },
-                            tooltip: {
-                                enabled: true
-                            },
-                            // ---- MODIFIKASI UNTUK MENAMPILKAN TOTAL DI DALAM BAR ----
-                            datalabels: {
-                                display: true, // 1. Aktifkan label
-                                color: 'white', // 2. Atur warna font menjadi putih
-                                anchor: 'center', // 3. Posisikan di tengah bar
-                                align: 'center', // 4. Ratakan teks di tengah
-                                font: {
-                                    weight: 'bold', // 5. Buat font tebal agar mudah dibaca
-                                    size: 12
-                                },
-                                // 6. Fungsi untuk menampilkan angka hanya jika nilainya lebih dari 0
-                                formatter: (value) => {
-                                    return value > 0 ? value : '';
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0
-                                },
-                                grid: {
-                                    color: '#e2e8f0',
-                                    drawBorder: false
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        }
-                    }
-                });
-            } else if (pendCanvas) {
-                // 3. Jika data terkelompok tidak ada, gunakan chart lama sebagai fallback
-                makeChart('pendChart', 'bar', pendLabels, pendData);
-            }
             makeChart('usiaChart', 'bar', usiaLabels, usiaData);
             makeChart('mkChart', 'bar', mkLabels, mkData);
             makeChart('unitTopChart', 'bar', unitTopLabels, unitTopData, {
