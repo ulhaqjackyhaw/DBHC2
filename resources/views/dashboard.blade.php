@@ -1069,7 +1069,7 @@
                         <div class="alert alert-info alert-dismissible fade show py-2 px-3 mb-3 d-none d-md-block"
                             role="alert" style="font-size: clamp(0.7rem, 2vw, 0.85rem);">
                             <i class="fa-solid fa-info-circle me-2"></i>
-                            <strong>Tips:</strong> Klik segmen chart untuk analisis detail.
+                            <strong>Tips:</strong> Klik segmen chart KP / ALIH DAYA untuk analisis detail.
                             <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"
                                 aria-label="Close" style="font-size: 0.7rem;"></button>
                         </div>
@@ -1549,10 +1549,12 @@
                                 const chart = elements[0].element.$context.chart;
                                 const index = elements[0].index;
                                 const label = chart.data.labels[index].toLowerCase().trim();
-                                if (label.includes('outsourcing')) {
-                                    window.location.href = '/analitikoutsourcing';
+                                // Handle berbagai variasi label outsourcing
+                                if (label.includes('outsourcing') || label.includes('alih daya') ||
+                                    label.includes('alihdaya')) {
+                                    window.location.href = '{{ route('analitik.outsourcing') }}';
                                 } else {
-                                    window.location.href = '/analitikorganic';
+                                    window.location.href = '{{ route('analitik.organic') }}';
                                 }
                             }
                         },
