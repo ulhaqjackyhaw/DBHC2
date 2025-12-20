@@ -116,19 +116,21 @@
     @stack('head-scripts')
 </head>
 
-<body x-data="{ sidebarOpen: window.innerWidth >= 768 }" @resize.window="sidebarOpen = window.innerWidth >= 768" class="h-screen overflow-hidden">
+<body x-data="{ sidebarOpen: false }" class="h-screen overflow-hidden">
     <div class="d-flex h-100 position-relative">
 
         {{-- 1. Memanggil file partial sidebar --}}
         @include('layouts.partials.sidebar')
 
-        {{-- Overlay untuk mobile --}}
-        <div x-show="sidebarOpen && window.innerWidth < 768" @click="sidebarOpen = false"
-            class="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50 d-md-none" style="z-index: 1055;"
-            x-transition.opacity x-cloak></div>
+        {{-- Overlay backdrop ketika sidebar buka --}}
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" class="position-fixed top-0 start-0 w-100 h-100 bg-black"
+            style="z-index: 1050; opacity: 0.5;" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-50"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-50"
+            x-transition:leave-end="opacity-0" x-cloak></div>
 
-        <div class="flex-grow-1 d-flex flex-column h-100 transition-all duration-300 ease-in-out"
-            style="max-width: 100vw; overflow-x: hidden;" :class="{ 'md:ml-[260px]': sidebarOpen }">
+        {{-- Main content - Full width, sidebar overlay di atasnya --}}
+        <div class="flex-grow-1 d-flex flex-column h-100 w-100" style="max-width: 100vw; overflow-x: hidden;">
 
             {{-- 2. Memanggil file partial header --}}
             @include('layouts.partials.header')

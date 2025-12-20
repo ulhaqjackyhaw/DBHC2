@@ -8,8 +8,8 @@
         </button>
 
         {{-- Title --}}
-        <div class="flex-grow-1 d-none d-md-block" style="min-width: 0;">
-            <h1 class="mb-0 text-truncate" style="font-size: 1.25rem; font-weight: 600; color: #334155;">
+        <div class="flex-grow-1 d-none d-md-block text-center" style="min-width: 0;">
+            <h1 class="mb-0" style="font-size: 1.25rem; font-weight: 600; color: #334155;">
                 @yield('header-title')
             </h1>
         </div>
