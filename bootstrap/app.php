@@ -16,5 +16,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Handle CSRF Token Mismatch (Session Expired)
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Session Anda telah berakhir. Silakan login kembali.',
+                    'expired' => true
+                ], 419);
+            }
+
+            // Redirect ke login dengan pesan
+            return redirect()->route('login')
+                ->with('error', 'Session Anda telah berakhir. Silakan login kembali.')
+                ->with('session_expired', true);
+        });
     })->create();

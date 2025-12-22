@@ -39,9 +39,10 @@
                         <hr class="dropdown-divider">
                     </li>
                     <li>
-                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0" id="logout-form"
+                            onsubmit="handleLogout(event)">
                             @csrf
-                            <button type="submit" class="dropdown-item text-danger py-2"
+                            <button type="submit" class="dropdown-item text-danger py-2" id="logout-btn"
                                 style="border: none; background: none; width: 100%; text-align: left;">
                                 <i class="bi bi-box-arrow-right me-2"></i> Keluar
                             </button>
@@ -52,3 +53,44 @@
         @endauth
     </div>
 </header>
+
+<script>
+    function handleLogout(event) {
+        event.preventDefault();
+        const form = event.target;
+        const btn = document.getElementById('logout-btn');
+
+        // Tampilkan loading state
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-arrow-repeat spinner-border spinner-border-sm me-2"></i> Keluar...';
+
+        // Submit form dengan fetch untuk handle error dengan baik
+        fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': form.querySelector('[name="_token"]').value
+                },
+                body: new URLSearchParams(new FormData(form))
+            })
+            .then(response => {
+                if (response.ok || response.redirected) {
+                    // Berhasil, redirect ke login
+                    window.location.href = '{{ route('login') }}';
+                } else if (response.status === 419) {
+                    // CSRF token expired
+                    window.location.href = '{{ route('login') }}?session_expired=1';
+                } else {
+                    throw new Error('Logout gagal');
+                }
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                // Redirect ke login meskipun error
+                window.location.href = '{{ route('login') }}';
+            });
+
+        return false;
+    }
+</script>

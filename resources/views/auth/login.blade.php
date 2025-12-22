@@ -174,6 +174,16 @@
             border-color: rgba(220, 38, 38, 0.3);
         }
 
+        .alert-warning {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #fbbf24;
+        }
+
+        html.dark .alert-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.15));
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
         .alert-content {
             display: flex;
             align-items: center;
@@ -636,10 +646,10 @@
             <h1>Analitik Kepegawaian</h1>
             <p class="subtitle">Silakan login untuk melanjutkan</p>
 
-            @if ($errors->any() || session('error'))
-                <div class="alert alert-error" id="error-alert">
+            @if ($errors->any() || session('error') || session('session_expired'))
+                <div class="alert {{ session('session_expired') ? 'alert-warning' : 'alert-error' }}" id="error-alert">
                     <div class="alert-content">
-                        <i class="fas fa-exclamation-triangle"></i>
+                        <i class="fas {{ session('session_expired') ? 'fa-clock' : 'fa-exclamation-triangle' }}"></i>
                         <div class="alert-text">
                             @if (session('error'))
                                 {{ session('error') }}
