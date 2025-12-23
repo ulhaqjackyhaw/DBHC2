@@ -113,6 +113,7 @@
     </style>
 
     {{-- Tempat untuk script atau style tambahan dari halaman anak --}}
+    @stack('styles')
     @stack('head-scripts')
 </head>
 
@@ -258,6 +259,7 @@
     </script>
 
     {{-- Tempat untuk JavaScript spesifik dari halaman anak --}}
+    @stack('scripts')
     @stack('body-scripts')
 </body>
 

@@ -20,8 +20,8 @@
                 <button class="btn btn-link text-decoration-none d-flex align-items-center p-0" type="button"
                     id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false"
                     style="border: none; background: none;">
-                    <img src="https://i.pravatar.cc/40?u={{ auth()->user()->email }}" alt="user"
-                        class="rounded-circle me-2" width="40" height="40">
+                    <img src="{{ auth()->user()->getPhotoUrl() }}" alt="user" class="rounded-circle me-2" width="40"
+                        height="40" style="object-fit: cover;">
                     <span class="d-none d-lg-inline text-slate-700" style="font-weight: 500;">
                         {{ Auth::user()->name }}
                     </span>

@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'photo',
     ];
 
     /**
@@ -71,5 +72,22 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->role === $role;
+    }
+
+    /**
+     * Get photo URL or default avatar
+     */
+    public function getPhotoUrl(): string
+    {
+        if ($this->photo) {
+            // Jika upload custom
+            if (str_starts_with($this->photo, 'avatars/')) {
+                return asset('images/' . $this->photo);
+            }
+            // Jika upload foto sendiri
+            return asset('storage/' . $this->photo);
+        }
+        // Default: avatar1.svg (biru)
+        return asset('images/avatars/avatar1.png');
     }
 }
