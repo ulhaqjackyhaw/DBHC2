@@ -295,6 +295,34 @@
                         </form>
                     </div>
                 </div>
+
+                {{-- Penjelasan Mode Upload --}}
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="alert alert-info mb-0 py-2">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-info-circle-fill me-2 mt-1 text-info"></i>
+                                <div>
+                                    <strong>Mode Tambah:</strong><br>
+                                    <small>Data baru akan ditambahkan ke database. Data lama tetap ada dan tidak akan
+                                        terhapus.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-warning mb-0 py-2">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-exclamation-triangle-fill me-2 mt-1 text-warning"></i>
+                                <div>
+                                    <strong>Mode Ganti Semua:</strong><br>
+                                    <small>Semua data lama akan dihapus dan diganti dengan data dari file Excel yang
+                                        baru.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endcan
 
@@ -408,7 +436,8 @@
                                     <td x-text="item.lokasi_kerja || '-'" style="font-size: 0.85rem;"></td>
                                     <td x-text="item.unit_kerja || '-'" style="font-size: 0.85rem;"></td>
                                     <td x-text="item.jabatan" style="font-size: 0.85rem;"></td>
-                                    <td x-text="item.kelompok_kelas_jabatan" class="text-center" style="font-size: 0.85rem;"></td>
+                                    <td x-text="item.kelompok_kelas_jabatan" class="text-center"
+                                        style="font-size: 0.85rem;"></td>
                                     <td x-text="item.grade" class="text-center" style="font-size: 0.85rem;"></td>
                                     <td x-text="item.kuota" style="font-size: 1rem;"></span></td>
                                     @can(abilities: 'admin')
