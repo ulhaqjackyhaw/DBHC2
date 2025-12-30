@@ -7,12 +7,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
+     * 
+     * NIK tidak menggunakan unique constraint karena satu karyawan 
+     * bisa memiliki beberapa penugasan PGS berbeda
      */
     public function up(): void
     {
         Schema::create('data_pgs', function (Blueprint $table) {
             $table->id();
-            $table->string('nik')->unique()->comment('Nomor Induk Karyawan');
+            $table->string('nik')->comment('Nomor Induk Karyawan');
             $table->string('nama')->comment('Nama Karyawan');
             $table->string('jabatan_definitif')->comment('Jabatan Definitif/Asli');
             $table->string('jabatan_pgs')->comment('Jabatan PGS (Pelaksana Tugas Sementara)');

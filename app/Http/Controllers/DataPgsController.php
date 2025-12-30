@@ -203,7 +203,7 @@ class DataPgsController extends Controller
                 ]);
             }
 
-            return redirect()->route('data-pgs.index')->with('success', 'Data PGS berhasil diimport dan ditambahkan.');
+            return redirect()->route('data-pgs.index')->with('success', 'Data PGS berhasil diimport. Total data ditambahkan: ' . $imported);
         } catch (\Exception $e) {
             return redirect()->route('data-pgs.index')->with('error', 'Error import data: ' . $e->getMessage());
         }
