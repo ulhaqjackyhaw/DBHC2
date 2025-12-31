@@ -20,6 +20,7 @@ class Realisasi extends Model
         'realisasi_jan_jun',
         'realisasi_jul_sep',
         'realisasi_jul_des',
+        'total',
     ];
 
     // Accessors for computed achievements

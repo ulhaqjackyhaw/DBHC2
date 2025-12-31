@@ -72,6 +72,14 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="col-md-6 col-xl-4">
+                                <label class="form-label">Total</label>
+                                <input type="number" step="0.01" name="total" value="{{ old('total', 0) }}"
+                                    class="form-control @error('total') is-invalid @enderror">
+                                @error('total')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-12 d-flex justify-content-end gap-2 mt-3">
                                 <a href="{{ route('realisasi.index') }}" class="btn btn-light">Batal</a>
                                 <button type="submit" class="btn btn-primary">Simpan</button>

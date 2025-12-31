@@ -51,6 +51,7 @@ class RealisasiController extends Controller
             'realisasi_jan_jun' => 'nullable|numeric|min:0',
             'realisasi_jul_sep' => 'nullable|numeric|min:0',
             'realisasi_jul_des' => 'nullable|numeric|min:0',
+            'total' => 'nullable|numeric|min:0',
         ]);
 
         Realisasi::create($data);
@@ -79,6 +80,7 @@ class RealisasiController extends Controller
             'realisasi_jan_jun' => 'nullable|numeric|min:0',
             'realisasi_jul_sep' => 'nullable|numeric|min:0',
             'realisasi_jul_des' => 'nullable|numeric|min:0',
+            'total' => 'nullable|numeric|min:0',
         ]);
 
         $realisasi->update($data);
@@ -125,14 +127,32 @@ class RealisasiController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv|max:5120', // Max 5MB
             'tahun' => 'required|integer|min:2000|max:2100',
+            'import_mode' => 'required|in:add,replace',
         ]);
 
         try {
             $tahun = $request->integer('tahun');
             $file = $request->file('file');
+            $mode = $request->input('import_mode');
+
+            // Log untuk debugging
+            \Log::info('Import Mode Received:', [
+                'mode' => $mode,
+                'tahun' => $tahun,
+                'mode_type' => gettype($mode),
+                'is_replace' => $mode === 'replace',
+                'is_add' => $mode === 'add'
+            ]);
 
             $countBefore = \App\Models\Realisasi::where('tahun', $tahun)->count();
-            Excel::import(new RealisasiImport($tahun), $file);
+
+            // Mode Ganti Semua: Hapus semua data tahun tersebut sebelum import
+            if ($mode === 'replace') {
+                $deleted = \App\Models\Realisasi::where('tahun', $tahun)->delete();
+                \Log::info('Data deleted for replace mode:', ['count' => $deleted]);
+            }
+
+            Excel::import(new RealisasiImport($tahun, $mode), $file);
             $countAfter = \App\Models\Realisasi::where('tahun', $tahun)->count();
             $imported = $countAfter - $countBefore;
 
@@ -151,7 +171,7 @@ class RealisasiController extends Controller
                         'imported' => $imported,
                         'total_after' => $countAfter,
                         'tahun' => $tahun,
-                        'mode' => 'add',
+                        'mode' => $mode,
                         'filename' => $file->getClientOriginalName()
                     ],
                     'changes' => null,
@@ -160,8 +180,9 @@ class RealisasiController extends Controller
                 ]);
             }
 
+            $modeText = $mode === 'replace' ? 'Mode Ganti Semua' : 'Mode Tambah';
             return redirect()->route('realisasi.index', ['tahun' => $tahun])
-                ->with('success', 'Data realisasi berhasil diimport.');
+                ->with('success', "Data realisasi berhasil diimport ({$modeText}). Total data: {$countAfter}");
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 

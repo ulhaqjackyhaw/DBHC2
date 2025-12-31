@@ -538,6 +538,10 @@
                                     class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap text-end small">
                                     Realisasi Jul–Des <i :class="sortIcon('realisasi_jul_des')"></i>
                                 </th>
+                                <th @click="sortBy('total')"
+                                    class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap text-end small">
+                                    Total <i :class="sortIcon('total')"></i>
+                                </th>
                                 <th @click="sortBy('ach_s1')"
                                     class="text-slate-500 font-semibold cursor-pointer user-select-none text-nowrap text-end small">
                                     Achievement S1 <i :class="sortIcon('ach_s1')"></i>
@@ -571,6 +575,7 @@
                                         x-text="num(item.realisasi_jul_sep)"></td>
                                     <td data-label="Realisasi Jul–Des" class="text-end"
                                         x-text="num(item.realisasi_jul_des)"></td>
+                                    <td data-label="Total" class="text-end" x-text="num(item.total)"></td>
                                     <td data-label="Achievement S1" class="text-end" x-text="pct(achS1(item))"></td>
                                     <td data-label="Achievement S2" class="text-end" x-text="pct(achS2(item))"></td>
                                     <td data-label="Achievement {{ $selectedYear ?? date('Y') }}" class="text-end"
@@ -594,7 +599,7 @@
                             </template>
                             <tr x-show="!paginatedItems.length">
                                 @php($isAdmin = auth()->check() && auth()->user()->can('admin'))
-                                <td colspan="{{ $isAdmin ? 11 : 10 }}" class="text-center text-muted py-5">
+                                <td colspan="{{ $isAdmin ? 12 : 11 }}" class="text-center text-muted py-5">
                                     <span x-show="items.length > 0">Data tidak ditemukan.</span>
                                     <span x-show="items.length === 0">Belum ada data realisasi.</span>
                                 </td>
@@ -688,6 +693,28 @@
                                             <li>Upload file Excel yang sudah diisi</li>
                                             <li>Data yang sudah ada akan diupdate berdasarkan Program Kerja</li>
                                         </ol>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Mode Import <span class="text-danger">*</span></label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="import_mode" id="mode_add"
+                                                value="add" checked>
+                                            <label class="form-check-label" for="mode_add">
+                                                <strong>Mode Tambah</strong>
+                                                <div class="text-muted small">Data baru akan ditambahkan ke database. Data lama
+                                                    tetap ada dan tidak akan terhapus.</div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="radio" name="import_mode"
+                                                id="mode_replace" value="replace">
+                                            <label class="form-check-label" for="mode_replace">
+                                                <strong>Mode Ganti Semua</strong>
+                                                <div class="text-muted small">Semua data lama akan dihapus dan diganti dengan
+                                                    data dari file Excel yang baru.</div>
+                                            </label>
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">

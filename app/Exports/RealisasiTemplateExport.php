@@ -37,6 +37,7 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
                 0.00,
                 0.00,
                 0.00,
+                0.00,
             ],
             [
                 'CONTOH Peningkatan Infrastruktur',
@@ -45,9 +46,11 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
                 0.00,
                 0.00,
                 0.00,
+                0.00,
             ],
             [
                 'CONTOH Sistem Informasi',
+                0.00,
                 0.00,
                 0.00,
                 0.00,
@@ -69,6 +72,7 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
             'REALISASI JAN-JUN',
             'REALISASI JUL-SEP',
             'REALISASI JUL-DES',
+            'TOTAL',
         ];
     }
 
@@ -79,7 +83,7 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
     public function styles(Worksheet $sheet)
     {
         // Style header row
-        $sheet->getStyle('A1:F1')->applyFromArray([
+        $sheet->getStyle('A1:G1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
@@ -102,7 +106,7 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
         ]);
 
         // Style example rows
-        $sheet->getStyle('A2:F4')->applyFromArray([
+        $sheet->getStyle('A2:G4')->applyFromArray([
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => 'FEF3C7'],
@@ -123,7 +127,7 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
         ]);
 
         // Right align numeric columns
-        $sheet->getStyle('B2:F4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('B2:G4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
         return [];
     }
@@ -140,6 +144,7 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
             'D' => 20,  // Realisasi Jan-Jun
             'E' => 20,  // Realisasi Jul-Sep
             'F' => 20,  // Realisasi Jul-Des
+            'G' => 20,  // Total
         ];
     }
 
@@ -154,6 +159,7 @@ class RealisasiTemplateExport implements FromCollection, WithHeadings, WithStyle
             'D' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Realisasi Jan-Jun
             'E' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Realisasi Jul-Sep
             'F' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Realisasi Jul-Des
+            'G' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Total
         ];
     }
 }

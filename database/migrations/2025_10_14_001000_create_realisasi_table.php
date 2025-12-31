@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->decimal('realisasi_jan_jun', 15, 2)->default(0);
             $table->decimal('realisasi_jul_sep', 15, 2)->default(0);
             $table->decimal('realisasi_jul_des', 15, 2)->default(0);
+            $table->decimal('total', 15, 2)->default(0);
             $table->timestamps();
         });
     }

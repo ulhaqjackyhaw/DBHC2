@@ -48,6 +48,7 @@ class RealisasiExport implements FromCollection, WithHeadings, WithMapping, With
             'REALISASI JAN-JUN',
             'REALISASI JUL-SEP',
             'REALISASI JUL-DES',
+            'TOTAL',
             'ACHIEVEMENT S1 (%)',
             'ACHIEVEMENT S2 (%)',
             'ACHIEVEMENT ' . $this->tahun . ' (%)',
@@ -84,6 +85,7 @@ class RealisasiExport implements FromCollection, WithHeadings, WithMapping, With
             (float) $realisasi->realisasi_jan_jun,
             (float) $realisasi->realisasi_jul_sep,
             (float) $realisasi->realisasi_jul_des,
+            (float) $realisasi->total,
             // Keep as floats in fractional form; formatting (percent) handled by columnFormats
             round($achS1, 4),
             round($achS2, 4),
@@ -146,7 +148,7 @@ class RealisasiExport implements FromCollection, WithHeadings, WithMapping, With
         // Center align numeric columns
         $sheet->getStyle('A2:A' . $highestRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('C2:C' . $highestRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('D2:K' . $highestRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('D2:L' . $highestRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
         return [];
     }
@@ -165,9 +167,10 @@ class RealisasiExport implements FromCollection, WithHeadings, WithMapping, With
             'F' => 20,  // Realisasi Jan-Jun
             'G' => 20,  // Realisasi Jul-Sep
             'H' => 20,  // Realisasi Jul-Des
-            'I' => 18,  // Achievement S1
-            'J' => 18,  // Achievement S2
-            'K' => 18,  // Achievement Year
+            'I' => 20,  // Total
+            'J' => 18,  // Achievement S1
+            'K' => 18,  // Achievement S2
+            'L' => 18,  // Achievement Year
         ];
     }
 
@@ -182,10 +185,11 @@ class RealisasiExport implements FromCollection, WithHeadings, WithMapping, With
             'F' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Realisasi Jan-Jun
             'G' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Realisasi Jul-Sep
             'H' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Realisasi Jul-Des
+            'I' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1, // Total
             // Use Excel percentage format (two decimal places)
-            'I' => NumberFormat::FORMAT_PERCENTAGE_00,           // Achievement S1
-            'J' => NumberFormat::FORMAT_PERCENTAGE_00,           // Achievement S2
-            'K' => NumberFormat::FORMAT_PERCENTAGE_00,           // Achievement Year
+            'J' => NumberFormat::FORMAT_PERCENTAGE_00,           // Achievement S1
+            'K' => NumberFormat::FORMAT_PERCENTAGE_00,           // Achievement S2
+            'L' => NumberFormat::FORMAT_PERCENTAGE_00,           // Achievement Year
         ];
     }
 }
