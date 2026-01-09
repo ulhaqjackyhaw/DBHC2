@@ -60,7 +60,7 @@ class DataPgs extends Model
     }
 
     /**
-     * Menghitung durasi PGS dari tanggal PGS sampai sekarang
+     * Menghitung TOTAL durasi PGS dari tanggal mulai sampai tanggal selesai
      */
     public function getDurasiPgsAttribute()
     {
@@ -68,24 +68,60 @@ class DataPgs extends Model
             return '-';
         }
 
+        // Jika tidak ada tanggal selesai, hitung dari tanggal mulai sampai sekarang
+        if (!$this->tanggal_selesai_pgs) {
+            try {
+                $tanggalPgs = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_pgs)->startOfDay();
+                $sekarang = \Carbon\Carbon::now()->startOfDay();
+
+                if ($tanggalPgs->isFuture()) {
+                    return 'Belum dimulai';
+                }
+
+                $totalHari = (int) $tanggalPgs->diffInDays($sekarang);
+
+                if ($totalHari == 0) {
+                    return 'Hari ini';
+                }
+
+                $bulan = floor($totalHari / 30);
+                $hari = $totalHari % 30;
+
+                if ($bulan > 0 && $hari > 0) {
+                    return $bulan . ' bulan ' . $hari . ' hari';
+                } elseif ($bulan > 0) {
+                    return $bulan . ' bulan';
+                } else {
+                    return $hari . ' hari';
+                }
+            } catch (\Exception $e) {
+                return 'Invalid Date';
+            }
+        }
+
+        // Jika ada tanggal selesai, hitung TOTAL durasi PGS (tanggal mulai sampai tanggal selesai)
         try {
-            // Parse tanggal PGS dengan format Indonesia (dd/mm/yyyy)
-            $tanggalPgs = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_pgs);
-            $sekarang = \Carbon\Carbon::now();
+            $tanggalPgs = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_pgs)->startOfDay();
+            $tanggalSelesai = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_selesai_pgs)->startOfDay();
 
-            // Hitung selisih
-            $diff = $tanggalPgs->diff($sekarang);
+            // Hitung total hari PGS
+            $totalHari = (int) $tanggalPgs->diffInDays($tanggalSelesai);
 
-            // Hitung total bulan (termasuk tahun dikonversi ke bulan)
-            $totalBulan = ($diff->y * 12) + $diff->m;
+            if ($totalHari == 0) {
+                return '1 hari';
+            }
 
-            // Format output hanya dengan bulan dan hari
-            if ($totalBulan > 0) {
-                return $totalBulan . ' bulan' . ($diff->d > 0 ? ' ' . $diff->d . ' hari' : '');
-            } elseif ($diff->d > 0) {
-                return $diff->d . ' hari';
+            // Konversi ke bulan dan hari
+            $bulan = floor($totalHari / 30);
+            $hari = $totalHari % 30;
+
+            // Format output
+            if ($bulan > 0 && $hari > 0) {
+                return $bulan . ' bulan ' . $hari . ' hari';
+            } elseif ($bulan > 0) {
+                return $bulan . ' bulan';
             } else {
-                return 'Hari ini';
+                return $totalHari . ' hari';
             }
         } catch (\Exception $e) {
             return 'Invalid Date';
@@ -136,8 +172,8 @@ class DataPgs extends Model
         }
 
         try {
-            $tanggalSelesai = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_selesai_pgs);
-            $sekarang = \Carbon\Carbon::now();
+            $tanggalSelesai = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_selesai_pgs)->startOfDay();
+            $sekarang = \Carbon\Carbon::now()->startOfDay();
 
             // Overdue jika sudah melewati tanggal selesai
             return $sekarang->isAfter($tanggalSelesai);
@@ -156,12 +192,12 @@ class DataPgs extends Model
         }
 
         try {
-            $tanggalSelesai = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_selesai_pgs);
-            $sekarang = \Carbon\Carbon::now();
+            $tanggalSelesai = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_selesai_pgs)->startOfDay();
+            $sekarang = \Carbon\Carbon::now()->startOfDay();
 
             // Warning jika 15 hari atau kurang sebelum tanggal selesai dan belum overdue
-            $sisaHari = $sekarang->diffInDays($tanggalSelesai, false);
-            return $sisaHari >= 0 && $sisaHari <= 15;
+            $sisaHari = (int) floor($sekarang->diffInDays($tanggalSelesai, false));
+            return $sisaHari > 0 && $sisaHari <= 15;
         } catch (\Exception $e) {
             return false;
         }
@@ -177,17 +213,17 @@ class DataPgs extends Model
         }
 
         try {
-            $tanggalSelesai = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_selesai_pgs);
-            $sekarang = \Carbon\Carbon::now();
+            $tanggalSelesai = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_selesai_pgs)->startOfDay();
+            $sekarang = \Carbon\Carbon::now()->startOfDay();
 
-            // Bulatkan hasil diffInDays
-            $sisaHari = round($sekarang->diffInDays($tanggalSelesai, false));
+            // Hitung sisa hari dengan benar dan bulatkan
+            $sisaHari = (int) floor($sekarang->diffInDays($tanggalSelesai, false));
 
             if ($sisaHari < 0) {
                 // Sudah lewat
                 return 'Lewat ' . abs($sisaHari) . ' hari';
             } elseif ($sisaHari == 0) {
-                return 'Hari ini';
+                return 'Hari ini berakhir';
             } else {
                 return $sisaHari . ' hari lagi';
             }
@@ -206,8 +242,8 @@ class DataPgs extends Model
         }
 
         try {
-            $tanggalPgs = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_pgs);
-            $sekarang = \Carbon\Carbon::now();
+            $tanggalPgs = \Carbon\Carbon::createFromFormat('d/m/Y', $this->tanggal_pgs)->startOfDay();
+            $sekarang = \Carbon\Carbon::now()->startOfDay();
             return $tanggalPgs->diffInDays($sekarang);
         } catch (\Exception $e) {
             return 0;
